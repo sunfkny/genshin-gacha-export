@@ -38,7 +38,7 @@ def getInfo(item_id):
 
 
 def checkApi(url):
-    if url == "":
+    if not url:
         print("未填入url")
         exit()
     if "getGachaLog" not in url:

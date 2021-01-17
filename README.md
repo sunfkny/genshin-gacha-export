@@ -14,6 +14,4 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
 ## 卡池和物品数据
 
-getConfigList.json是卡池数据，来自`https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?xxxxxxx`，如果有新卡池就下载替换这个json
-
-gacha_info.json是物品数据，来自`https://webstatic.mihoyo.com/hk4e/gacha_info/cn_gf01/items/zh-cn.json`，如果有新物品就下载替换这个json
+新版已改为自动从url获取，无需手动更新
