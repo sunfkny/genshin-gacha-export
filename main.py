@@ -59,6 +59,7 @@ def checkApi(url):
             print("数据为空，错误代码：" + j["message"])
         exit()
 
+
 checkApi(url)
 
 r = requests.get(url.replace("getGachaLog", "getConfigList"), verify=False)
