@@ -1,7 +1,6 @@
 import json
 import requests
 import urllib.parse as urlparse
-from json.decoder import JSONDecodeError
 
 requests.packages.urllib3.disable_warnings()
 
