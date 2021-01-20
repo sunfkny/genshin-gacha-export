@@ -1,6 +1,7 @@
 import json
 import requests
 import urllib.parse as urlparse
+from json.decoder import JSONDecodeError
 
 requests.packages.urllib3.disable_warnings()
 
@@ -48,15 +49,16 @@ def checkApi(url):
         r = requests.get(url, verify=False)
         s = r.content.decode("utf-8")
         j = json.loads(s)
-
-        if j["data"] == None:
-            print("错误代码：" + j["message"])
-            if j["message"] == "authkey valid error":
-                print("authkey错误，请重新抓包获取url")
-            exit()
     except Exception as e:
-        print(e)
+        print("API请求解析出错：" + str(e))
+        exit()
 
+    if not j["data"]:
+        if j["message"] == "authkey valid error":
+            print("authkey错误，请重新抓包获取url")
+        else:
+            print("数据为空，错误代码：" + j["message"])
+        exit()
 
 checkApi(url)
 
