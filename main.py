@@ -16,18 +16,6 @@ FLAG_CLEAN = 1
 
 
 def main():
-    if FLAG_CLEAN:
-        print("清除历史文件", end="...", flush=True)
-        import os
-
-        del_paths = [name for name in os.listdir(sys.path[0]) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
-        for del_path in del_paths:
-            try:
-                os.remove(sys.path[0] + "\\" + del_path)
-                print(del_path, end=" ", flush=True)
-            except:
-                pass
-        print("")
 
     print("检查URL", end="...", flush=True)
     checkApi(url)
@@ -52,6 +40,19 @@ def main():
             print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
 
+    if FLAG_CLEAN:
+        print("清除历史文件", end="...", flush=True)
+        import os
+
+        del_paths = [name for name in os.listdir(sys.path[0]) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
+        for del_path in del_paths:
+            try:
+                os.remove(sys.path[0] + "\\" + del_path)
+                print(del_path, end=" ", flush=True)
+            except:
+                pass
+        print("")
+        
     print("写入文件", end="...", flush=True)
     if FLAG_WRITE_CSV:
         writeCSV(gachaLists, gachaTypeIds)
