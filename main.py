@@ -2,18 +2,61 @@ import json
 import requests
 import urllib.parse as urlparse
 
-requests.packages.urllib3.disable_warnings()
-
-
 url = ""
 
+FLAG_WRITE_CSV = 0
+# 是否写入CSV
+FLAG_WRITE_XLS = 1
+# 是否写入EXCEL
+FLAG_SHOW_DETAIL = 0
+# 是否展示详情
+FLAG_CLEAN = 1
+# 是否清除历史文件
 
-def getApi(gacha_type, size, page):
+def main():
+    if FLAG_CLEAN:
+        print("清除历史文件", end="...")
+        import os
+        del_paths = [name for name in os.listdir(".") if name.startswith("gacha") and name.endswith(".csv") or name.endswith(".xlsx")]
+        for del_path in del_paths:
+            os.remove(del_path)
+            print(del_path, end=" ")
+        print("")
+        
+    print("检查URL", end="...")
+    checkApi(url)
+    print("合法")
+
+    print("获取卡池信息", end="...")
+    gachaTypes = initGachaTypes()
+    gachaInfo = initGachaInfo()
+    print("成功")
+
+    print("获取抽卡数据", end="...")
+    gachaLists = []
+    for gachaType in gachaTypes:
+        gachaList = getGachaList(gachaInfo, gachaType)
+        gachaLists.append(gachaList)
+        print(f"{gachaType}", end=" ")
+    print("")
+
+    print("写入文件...", end=" ")
+    if FLAG_WRITE_CSV:
+        writeCSV(gachaLists, gachaTypes)
+        print(f"CSV", end=" ")
+
+    if FLAG_WRITE_XLS:
+        writeXLSX(gachaLists, gachaTypes)
+        print(f"XLS", end=" ")
+
+
+
+def getApi(gachaType, size, page):
     parsed = urlparse.urlparse(url)
     querys = urlparse.parse_qsl(parsed.query)
     param_dict = dict(querys)
     param_dict["size"] = size
-    param_dict["gacha_type"] = gacha_type
+    param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
     param = urlparse.urlencode(param_dict)
     path = url.split("?")[0]
@@ -21,17 +64,8 @@ def getApi(gacha_type, size, page):
     return api
 
 
-def getQueryVariable(variable):
-    query = url.split("?")[1]
-    vars = query.split("&")
-    for v in vars:
-        if v.split("=")[0] == variable:
-            return v.split("=")[1]
-    return ""
-
-
-def getInfo(item_id):
-    for info in gacha_info:
+def getInfo(item_id, gachaInfo):
+    for info in gachaInfo:
         if info["item_id"] == item_id:
             return info["name"] + "," + info["item_type"] + "," + info["rank_type"]
     return "物品ID未找到"
@@ -45,6 +79,7 @@ def checkApi(url):
         print("错误的url，检查是否包含getGachaLog")
         exit()
     try:
+        requests.packages.urllib3.disable_warnings()
         r = requests.get(url, verify=False)
         s = r.content.decode("utf-8")
         j = json.loads(s)
@@ -58,34 +93,47 @@ def checkApi(url):
         else:
             print("数据为空，错误代码：" + j["message"])
         exit()
+    return url
 
 
-checkApi(url)
+def getQueryVariable(variable):
+    query = url.split("?")[1]
+    vars = query.split("&")
+    for v in vars:
+        if v.split("=")[0] == variable:
+            return v.split("=")[1]
+    return ""
 
-r = requests.get(url.replace("getGachaLog", "getConfigList"), verify=False)
-s = r.content.decode("utf-8")
-configList = json.loads(s)
-gacha_types = []
-for banner in configList["data"]["gacha_type_list"]:
-    gacha_types.append(banner["key"])
-# print(gacha_types)
 
-region = getQueryVariable("region")
-lang = getQueryVariable("lang")
-gachaInfoUrl = "https://webstatic.mihoyo.com/hk4e/gacha_info/{}/items/{}.json".format(region, lang)
-r = requests.get(gachaInfoUrl, verify=False)
-s = r.content.decode("utf-8")
-gacha_info = json.loads(s)
-# print(gacha_info)
+def initGachaInfo():
+    region = getQueryVariable("region")
+    lang = getQueryVariable("lang")
+    gachaInfoUrl = "https://webstatic.mihoyo.com/hk4e/gacha_info/{}/items/{}.json".format(region, lang)
+    r = requests.get(gachaInfoUrl, verify=False)
+    s = r.content.decode("utf-8")
+    gachaInfo = json.loads(s)
+    # print(gachaInfo)
+    return gachaInfo
 
-size = "20"
-# api限制一页最大20
-for gacha_type in gacha_types:
-    filename = "gacha" + gacha_type + ".csv"
-    f = open(filename, "w", encoding="utf-8-sig")
-    # 带BOM防止乱码
+
+def initGachaTypes():
+    r = requests.get(url.replace("getGachaLog", "getConfigList"), verify=False)
+    s = r.content.decode("utf-8")
+    configList = json.loads(s)
+    gachaTypes = []
+    for banner in configList["data"]["gacha_type_list"]:
+        gachaTypes.append(banner["key"])
+    # print(gachaTypes)
+    return gachaTypes
+
+
+def getGachaList(gachaInfo, gachaType):
+    requests.packages.urllib3.disable_warnings()
+    size = "20"
+    # api限制一页最大20
+    gachaList = []
     for page in range(1, 9999):
-        api = getApi(gacha_type, size, page)
+        api = getApi(gachaType, size, page)
         r = requests.get(api, verify=False)
         s = r.content.decode("utf-8")
         j = json.loads(s)
@@ -96,8 +144,69 @@ for gacha_type in gacha_types:
         for i in gacha:
             time = i["time"]
             item_id = i["item_id"]
-            info = time + "," + item_id + "," + getInfo(item_id)
-            print(info)
-            f.write(info + "\n")
-    f.close()
+            info = time + "," + item_id + "," + getInfo(item_id, gachaInfo)
+            gachaList.append(info)
+            if FLAG_SHOW_DETAIL:
+                print(info)
+    return gachaList
 
+
+def writeCSV(gachaLists, gachaTypes):
+    for id in range(len(gachaTypes)):
+        filename = "gacha" + gachaTypes[id] + ".csv"
+        f = open(filename, "w", encoding="utf-8-sig")
+        # 带BOM防止乱码
+        for line in gachaLists[id]:
+            f.write(line + "\n")
+        f.close()
+
+
+def writeXLSX(gachaLists, gachaTypes):
+    import xlsxwriter
+    import time
+
+    t = time.strftime("%Y%m%d%H%M%S", time.localtime())
+    workbook = xlsxwriter.Workbook(f"gacha-{t}.xlsx")
+    for id in range(len(gachaTypes)):
+        gachaList = gachaLists[id]
+        gachaType = gachaTypes[id]
+        gachaList.reverse()
+        header = "时间,编号,名称,类别,星级,总次数,保底内"
+        worksheet = workbook.add_worksheet(gachaType)
+        border = workbook.add_format({"border_color": "#c4c2bf", "border": 1})
+        title_css = workbook.add_format({"bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
+        excel_col = ["A", "B", "C", "D", "E", "F", "G"]
+        excel_header = header.split(",")
+        worksheet.set_column("A:A", 24)
+        worksheet.set_column("C:C", 12)
+        for i in range(len(excel_col)):
+            # worksheet.write(f"{excel_col[i]}1", excel_header[i], border)
+            worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
+        idx = 0
+        pdx = 0
+        for i in range(len(gachaList)):
+            idx = idx + 1
+            pdx = pdx + 1
+            excel_data = gachaList[i].split(",")
+            excel_data.extend([idx, pdx])
+            excel_data[1] = int(excel_data[1])
+            excel_data[4] = int(excel_data[4])
+            for j in range(len(excel_col)):
+                worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], border)
+                # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j])
+            if excel_data[4] == 5:
+                pdx = 0
+
+        star_5 = workbook.add_format({"bg_color": "#ebebeb", "color": "#bd6932", "bold": True})
+        star_4 = workbook.add_format({"bg_color": "#ebebeb", "color": "#a256e1", "bold": True})
+        # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
+        star_3 = workbook.add_format({"bg_color": "#ebebeb"})
+        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
+        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
+        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
+
+    workbook.close()
+
+
+if __name__ == "__main__":
+    main()
