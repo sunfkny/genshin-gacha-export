@@ -1,7 +1,6 @@
 import json
 import requests
-import urllib.parse as urlparse
-import urllib.parse as urlparse
+import urllib.parse
 import sys
 
 url = ""
@@ -18,14 +17,14 @@ FLAG_CLEAN = 1
 
 def main():
     if FLAG_CLEAN:
-        print("清除历史文件", end="...")
+        print("清除历史文件", end="...", flush=True)
         import os
 
         del_paths = [name for name in os.listdir(sys.path[0]) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
         for del_path in del_paths:
             try:
                 os.remove(sys.path[0] + "\\" + del_path)
-                print(del_path, end=" ")
+                print(del_path, end=" ", flush=True)
             except:
                 pass
         print("")
@@ -34,22 +33,28 @@ def main():
     checkApi(url)
     print("合法")
 
-    print("获取卡池信息", end="...", flush=True)
-    gachaTypes, gachaTypeNames = initGachaTypes()
+    print("获取物品信息", end="...", flush=True)
     gachaInfo = initGachaInfo()
-    print("成功")
+    print("物品数：" + str(len(gachaInfo)))
+
+    print("获取卡池信息", end="...", flush=True)
+    gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
+    print(" ".join(gachaTypeNames))
 
     print("获取抽卡数据", end="...", flush=True)
     gachaLists = []
-    for gachaType in gachaTypes:
-        gachaList = getGachaList(gachaInfo, gachaType)
+    for gachaTypeId in gachaTypeIds:
+        if FLAG_SHOW_DETAIL:
+            print(gachaTypeDict[gachaTypeId])
+        gachaList = getGachaList(gachaInfo, gachaTypeId)
         gachaLists.append(gachaList)
-        print(gachaType, end=" ", flush=True)
+        if not FLAG_SHOW_DETAIL:
+            print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
 
     print("写入文件", end="...", flush=True)
     if FLAG_WRITE_CSV:
-        writeCSV(gachaLists, gachaTypes)
+        writeCSV(gachaLists, gachaTypeIds)
         print("CSV", end=" ", flush=True)
 
     if FLAG_WRITE_XLS:
@@ -58,13 +63,13 @@ def main():
 
 
 def getApi(gachaType, size, page):
-    parsed = urlparse.urlparse(url)
-    querys = urlparse.parse_qsl(parsed.query)
+    parsed = urllib.parse.urlparse(url)
+    querys = urllib.parse.parse_qsl(parsed.query)
     param_dict = dict(querys)
     param_dict["size"] = size
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
-    param = urlparse.urlencode(param_dict)
+    param = urllib.parse.urlencode(param_dict)
     path = url.split("?")[0]
     api = path + "?" + param
     return api
@@ -127,12 +132,17 @@ def initGachaTypes():
     r = requests.get(url.replace("getGachaLog", "getConfigList"), verify=False)
     s = r.content.decode("utf-8")
     configList = json.loads(s)
-    gachaTypes = []
+    gachaTypeLists = []
+    for gachaType in configList["data"]["gacha_type_list"]:
+        gachaTypeLists.append([gachaType["key"], gachaType["name"]])
+    gachaTypeLists.sort()
+    gachaTypeDict = dict(gachaTypeLists)
+    gachaTypeIds = []
     gachaTypeNames = []
-    for banner in configList["data"]["gacha_type_list"]:
-        gachaTypes.append(banner["key"])
-        gachaTypeNames.append(banner["name"])
-    return gachaTypes, gachaTypeNames
+    for gachaTypeId, gachaTypeName in gachaTypeLists:
+        gachaTypeIds.append(gachaTypeId)
+        gachaTypeNames.append(gachaTypeName)
+    return gachaTypeIds, gachaTypeNames, gachaTypeDict
 
 
 def getGachaList(gachaInfo, gachaType):
@@ -170,8 +180,9 @@ def writeCSV(gachaLists, gachaTypes):
 
 
 def writeXLSX(gachaLists, gachaTypeNames):
-    import xlsxwriter
     import time
+
+    import xlsxwriter
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
