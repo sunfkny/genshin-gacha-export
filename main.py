@@ -31,8 +31,7 @@ def main():
         print("")
 
     print("检查URL", end="...", flush=True)
-    global url
-    url = checkApi(url)
+    checkApi(url)
     print("合法")
 
     print("获取卡池信息", end="...", flush=True)
