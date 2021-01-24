@@ -13,16 +13,21 @@ FLAG_SHOW_DETAIL = 0
 FLAG_CLEAN = 1
 # 是否清除历史文件
 
+
 def main():
     if FLAG_CLEAN:
         print("清除历史文件", end="...")
         import os
-        del_paths = [name for name in os.listdir(".") if name.startswith("gacha") and name.endswith(".csv") or name.endswith(".xlsx")]
+
+        del_paths = [name for name in os.listdir(".") if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
         for del_path in del_paths:
-            os.remove(del_path)
-            print(del_path, end=" ")
+            try:
+                os.remove(del_path)
+                print(del_path, end=" ")
+            except:
+                pass
         print("")
-        
+
     print("检查URL", end="...")
     checkApi(url)
     print("合法")
@@ -48,7 +53,6 @@ def main():
     if FLAG_WRITE_XLS:
         writeXLSX(gachaLists, gachaTypeNames)
         print(f"XLS", end=" ")
-
 
 
 def getApi(gachaType, size, page):
@@ -169,14 +173,14 @@ def writeXLSX(gachaLists, gachaTypeNames):
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"gacha-{t}.xlsx")
-    for id in range(0,len(gachaTypeNames)):
+    for id in range(0, len(gachaTypeNames)):
         gachaList = gachaLists[id]
-        gachaTypeName=gachaTypeNames[id]
+        gachaTypeName = gachaTypeNames[id]
         gachaList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
-        border = workbook.add_format({"border_color": "#c4c2bf", "border": 1})
-        title_css = workbook.add_format({"bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
+        content_css = workbook.add_format({"font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
+        title_css = workbook.add_format({"font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
         excel_header = header.split(",")
         worksheet.set_column("A:A", 24)
@@ -194,15 +198,15 @@ def writeXLSX(gachaLists, gachaTypeNames):
             excel_data[1] = int(excel_data[1])
             excel_data[4] = int(excel_data[4])
             for j in range(len(excel_col)):
-                worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], border)
+                worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], content_css)
                 # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j])
             if excel_data[4] == 5:
                 pdx = 0
 
         star_5 = workbook.add_format({"bg_color": "#ebebeb", "color": "#bd6932", "bold": True})
         star_4 = workbook.add_format({"bg_color": "#ebebeb", "color": "#a256e1", "bold": True})
-        # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
         star_3 = workbook.add_format({"bg_color": "#ebebeb"})
+        # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
