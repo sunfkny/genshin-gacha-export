@@ -179,12 +179,12 @@ def writeXLSX(gachaLists, gachaTypeNames):
         gachaList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
-        content_css = workbook.add_format({"font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
-        title_css = workbook.add_format({"font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
+        content_css = workbook.add_format({'align': 'left', "font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
+        title_css = workbook.add_format({'align': 'left', "font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
         excel_header = header.split(",")
-        worksheet.set_column("A:A", 24)
-        worksheet.set_column("C:C", 12)
+        worksheet.set_column("A:A", 22)
+        worksheet.set_column("C:C", 14)
         for i in range(len(excel_col)):
             # worksheet.write(f"{excel_col[i]}1", excel_header[i], border)
             worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
