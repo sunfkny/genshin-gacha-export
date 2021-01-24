@@ -18,11 +18,12 @@ def main():
     if FLAG_CLEAN:
         print("清除历史文件", end="...")
         import os
+        import sys
 
-        del_paths = [name for name in os.listdir(".") if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
+        del_paths = [name for name in os.listdir(sys.path[0]) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
         for del_path in del_paths:
             try:
-                os.remove(del_path)
+                os.remove(sys.path[0]+"\\"+del_path)
                 print(del_path, end=" ")
             except:
                 pass
