@@ -10,8 +10,18 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
 - 将链接填入`url`变量并运行
 
-- 用excle打开`gachaxxx.csv`表格，第一列其实是精确到秒的，有需要可以设置一下格式，对excel精通的可以像我一样做一个条件格式，还可以做数据查询，打开自动刷新等等
 
 ## 卡池和物品数据
 
 新版已改为自动从url获取，无需手动更新
+
+## 参数
+
+| 参数名 | 注释 | 类型 |
+| ---- | ---- | ---- |
+| url | 填入含有getGachaLog的api | str |
+| FLAG_WRITE_CSV   | 是否写入CSV      | bool  |
+| FLAG_WRITE_XLS   | 是否写入EXCEL    | bool |
+| FLAG_SHOW_DETAIL | 是否展示详情     | bool |
+| FLAG_CLEAN       | 是否清除历史文件 | bool |
+
