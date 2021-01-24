@@ -1,6 +1,8 @@
 import json
 import requests
 import urllib.parse as urlparse
+import urllib.parse as urlparse
+import sys
 
 url = ""
 
@@ -18,12 +20,11 @@ def main():
     if FLAG_CLEAN:
         print("清除历史文件", end="...")
         import os
-        import sys
 
         del_paths = [name for name in os.listdir(sys.path[0]) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
         for del_path in del_paths:
             try:
-                os.remove(sys.path[0]+"\\"+del_path)
+                os.remove(sys.path[0] + "\\" + del_path)
                 print(del_path, end=" ")
             except:
                 pass
@@ -160,7 +161,7 @@ def getGachaList(gachaInfo, gachaType):
 
 def writeCSV(gachaLists, gachaTypes):
     for id in range(len(gachaTypes)):
-        filename = "gacha" + gachaTypes[id] + ".csv"
+        filename = f"{sys.path[0]}\\gacha{gachaTypes[id]}.csv"
         f = open(filename, "w", encoding="utf-8-sig")
         # 带BOM防止乱码
         for line in gachaLists[id]:
@@ -171,7 +172,6 @@ def writeCSV(gachaLists, gachaTypes):
 def writeXLSX(gachaLists, gachaTypeNames):
     import xlsxwriter
     import time
-    import sys
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
@@ -181,8 +181,8 @@ def writeXLSX(gachaLists, gachaTypeNames):
         gachaList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
-        content_css = workbook.add_format({'align': 'left', "font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
-        title_css = workbook.add_format({'align': 'left', "font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
+        content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
+        title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
         excel_header = header.split(",")
         worksheet.set_column("A:A", 22)
