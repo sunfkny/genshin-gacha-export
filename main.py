@@ -145,13 +145,13 @@ def initGachaTypes():
     return gachaTypeIds, gachaTypeNames, gachaTypeDict
 
 
-def getGachaList(gachaInfo, gachaType):
+def getGachaList(gachaInfo, gachaTypeId):
     requests.packages.urllib3.disable_warnings()
     size = "20"
     # api限制一页最大20
     gachaList = []
     for page in range(1, 9999):
-        api = getApi(gachaType, size, page)
+        api = getApi(gachaTypeId, size, page)
         r = requests.get(api, verify=False)
         s = r.content.decode("utf-8")
         j = json.loads(s)
