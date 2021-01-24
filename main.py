@@ -82,7 +82,8 @@ size = "20"
 # api限制一页最大20
 for gacha_type in gacha_types:
     filename = "gacha" + gacha_type + ".csv"
-    f = open(filename, "w", encoding="UTF-8")
+    f = open(filename, "w", encoding="utf-8-sig")
+    # 带BOM防止乱码
     for page in range(1, 9999):
         api = getApi(gacha_type, size, page)
         r = requests.get(api, verify=False)
@@ -99,10 +100,4 @@ for gacha_type in gacha_types:
             print(info)
             f.write(info + "\n")
     f.close()
-    # 添加BOM防止乱码
-    with open(filename, encoding="utf-8") as f:
-        content = f.read()
-        if content != "":
-            content = "\ufeff" + content
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(content)
+
