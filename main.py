@@ -170,9 +170,10 @@ def writeCSV(gachaLists, gachaTypes):
 def writeXLSX(gachaLists, gachaTypeNames):
     import xlsxwriter
     import time
+    import sys
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    workbook = xlsxwriter.Workbook(f"gacha-{t}.xlsx")
+    workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
     for id in range(0, len(gachaTypeNames)):
         gachaList = gachaLists[id]
         gachaTypeName = gachaTypeNames[id]
