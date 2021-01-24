@@ -28,7 +28,7 @@ def main():
     print("合法")
 
     print("获取卡池信息", end="...")
-    gachaTypes = initGachaTypes()
+    gachaTypes, gachaTypeNames = initGachaTypes()
     gachaInfo = initGachaInfo()
     print("成功")
 
@@ -40,13 +40,13 @@ def main():
         print(f"{gachaType}", end=" ")
     print("")
 
-    print("写入文件...", end=" ")
+    print("写入文件", end="...")
     if FLAG_WRITE_CSV:
         writeCSV(gachaLists, gachaTypes)
         print(f"CSV", end=" ")
 
     if FLAG_WRITE_XLS:
-        writeXLSX(gachaLists, gachaTypes)
+        writeXLSX(gachaLists, gachaTypeNames)
         print(f"XLS", end=" ")
 
 
@@ -106,25 +106,27 @@ def getQueryVariable(variable):
 
 
 def initGachaInfo():
+    requests.packages.urllib3.disable_warnings()
     region = getQueryVariable("region")
     lang = getQueryVariable("lang")
     gachaInfoUrl = "https://webstatic.mihoyo.com/hk4e/gacha_info/{}/items/{}.json".format(region, lang)
     r = requests.get(gachaInfoUrl, verify=False)
     s = r.content.decode("utf-8")
     gachaInfo = json.loads(s)
-    # print(gachaInfo)
     return gachaInfo
 
 
 def initGachaTypes():
+    requests.packages.urllib3.disable_warnings()
     r = requests.get(url.replace("getGachaLog", "getConfigList"), verify=False)
     s = r.content.decode("utf-8")
     configList = json.loads(s)
     gachaTypes = []
+    gachaTypeNames = []
     for banner in configList["data"]["gacha_type_list"]:
         gachaTypes.append(banner["key"])
-    # print(gachaTypes)
-    return gachaTypes
+        gachaTypeNames.append(banner["name"])
+    return gachaTypes, gachaTypeNames
 
 
 def getGachaList(gachaInfo, gachaType):
@@ -161,18 +163,18 @@ def writeCSV(gachaLists, gachaTypes):
         f.close()
 
 
-def writeXLSX(gachaLists, gachaTypes):
+def writeXLSX(gachaLists, gachaTypeNames):
     import xlsxwriter
     import time
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"gacha-{t}.xlsx")
-    for id in range(len(gachaTypes)):
+    for id in range(0,len(gachaTypeNames)):
         gachaList = gachaLists[id]
-        gachaType = gachaTypes[id]
+        gachaTypeName=gachaTypeNames[id]
         gachaList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
-        worksheet = workbook.add_worksheet(gachaType)
+        worksheet = workbook.add_worksheet(gachaTypeName)
         border = workbook.add_format({"border_color": "#c4c2bf", "border": 1})
         title_css = workbook.add_format({"bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
