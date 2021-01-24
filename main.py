@@ -30,31 +30,32 @@ def main():
                 pass
         print("")
 
-    print("检查URL", end="...")
-    checkApi(url)
+    print("检查URL", end="...", flush=True)
+    global url
+    url = checkApi(url)
     print("合法")
 
-    print("获取卡池信息", end="...")
+    print("获取卡池信息", end="...", flush=True)
     gachaTypes, gachaTypeNames = initGachaTypes()
     gachaInfo = initGachaInfo()
     print("成功")
 
-    print("获取抽卡数据", end="...")
+    print("获取抽卡数据", end="...", flush=True)
     gachaLists = []
     for gachaType in gachaTypes:
         gachaList = getGachaList(gachaInfo, gachaType)
         gachaLists.append(gachaList)
-        print(f"{gachaType}", end=" ")
+        print(gachaType, end=" ", flush=True)
     print("")
 
-    print("写入文件", end="...")
+    print("写入文件", end="...", flush=True)
     if FLAG_WRITE_CSV:
         writeCSV(gachaLists, gachaTypes)
-        print(f"CSV", end=" ")
+        print("CSV", end=" ", flush=True)
 
     if FLAG_WRITE_XLS:
         writeXLSX(gachaLists, gachaTypeNames)
-        print(f"XLS", end=" ")
+        print("XLS", end=" ", flush=True)
 
 
 def getApi(gachaType, size, page):
