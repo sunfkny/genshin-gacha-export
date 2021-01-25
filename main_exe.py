@@ -39,9 +39,11 @@ class Addon(object):
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            # m.shutdown()
             print("从mitmproxy request进入main")
-            main(flow.request.url)
+            global url
+            url=flow.request.url
+            m.shutdown()
+            # main(flow.request.url)
 
     def response(self, flow):
         # examine response here
@@ -52,17 +54,17 @@ class Addon(object):
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            # m.shutdown()
+            m.shutdown()
             print("从mitmproxy request进入main")
-            main(flow.request.url)
+            url=flow.request.url
+            # main(flow.request.url)
 
 
 url = ""
 
 
-def main(api):
-    global url
-    url = api
+def main():
+
     print("检查URL", end="...", flush=True)
     if checkApi(url):
         try:
@@ -333,6 +335,7 @@ if __name__ == "__main__":
 
         print("开始捕获链接", end="...", flush=True)
         m.run()
+        main()
     except (KeyboardInterrupt, RuntimeError):
         print("")
         print("清除代理", end="...", flush=True)
