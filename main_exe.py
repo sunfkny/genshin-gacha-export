@@ -54,9 +54,10 @@ class Addon(object):
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            m.shutdown()
-            print("从mitmproxy request进入main")
+            print("从mitmproxy response进入main")
+            global url
             url=flow.request.url
+            m.shutdown()
             # main(flow.request.url)
 
 
