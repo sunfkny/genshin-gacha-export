@@ -13,6 +13,8 @@ from mitmproxy.options import Options
 from mitmproxy.proxy.config import ProxyConfig
 from mitmproxy.proxy.server import ProxyServer
 from mitmproxy.tools.dump import DumpMaster
+import asyncio
+import signal
 
 FLAG_WRITE_CSV = 0
 # 是否写入CSV
@@ -38,8 +40,8 @@ class Addon(object):
             # print(flow.request.url)
             print("成功")
             disableProxy()
-            main(flow.request.url)
             m.shutdown()
+            main(flow.request.url)
 
         # pass
 
@@ -281,20 +283,18 @@ def setProxy(enable, proxyIp, IgnoreIp):
 def enableProxy():
     proxyIP = "127.0.0.1:8889"
     IgnoreIp = "172.*;192.*;"
-    print("设置代理", end="...", flush=True)
     setProxy(1, proxyIP, IgnoreIp)
-    print("成功", flush=True)
 
 
 # 关闭清空代理
 def disableProxy():
-    print("清除代理", end="...", flush=True)
     setProxy(0, "", "")
-    print("成功", flush=True)
 
 
 if __name__ == "__main__":
-
+    print("设置代理", end="...", flush=True)
+    enableProxy()
+    print("成功", flush=True)
     options = Options(listen_host="0.0.0.0", listen_port=8889, http2=True)
     m = DumpMaster(options, with_termlog=False, with_dumper=False)
     config = ProxyConfig(options)
@@ -303,9 +303,33 @@ if __name__ == "__main__":
     m.addons.add(Addon())
 
     try:
-        # print('starting mitmproxy')
-        enableProxy()
+        loop = asyncio.get_event_loop()
+        try:
+            loop.add_signal_handler(signal.SIGINT, getattr(m, "prompt_for_exit", m.shutdown))
+            loop.add_signal_handler(signal.SIGTERM, m.shutdown)
+        except NotImplementedError:
+            pass
+
+        if os.name == "nt":
+            async def wakeup():
+                while True:
+                    await asyncio.sleep(0.2)
+            asyncio.ensure_future(wakeup())
+
         print("开始捕获链接", end="...", flush=True)
         m.run()
-    except KeyboardInterrupt:
-        m.shutdown()
+    except (KeyboardInterrupt, RuntimeError):
+        print("")
+        print("清除代理", end="...", flush=True)
+        disableProxy()
+        print("成功", flush=True)
+        # exit()
+    m.shutdown()
+
+    # try:
+    #     # print('starting mitmproxy')
+    #     enableProxy()
+    #     print("开始捕获链接", end="...", flush=True)
+    #     m.run()
+    # except KeyboardInterrupt:
+    #     m.shutdown()
