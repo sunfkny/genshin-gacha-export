@@ -40,6 +40,7 @@ class Addon(object):
             disableProxy()
             print("成功", flush=True)
             m.shutdown()
+            print("从mitmproxy request进入main")
             main(flow.request.url)
 
     def response(self, flow):
@@ -52,6 +53,7 @@ class Addon(object):
             disableProxy()
             print("成功", flush=True)
             m.shutdown()
+            print("从mitmproxy request进入main")
             main(flow.request.url)
 
 
@@ -63,25 +65,28 @@ def main(api):
     url = api
     print("检查URL", end="...", flush=True)
     if checkApi(url):
-        print("正常")
-        print("获取物品信息", end="...", flush=True)
-        gachaInfo = initGachaInfo()
-        print("物品数：" + str(len(gachaInfo)))
+        try:
+            print("正常")
+            print("获取物品信息", end="...", flush=True)
+            gachaInfo = initGachaInfo()
+            print("物品数：" + str(len(gachaInfo)))
 
-        print("获取卡池信息", end="...", flush=True)
-        gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
-        print(" ".join(gachaTypeNames))
-
-        print("获取抽卡数据", end="...", flush=True)
-        gachaLists = []
-        for gachaTypeId in gachaTypeIds:
-            if FLAG_SHOW_DETAIL:
-                print(gachaTypeDict[gachaTypeId])
-            gachaList = getGachaList(gachaInfo, gachaTypeId)
-            gachaLists.append(gachaList)
-            if not FLAG_SHOW_DETAIL:
-                print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
-        print("")
+            print("获取卡池信息", end="...", flush=True)
+            gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
+            print(" ".join(gachaTypeNames))
+            print(" ".join(gachaTypeIds))
+            print("获取抽卡数据", end="...", flush=True)
+            gachaLists = []
+            for gachaTypeId in gachaTypeIds:
+                if FLAG_SHOW_DETAIL:
+                    print(gachaTypeDict[gachaTypeId])
+                gachaList = getGachaList(gachaInfo, gachaTypeId)
+                gachaLists.append(gachaList)
+                if not FLAG_SHOW_DETAIL:
+                    print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
+            print("")
+        except TypeError:
+            print("信息获取模块TypeError")
 
         if FLAG_CLEAN:
             print("清除历史文件", end="...", flush=True)
@@ -214,6 +219,7 @@ def getGachaList(gachaInfo, gachaTypeId):
             gachaList.append(info)
             if FLAG_SHOW_DETAIL:
                 print(info)
+    print(gachaTypeId,"ok")
     return gachaList
 
 
@@ -332,3 +338,5 @@ if __name__ == "__main__":
         print("清除代理", end="...", flush=True)
         disableProxy()
         print("成功", flush=True)
+    except TypeError:
+        print("抓包模块出错TypeError")
