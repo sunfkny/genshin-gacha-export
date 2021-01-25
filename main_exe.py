@@ -77,7 +77,7 @@ def main(api):
 
     if FLAG_CLEAN:
         print("清除历史文件", end="...", flush=True)
-        gen_path=os.path.dirname(os.path.realpath(sys.argv[0]))
+        gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
         del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
         for del_path in del_paths:
             try:
@@ -310,11 +310,11 @@ if __name__ == "__main__":
         except NotImplementedError:
             pass
 
-        if os.name == "nt":
-            async def wakeup():
-                while True:
-                    await asyncio.sleep(0.2)
-            asyncio.ensure_future(wakeup())
+        async def wakeup():
+            while True:
+                await asyncio.sleep(0.2)
+
+        asyncio.ensure_future(wakeup())
 
         print("开始捕获链接", end="...", flush=True)
         m.run()
