@@ -32,18 +32,27 @@ class Addon(object):
 
     def request(self, flow):
         # examine request here
-        pass
-
-    def response(self, flow):
-        # examine response here
+        # pass
         if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
             # print(flow.request.url)
             print("成功")
+            print("清除代理", end="...", flush=True)
             disableProxy()
+            print("成功", flush=True)
             m.shutdown()
             main(flow.request.url)
 
+    def response(self, flow):
+        # examine response here
         # pass
+        if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
+            # print(flow.request.url)
+            print("成功")
+            print("清除代理", end="...", flush=True)
+            disableProxy()
+            print("成功", flush=True)
+            m.shutdown()
+            main(flow.request.url)
 
 
 url = ""
@@ -53,52 +62,53 @@ def main(api):
     global url
     url = api
     print("检查URL", end="...", flush=True)
-    checkApi(url)
-    print("正常")
+    if checkApi(url):
+        print("正常")
+        print("获取物品信息", end="...", flush=True)
+        gachaInfo = initGachaInfo()
+        print("物品数：" + str(len(gachaInfo)))
 
-    print("获取物品信息", end="...", flush=True)
-    gachaInfo = initGachaInfo()
-    print("物品数：" + str(len(gachaInfo)))
+        print("获取卡池信息", end="...", flush=True)
+        gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
+        print(" ".join(gachaTypeNames))
 
-    print("获取卡池信息", end="...", flush=True)
-    gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
-    print(" ".join(gachaTypeNames))
-
-    print("获取抽卡数据", end="...", flush=True)
-    gachaLists = []
-    for gachaTypeId in gachaTypeIds:
-        if FLAG_SHOW_DETAIL:
-            print(gachaTypeDict[gachaTypeId])
-        gachaList = getGachaList(gachaInfo, gachaTypeId)
-        gachaLists.append(gachaList)
-        if not FLAG_SHOW_DETAIL:
-            print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
-    print("")
-
-    if FLAG_CLEAN:
-        print("清除历史文件", end="...", flush=True)
-        gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-        del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
-        for del_path in del_paths:
-            try:
-                os.remove(gen_path + "\\" + del_path)
-                print(del_path, end=" ", flush=True)
-            except:
-                pass
+        print("获取抽卡数据", end="...", flush=True)
+        gachaLists = []
+        for gachaTypeId in gachaTypeIds:
+            if FLAG_SHOW_DETAIL:
+                print(gachaTypeDict[gachaTypeId])
+            gachaList = getGachaList(gachaInfo, gachaTypeId)
+            gachaLists.append(gachaList)
+            if not FLAG_SHOW_DETAIL:
+                print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
         print("")
 
-    print("写入文件", end="...", flush=True)
-    if FLAG_WRITE_CSV:
-        writeCSV(gachaLists, gachaTypeIds)
-        print("CSV", end=" ", flush=True)
+        if FLAG_CLEAN:
+            print("清除历史文件", end="...", flush=True)
+            gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+            del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
+            for del_path in del_paths:
+                try:
+                    os.remove(gen_path + "\\" + del_path)
+                    print(del_path, end=" ", flush=True)
+                except:
+                    pass
+            print("")
+        print("写入文件", end="...", flush=True)
+        if FLAG_WRITE_CSV:
+            writeCSV(gachaLists, gachaTypeIds)
+            print("CSV", end=" ", flush=True)
 
-    if FLAG_WRITE_XLS:
-        writeXLSX(gachaLists, gachaTypeNames)
-        print("XLS", end=" ", flush=True)
+        if FLAG_WRITE_XLS:
+            writeXLSX(gachaLists, gachaTypeNames)
+            print("XLS", end=" ", flush=True)
 
     print("")
-    print("执行完成，按任意键退出", end="...", flush=True)
-    input()
+    try:
+        print("执行完成，按任意键退出", end="...", flush=True)
+        input()
+    except KeyboardInterrupt:
+        pass
 
 
 def getApi(gachaType, size, page):
@@ -124,10 +134,10 @@ def getInfo(item_id, gachaInfo):
 def checkApi(url):
     if not url:
         print("未填入url")
-        exit()
+        return None
     if "getGachaLog" not in url:
         print("错误的url，检查是否包含getGachaLog")
-        exit()
+        return None
     try:
         # requests.packages.urllib3.disable_warnings()
         r = get(url, verify=True)
@@ -135,14 +145,13 @@ def checkApi(url):
         j = json.loads(s)
     except Exception as e:
         print("API请求解析出错：" + str(e))
-        exit()
-
+        return None
     if not j["data"]:
         if j["message"] == "authkey valid error":
             print("authkey错误，请重新抓包获取url")
         else:
             print("数据为空，错误代码：" + j["message"])
-        exit()
+        return None
     return url
 
 
@@ -323,13 +332,3 @@ if __name__ == "__main__":
         print("清除代理", end="...", flush=True)
         disableProxy()
         print("成功", flush=True)
-        # exit()
-    m.shutdown()
-
-    # try:
-    #     # print('starting mitmproxy')
-    #     enableProxy()
-    #     print("开始捕获链接", end="...", flush=True)
-    #     m.run()
-    # except KeyboardInterrupt:
-    #     m.shutdown()
