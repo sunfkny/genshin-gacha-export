@@ -39,7 +39,7 @@ class Addon(object):
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            m.shutdown()
+            # m.shutdown()
             print("从mitmproxy request进入main")
             main(flow.request.url)
 
@@ -52,7 +52,7 @@ class Addon(object):
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            m.shutdown()
+            # m.shutdown()
             print("从mitmproxy request进入main")
             main(flow.request.url)
 
