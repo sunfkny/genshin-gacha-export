@@ -2,97 +2,47 @@ import json
 import os
 import sys
 import time
-import urllib.parse
-import winreg
-
-# import requests
+from urllib.parse import urlencode, parse_qsl, urlparse
 from requests import get
-
-import xlsxwriter
-from mitmproxy.options import Options
-from mitmproxy.proxy.config import ProxyConfig
-from mitmproxy.proxy.server import ProxyServer
-from mitmproxy.tools.dump import DumpMaster
-import asyncio
-import signal
 
 FLAG_WRITE_CSV = 0
 # 是否写入CSV
-FLAG_WRITE_XLS = 1
+FLAG_WRITE_XLSX = 1
 # 是否写入EXCEL
 FLAG_SHOW_DETAIL = 0
 # 是否展示详情
 FLAG_CLEAN = 1
 # 是否清除历史文件
 
-
-class Addon(object):
-    def __init__(self):
-        pass
-
-    def request(self, flow):
-        # examine request here
-        # pass
-        if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
-            # print(flow.request.url)
-            print("成功")
-            print("清除代理", end="...", flush=True)
-            disableProxy()
-            print("成功", flush=True)
-            print("从mitmproxy request进入main")
-            global url
-            url=flow.request.url
-            m.shutdown()
-            # main(flow.request.url)
-
-    def response(self, flow):
-        # examine response here
-        # pass
-        if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
-            # print(flow.request.url)
-            print("成功")
-            print("清除代理", end="...", flush=True)
-            disableProxy()
-            print("成功", flush=True)
-            print("从mitmproxy response进入main")
-            global url
-            url=flow.request.url
-            m.shutdown()
-            # main(flow.request.url)
-
-
 url = ""
 
 
 def main():
+    try:
+        print("检查链接", end="...", flush=True)
+        if not checkApi(url):
+            pressAnyKeyExitWithDisableProxy()
+        print("正常")
+        print("物品信息", end="...", flush=True)
+        gachaInfo = initGachaInfo()
+        print("物品数：" + str(len(gachaInfo)))
 
-    print("检查URL", end="...", flush=True)
-    if checkApi(url):
-        try:
-            print("正常")
-            print("获取物品信息", end="...", flush=True)
-            gachaInfo = initGachaInfo()
-            print("物品数：" + str(len(gachaInfo)))
-
-            print("获取卡池信息", end="...", flush=True)
-            gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
-            print(" ".join(gachaTypeNames))
-            print(" ".join(gachaTypeIds))
-            print("获取抽卡数据", end="...", flush=True)
-            gachaLists = []
-            for gachaTypeId in gachaTypeIds:
-                if FLAG_SHOW_DETAIL:
-                    print(gachaTypeDict[gachaTypeId])
-                gachaList = getGachaList(gachaInfo, gachaTypeId)
-                gachaLists.append(gachaList)
-                if not FLAG_SHOW_DETAIL:
-                    print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
-            print("")
-        except TypeError:
-            print("信息获取模块TypeError")
+        print("卡池信息", end="...", flush=True)
+        gachaTypeIds, gachaTypeNames, gachaTypeDict = initGachaTypes()
+        print(" ".join(gachaTypeNames))
+        print("抽卡数据", end="...", flush=True)
+        gachaLists = []
+        for gachaTypeId in gachaTypeIds:
+            if FLAG_SHOW_DETAIL:
+                print(gachaTypeDict[gachaTypeId])
+            gachaList = getGachaList(gachaInfo, gachaTypeId)
+            gachaLists.append(gachaList)
+            if not FLAG_SHOW_DETAIL:
+                print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
+        print("")
 
         if FLAG_CLEAN:
-            print("清除历史文件", end="...", flush=True)
+            print("清除记录", end="...", flush=True)
             gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
             del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
             for del_path in del_paths:
@@ -107,26 +57,24 @@ def main():
             writeCSV(gachaLists, gachaTypeIds)
             print("CSV", end=" ", flush=True)
 
-        if FLAG_WRITE_XLS:
+        if FLAG_WRITE_XLSX:
             writeXLSX(gachaLists, gachaTypeNames)
-            print("XLS", end=" ", flush=True)
+            print("XLSX", end=" ", flush=True)
+        
+        pressAnyKeyExitWithDisableProxy()
 
-    print("")
-    try:
-        print("执行完成，按任意键退出", end="...", flush=True)
-        input()
     except KeyboardInterrupt:
-        pass
+        pressAnyKeyExitWithDisableProxy()
 
 
 def getApi(gachaType, size, page):
-    parsed = urllib.parse.urlparse(url)
-    querys = urllib.parse.parse_qsl(parsed.query)
+    parsed = urlparse(url)
+    querys = parse_qsl(parsed.query)
     param_dict = dict(querys)
     param_dict["size"] = size
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
-    param = urllib.parse.urlencode(param_dict)
+    param = urlencode(param_dict)
     path = url.split("?")[0]
     api = path + "?" + param
     return api
@@ -147,7 +95,6 @@ def checkApi(url):
         print("错误的url，检查是否包含getGachaLog")
         return None
     try:
-        # requests.packages.urllib3.disable_warnings()
         r = get(url, verify=True)
         s = r.content.decode("utf-8")
         j = json.loads(s)
@@ -173,7 +120,6 @@ def getQueryVariable(variable):
 
 
 def initGachaInfo():
-    # requests.packages.urllib3.disable_warnings()
     region = getQueryVariable("region")
     lang = getQueryVariable("lang")
     gachaInfoUrl = "https://webstatic.mihoyo.com/hk4e/gacha_info/{}/items/{}.json".format(region, lang)
@@ -184,7 +130,6 @@ def initGachaInfo():
 
 
 def initGachaTypes():
-    # requests.packages.urllib3.disable_warnings()
     r = get(url.replace("getGachaLog", "getConfigList"), verify=True)
     s = r.content.decode("utf-8")
     configList = json.loads(s)
@@ -202,7 +147,6 @@ def initGachaTypes():
 
 
 def getGachaList(gachaInfo, gachaTypeId):
-    # requests.packages.urllib3.disable_warnings()
     size = "20"
     # api限制一页最大20
     gachaList = []
@@ -222,7 +166,6 @@ def getGachaList(gachaInfo, gachaTypeId):
             gachaList.append(info)
             if FLAG_SHOW_DETAIL:
                 print(info)
-    print(gachaTypeId,"ok")
     return gachaList
 
 
@@ -238,6 +181,8 @@ def writeCSV(gachaLists, gachaTypes):
 
 
 def writeXLSX(gachaLists, gachaTypeNames):
+    import xlsxwriter
+
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"{gen_path}\\gacha-{t}.xlsx")
@@ -254,7 +199,6 @@ def writeXLSX(gachaLists, gachaTypeNames):
         worksheet.set_column("A:A", 22)
         worksheet.set_column("C:C", 14)
         for i in range(len(excel_col)):
-            # worksheet.write(f"{excel_col[i]}1", excel_header[i], border)
             worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
         idx = 0
         pdx = 0
@@ -267,14 +211,12 @@ def writeXLSX(gachaLists, gachaTypeNames):
             excel_data[4] = int(excel_data[4])
             for j in range(len(excel_col)):
                 worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], content_css)
-                # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j])
             if excel_data[4] == 5:
                 pdx = 0
 
         star_5 = workbook.add_format({"bg_color": "#ebebeb", "color": "#bd6932", "bold": True})
         star_4 = workbook.add_format({"bg_color": "#ebebeb", "color": "#a256e1", "bold": True})
         star_3 = workbook.add_format({"bg_color": "#ebebeb"})
-        # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
         worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
@@ -282,45 +224,60 @@ def writeXLSX(gachaLists, gachaTypeNames):
     workbook.close()
 
 
-xpath = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-
-# 设定代理,enable:是否开启,proxyIp:代理服务器ip及端口,IgnoreIp:忽略代理的ip或网址
 def setProxy(enable, proxyIp, IgnoreIp):
+    import winreg
+
+    xpath = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
     try:
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, xpath, 0, winreg.KEY_WRITE)
         winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, enable)
         winreg.SetValueEx(key, "ProxyServer", 0, winreg.REG_SZ, proxyIp)
         winreg.SetValueEx(key, "ProxyOverride", 0, winreg.REG_SZ, IgnoreIp)
     except Exception as e:
-        print("ERROR: " + str(e.args))
+        print("设置代理出错: " + str(e.args))
     finally:
         None
 
 
-# 开启，定义代理服务器ip及端口，忽略ip内容(分号分割)
 def enableProxy():
     proxyIP = "127.0.0.1:8889"
     IgnoreIp = "172.*;192.*;"
     setProxy(1, proxyIP, IgnoreIp)
 
 
-# 关闭清空代理
 def disableProxy():
     setProxy(0, "", "")
 
 
-if __name__ == "__main__":
-    print("设置代理", end="...", flush=True)
-    enableProxy()
-    print("成功", flush=True)
-    options = Options(listen_host="0.0.0.0", listen_port=8889, http2=True)
-    m = DumpMaster(options, with_termlog=False, with_dumper=False)
-    config = ProxyConfig(options)
+class Addon(object):
+    def __init__(self):
+        pass
 
-    m.server = ProxyServer(config)
-    m.addons.add(Addon())
+    def request(self, flow):
+        if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
+            global url
+            url = flow.request.url
+            m.shutdown()
+
+    def response(self, flow):
+        pass
+
+
+def capture():
+    from mitmproxy.options import Options
+    from mitmproxy.proxy.config import ProxyConfig
+    from mitmproxy.proxy.server import ProxyServer
+    from mitmproxy.tools.dump import DumpMaster
+    import asyncio
+    import signal
 
     try:
+        options = Options(listen_host="0.0.0.0", listen_port=8889, http2=True)
+        config = ProxyConfig(options)
+        global m
+        m = DumpMaster(options, with_termlog=False, with_dumper=False)
+        m.server = ProxyServer(config)
+        m.addons.add(Addon())
         loop = asyncio.get_event_loop()
         try:
             loop.add_signal_handler(signal.SIGINT, getattr(m, "prompt_for_exit", m.shutdown))
@@ -333,14 +290,44 @@ if __name__ == "__main__":
                 await asyncio.sleep(0.2)
 
         asyncio.ensure_future(wakeup())
-
-        print("开始捕获链接", end="...", flush=True)
         m.run()
-        main()
-    except (KeyboardInterrupt, RuntimeError):
-        print("")
-        print("清除代理", end="...", flush=True)
-        disableProxy()
-        print("成功", flush=True)
+    except KeyboardInterrupt:
+        pressAnyKeyExitWithDisableProxy()
     except TypeError:
-        print("抓包模块出错TypeError")
+        pass
+    except Exception as e:
+        print("抓包模块出错:", e)
+
+
+def pressAnyKeyExitWithDisableProxy(msg="执行结束，按任意键退出"):
+    from sys import exit
+    print("")
+    print(msg, end="...", flush=True)
+    try:
+        disableProxy()
+        input()
+    except:
+        pass
+    exit()
+
+
+if __name__ == "__main__":
+    try:
+        if not url:
+            print("设置代理", end="...", flush=True)
+            enableProxy()
+            print("成功", flush=True)
+
+            m = None
+            print("捕获链接", end="...", flush=True)
+            capture()
+            print("成功")
+
+            print("清除代理", end="...", flush=True)
+            disableProxy()
+            print("成功", flush=True)
+
+        main()
+
+    except KeyboardInterrupt:
+        pressAnyKeyExitWithDisableProxy()
