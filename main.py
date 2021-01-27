@@ -47,6 +47,7 @@ def main():
         if not FLAG_SHOW_DETAIL:
             print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
+    
     print("==========抽卡统计报告==========", flush=True)
     getGachaStatistics(gachaLists, gachaTypeNames)
 
@@ -88,13 +89,15 @@ def getGachaStatistics(gachaLists, gachaTypeNames):
         df['gau5Count'] = df['count']                       ## 五星保底数
         i = 0
         gau5Count = []
-
         if len(star5Count) > 0:
-            for i in range(len(star5Count) - 1):
-                df['gau5Count'] = df['gau5Count'].apply(lambda x: x - star5Count[i] if (x > star5Count[i] and x <= star5Count[i+1]) else x)
-                gau5Count.append(star5Count[i+1] - star5Count[i])
-            df['gau5Count'] = df['gau5Count'].apply(lambda x: x - star5Count[-1] if x > star5Count[-1] else x)
+            gau5Count.append(star5Count[0] + 1)     ## index start from 0
 
+            for i in range(len(star5Count) - 1):
+                df['gau5Count'] = df['gau5Count'].apply(lambda x: x - (star5Count[i]+1) if (x > (star5Count[i]+1) and x <= (star5Count[i+1]+1)) else x)
+                gau5Count.append(star5Count[i+1] - star5Count[i])
+            
+            df['gau5Count'] = df['gau5Count'].apply(lambda x: x - (star5Count[-1]+1) if x > (star5Count[-1]+1) else x)
+            
         if len(gau5Count) > 0:
             out = template.format(gachaTypeName, len(gau5Count), round(statistics.mean(gau5Count)), min(gau5Count), max(gau5Count))
         else:
@@ -102,6 +105,9 @@ def getGachaStatistics(gachaLists, gachaTypeNames):
         
         ## 祈愿分类报告
         print(out, flush=True)
+        # print("保底详情", df[df['star'] == 5])
+        # print("保底数", gau5Count)
+        df.to_csv("{}.csv".format(id))
 
         collection_all += gau5Count
     
