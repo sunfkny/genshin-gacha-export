@@ -107,7 +107,7 @@ def getGachaStatistics(gachaLists, gachaTypeNames):
         print(out, flush=True)
         # print("保底详情", df[df['star'] == 5])
         # print("保底数", gau5Count)
-        df.to_csv("{}.csv".format(id))
+        # df.to_csv("{}.csv".format(id))
 
         collection_all += gau5Count
     
