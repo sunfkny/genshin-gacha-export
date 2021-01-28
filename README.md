@@ -8,7 +8,6 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
  - 导出抽卡记录为带格式的excel表格
  - 可选导出csv
  - exe版无需fiddler和python环境
- - todo 导出统计
 
 ## 其他信息
 
