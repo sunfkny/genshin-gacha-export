@@ -5,6 +5,7 @@ import sys
 
 import pandas as pd
 import statistics
+import copy
 
 url = ""
 
@@ -49,7 +50,7 @@ def main():
     print("")
     
     print("==========抽卡统计报告==========", flush=True)
-    getGachaStatistics(gachaLists, gachaTypeNames)
+    getGachaStatistics(gachaLists, gachaTypeNames)      ## 传入后reverse为时间升序（用于保底统计）
 
     if FLAG_CLEAN:
         print("清除历史文件", end="...", flush=True)
@@ -66,18 +67,18 @@ def main():
         
     print("写入文件", end="...", flush=True)
     if FLAG_WRITE_CSV:
-        writeCSV(gachaLists, gachaTypeIds)
+        writeCSV(gachaLists, gachaTypeIds)      ## 时间降序
         print("CSV", end=" ", flush=True)
 
     if FLAG_WRITE_XLS:
-        writeXLSX(gachaLists, gachaTypeNames)
+        writeXLSX(gachaLists, gachaTypeNames)       ## 传入后reverse为时间升序（用于保底统计）
         print("XLS", end=" ", flush=True)
 
 
 def getGachaStatistics(gachaLists, gachaTypeNames):
     collection_all = []
     for id in range(len(gachaLists)):
-        gachaList = gachaLists[id]
+        gachaList = copy.deepcopy(gachaLists[id])
         gachaTypeName = gachaTypeNames[id]
         gachaList.reverse()
         splitList = [x.split(',') for x in gachaList]
@@ -243,7 +244,7 @@ def writeXLSX(gachaLists, gachaTypeNames):
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
     for id in range(0, len(gachaTypeNames)):
-        gachaList = gachaLists[id]
+        gachaList = copy.deepcopy(gachaLists[id])
         gachaTypeName = gachaTypeNames[id]
         gachaList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
