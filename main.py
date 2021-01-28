@@ -2,27 +2,21 @@ import json
 import requests
 import urllib.parse
 import sys
-
-import pandas as pd
-import statistics
 import copy
 
 url = ""
 
 FLAG_WRITE_CSV = 0
 # 是否写入CSV
-FLAG_WRITE_XLS = 1
+FLAG_WRITE_XLSX = 1
 # 是否写入EXCEL
 FLAG_SHOW_DETAIL = 0
 # 是否展示详情
 FLAG_CLEAN = 1
 # 是否清除历史文件
+FLAG_SHOW_REPORT = 1
+# 是否显示抽卡统计报告
 
-template = """---------{}---------
-五星数量：{}
-平均出货：{}
-最欧的一次：{}
-最非的一次：{}"""
 
 def main():
 
@@ -48,9 +42,10 @@ def main():
         if not FLAG_SHOW_DETAIL:
             print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
-    
-    print("==========抽卡统计报告==========", flush=True)
-    getGachaStatistics(gachaLists, gachaTypeNames)      ## 传入后reverse为时间升序（用于保底统计）
+
+    if FLAG_SHOW_REPORT:
+        print("==========抽卡统计报告==========", flush=True)
+        getGachaStatistics(gachaLists, gachaTypeNames)  ## 传入后reverse为时间升序（用于保底统计）
 
     if FLAG_CLEAN:
         print("清除历史文件", end="...", flush=True)
@@ -64,46 +59,51 @@ def main():
             except:
                 pass
         print("")
-        
+
     print("写入文件", end="...", flush=True)
     if FLAG_WRITE_CSV:
-        writeCSV(gachaLists, gachaTypeIds)      ## 时间降序
+        writeCSV(gachaLists, gachaTypeIds)  ## 时间降序
         print("CSV", end=" ", flush=True)
 
-    if FLAG_WRITE_XLS:
-        writeXLSX(gachaLists, gachaTypeNames)       ## 传入后reverse为时间升序（用于保底统计）
-        print("XLS", end=" ", flush=True)
+    if FLAG_WRITE_XLSX:
+        writeXLSX(gachaLists, gachaTypeNames)  ## 传入后reverse为时间升序（用于保底统计）
+        print("XLSX", end=" ", flush=True)
 
 
 def getGachaStatistics(gachaLists, gachaTypeNames):
+    import pandas as pd
+    import statistics
+    gachaReportTemplate = """---------{}---------\n五星数量：{}\n五星百分比占比：{}\n平均出货：{}\n最欧的一次：{}\n最非的一次：{}"""
     collection_all = []
+    totalGachaNum = 0
     for id in range(len(gachaLists)):
         gachaList = copy.deepcopy(gachaLists[id])
+        totalGachaNum+=len(gachaList)
         gachaTypeName = gachaTypeNames[id]
         gachaList.reverse()
-        splitList = [x.split(',') for x in gachaList]
-        df = pd.DataFrame(splitList, columns=['time', 'id', 'name', 'class', 'star'])
-        df['count'] = pd.Series(list(range(1, df.shape[0]+1)))
-        df['id'] = pd.to_numeric(df["id"])
-        df['star'] = pd.to_numeric(df["star"])
-        star5Count = df[df['star'] == 5].index.tolist()     ## 遇到五星时的总抽数
-        df['gau5Count'] = df['count']                       ## 五星保底数
+        splitList = [x.split(",") for x in gachaList]
+        df = pd.DataFrame(splitList, columns=["time", "id", "name", "class", "star"])
+        df["count"] = pd.Series(list(range(1, df.shape[0] + 1)))
+        df["id"] = pd.to_numeric(df["id"])
+        df["star"] = pd.to_numeric(df["star"])
+        star5Count = df[df["star"] == 5].index.tolist()  ## 遇到五星时的总抽数
+        df["gau5Count"] = df["count"]  ## 五星保底数
         i = 0
         gau5Count = []
         if len(star5Count) > 0:
-            gau5Count.append(star5Count[0] + 1)     ## index start from 0
+            gau5Count.append(star5Count[0] + 1)  ## index start from 0
 
             for i in range(len(star5Count) - 1):
-                df['gau5Count'] = df['gau5Count'].apply(lambda x: x - (star5Count[i]+1) if (x > (star5Count[i]+1) and x <= (star5Count[i+1]+1)) else x)
-                gau5Count.append(star5Count[i+1] - star5Count[i])
-            
-            df['gau5Count'] = df['gau5Count'].apply(lambda x: x - (star5Count[-1]+1) if x > (star5Count[-1]+1) else x)
-            
+                df["gau5Count"] = df["gau5Count"].apply(lambda x: x - (star5Count[i] + 1) if (x > (star5Count[i] + 1) and x <= (star5Count[i + 1] + 1)) else x)
+                gau5Count.append(star5Count[i + 1] - star5Count[i])
+
+            df["gau5Count"] = df["gau5Count"].apply(lambda x: x - (star5Count[-1] + 1) if x > (star5Count[-1] + 1) else x)
+
         if len(gau5Count) > 0:
-            out = template.format(gachaTypeName, len(gau5Count), round(statistics.mean(gau5Count)), min(gau5Count), max(gau5Count))
+            out = gachaReportTemplate.format(gachaTypeName, len(gau5Count), str(round(len(gau5Count) / len(splitList) * 100, 4)) + "%", round(statistics.mean(gau5Count)), min(gau5Count), max(gau5Count))
         else:
             out = "---------{}---------\n尚未获得五星".format(gachaTypeName)
-        
+
         ## 祈愿分类报告
         print(out, flush=True)
         # print("保底详情", df[df['star'] == 5])
@@ -111,13 +111,14 @@ def getGachaStatistics(gachaLists, gachaTypeNames):
         # df.to_csv("{}.csv".format(id))
 
         collection_all += gau5Count
-    
-    report_all = template.format("合计", len(collection_all), round(statistics.mean(collection_all)), min(collection_all), max(collection_all))
+
+    report_all = gachaReportTemplate.format("合计", len(collection_all), str(round(len(collection_all) / totalGachaNum * 100, 4)) + "%", round(statistics.mean(collection_all)), min(collection_all), max(collection_all))
 
     ## 祈愿总计报告
     print(report_all, flush=True)
-    
+    print("==========统计报告结束==========")
     return
+
 
 def getApi(gachaType, size, page):
     parsed = urllib.parse.urlparse(url)
