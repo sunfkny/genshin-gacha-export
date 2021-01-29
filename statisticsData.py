@@ -71,6 +71,8 @@ Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/su
         numS5 = len(gachaS5Data)
         numS4 = len(gachaS4Data)
         numS3 = len(gachaS3Data)
+        if not (numS5+numS4+numS3):
+            continue
         total = len(gachaLog[gechaType])
         gachaS5DataStatistics = {}
         for i in gachaInfo:
