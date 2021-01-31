@@ -14,9 +14,9 @@ c.setKey("FLAG_SHOW_REPORT", True)
 c.setKey("FLAG_WRITE_XLSX", True)
 
 
-activate = ".\\venv\Scripts\\activate.bat"
+activate = ".\\venv\\Scripts\\activate.bat"
 # os.system(activate)
-pyinstaller = "pyinstaller.exe -w .\main.spec"
+pyinstaller = ".\\venv\\Scripts\\pyinstaller.exe -w .\main.spec"
 # os.system(pyinstaller)
 os.system(activate + "&&" + pyinstaller)
 print("编译完成")
