@@ -24,7 +24,6 @@ def main():
         print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
 
-            
     uid_flag = 1
     for gachaType in gachaData["gachaLog"]:
         for log in gachaData["gachaLog"][gachaType]:
@@ -52,16 +51,15 @@ def main():
                 pass
         print("")
 
-
     if s.getKey("FLAG_WRITE_XLSX"):
         import writeXLSX
+
         writeXLSX.main()
 
     if s.getKey("FLAG_SHOW_REPORT"):
         import statisticsData
-        statisticsData.main()
-    
 
+        statisticsData.main()
 
 
 def getGachaTypes():
@@ -238,8 +236,12 @@ def capture():
 if __name__ == "__main__":
     global url
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    s = Config(gen_path+"\\config.json")
-
+    s = Config(gen_path + "\\config.json")
+    latest = "https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export@main/verison.txt"
+    latestVerison = requests.get(latest).text
+    verison = s.getKey("verison")
+    if verison != latestVerison:
+        print(f"当前版本{verison}不是最新，请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
 
     print("检查配置文件中的链接", end="...", flush=True)
     url = s.getKey("url")
@@ -249,7 +251,7 @@ if __name__ == "__main__":
         main()
         pressAnyKeyExitWithDisableProxy()
     else:
-        FLAG_MANUAL_INPUT_URL =s.getKey("FLAG_MANUAL_INPUT_URL")
+        FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
 
         while FLAG_MANUAL_INPUT_URL:
             try:
@@ -261,7 +263,7 @@ if __name__ == "__main__":
                     if not checkApi(url):
                         pressAnyKeyExitWithDisableProxy()
                     print("合法")
-                    FLAG_MANUAL_INPUT_URL=False
+                    FLAG_MANUAL_INPUT_URL = False
                     main()
                     pressAnyKeyExitWithDisableProxy()
             except Exception:
