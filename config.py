@@ -13,9 +13,8 @@ class Config:
             self.setting = json.loads(f.read())
             f.close()
         except:
-            f = open(path, "w", encoding="utf-8")
-            f.write("{}")
-            f.close()
+            print("配置文件出错, 请重新下载")
+            exit()
 
     def setKey(self, key, value=None):
         self.setting[key] = value

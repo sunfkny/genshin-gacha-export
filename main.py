@@ -192,7 +192,6 @@ class Addon(object):
         if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
             global url
             url = flow.request.url
-            s = Config()
             s.setKey("url", url)
             m.shutdown()
 
@@ -238,10 +237,11 @@ def capture():
 
 if __name__ == "__main__":
     global url
-
-    print("检查配置文件中的链接", end="...", flush=True)
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path+"\\config.json")
+
+
+    print("检查配置文件中的链接", end="...", flush=True)
     url = s.getKey("url")
 
     if checkApi(url):
@@ -249,6 +249,23 @@ if __name__ == "__main__":
         main()
         pressAnyKeyExitWithDisableProxy()
     else:
+        FLAG_MANUAL_INPUT_URL =s.getKey("FLAG_MANUAL_INPUT_URL")
+
+        while FLAG_MANUAL_INPUT_URL:
+            try:
+                url = input("输入url: ")
+                if not checkApi(url):
+                    continue
+                else:
+                    print("检查链接", end="...", flush=True)
+                    if not checkApi(url):
+                        pressAnyKeyExitWithDisableProxy()
+                    print("合法")
+                    FLAG_MANUAL_INPUT_URL=False
+                    main()
+                    pressAnyKeyExitWithDisableProxy()
+            except Exception:
+                continue
         try:
             print("设置代理", end="...", flush=True)
             enableProxy()
@@ -267,7 +284,7 @@ if __name__ == "__main__":
             if not checkApi(url):
                 pressAnyKeyExitWithDisableProxy()
             print("合法")
-            
+
             main()
             pressAnyKeyExitWithDisableProxy()
 
