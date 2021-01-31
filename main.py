@@ -3,20 +3,10 @@ import requests
 import urllib.parse
 import os
 import sys
-
-
-url=""
+from config import Config
 
 
 def main():
-
-    print("检查链接", end="...", flush=True)
-    checkApi(url)
-    print("合法")
-    # gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    # with open(f"{gen_path}\\url.txt", "w", encoding="utf-8") as f:
-    #     f.write(url)
-
 
     print("获取抽卡记录", end="...", flush=True)
     gachaInfo = getGachaInfo()
@@ -34,6 +24,7 @@ def main():
         print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
     print("")
 
+            
     uid_flag = 1
     for gachaType in gachaData["gachaLog"]:
         for log in gachaData["gachaLog"][gachaType]:
@@ -43,12 +34,34 @@ def main():
             # del log["uid"]
             # del log["count"]
             # del log["gacha_type"]
-
     print("写入文件", end="...", flush=True)
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
         f.write(str(gachaData).replace("'", '"'))
-    print("完成", flush=True)
+    print("JSON", flush=True)
+
+    if s.getKey("FLAG_CLEAN"):
+        print("清除记录", end="...", flush=True)
+        gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+        del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
+        for del_path in del_paths:
+            try:
+                os.remove(gen_path + "\\" + del_path)
+                print(del_path, end=" ", flush=True)
+            except:
+                pass
+        print("")
+
+
+    if s.getKey("FLAG_WRITE_XLSX"):
+        import writeXLSX
+        writeXLSX.main()
+
+    if s.getKey("FLAG_SHOW_REPORT"):
+        import statisticsData
+        statisticsData.main()
+    
+
 
 
 def getGachaTypes():
@@ -92,26 +105,26 @@ def getApi(gachaType, size, page):
 
 def checkApi(url):
     if not url:
-        print("未填入url")
-        exit()
+        print("url为空")
+        return False
     if "getGachaLog" not in url:
         print("错误的url，检查是否包含getGachaLog")
-        exit()
+        return False
     try:
         r = requests.get(url)
         s = r.content.decode("utf-8")
         j = json.loads(s)
     except Exception as e:
         print("API请求解析出错：" + str(e))
-        exit()
+        return False
 
     if not j["data"]:
         if j["message"] == "authkey valid error":
-            print("authkey错误，请重新抓包获取url")
+            print("authkey错误")
         else:
             print("数据为空，错误代码：" + j["message"])
-        exit()
-    return url
+        return False
+    return True
 
 
 def getQueryVariable(variable):
@@ -179,6 +192,8 @@ class Addon(object):
         if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
             global url
             url = flow.request.url
+            s = Config()
+            s.setKey("url", url)
             m.shutdown()
 
     def response(self, flow):
@@ -222,8 +237,19 @@ def capture():
 
 
 if __name__ == "__main__":
-    try:
-        if not url:
+    global url
+
+    print("检查配置文件中的链接", end="...", flush=True)
+    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    s = Config(gen_path+"\\config.json")
+    url = s.getKey("url")
+
+    if checkApi(url):
+        print("合法")
+        main()
+        pressAnyKeyExitWithDisableProxy()
+    else:
+        try:
             print("设置代理", end="...", flush=True)
             enableProxy()
             print("成功", flush=True)
@@ -237,13 +263,13 @@ if __name__ == "__main__":
             disableProxy()
             print("成功", flush=True)
 
-        main()
-        import statisticsData
-        statisticsData.main()
-        import writeXLSX
-        writeXLSX.main()
+            print("检查链接", end="...", flush=True)
+            if not checkApi(url):
+                pressAnyKeyExitWithDisableProxy()
+            print("合法")
+            
+            main()
+            pressAnyKeyExitWithDisableProxy()
 
-        pressAnyKeyExitWithDisableProxy()
-
-    except KeyboardInterrupt:
-        pressAnyKeyExitWithDisableProxy()
+        except KeyboardInterrupt:
+            pressAnyKeyExitWithDisableProxy()
