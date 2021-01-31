@@ -7,7 +7,7 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
  - 自动抓包本机api请求
  - 记录历史url，如果可用无需重新抓包
  - 导出抽卡记录为带格式的excel表格
- - 展示抽卡报告
+ - 展示抽卡报告 [抽卡报告预览](抽卡报告.md)
  - 清除历史生成的excel表格
  - 可选手动输入url
  - exe版无需fiddler和python环境
