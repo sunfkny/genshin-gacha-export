@@ -10,7 +10,7 @@ c = Config(".\\dist\\config.json")
 c.setKey("verison", verison)
 c.setKey("url","")
 c.setKey("FLAG_MANUAL_INPUT_URL", False)
-c.setKey("FLAG_CLEAN", True)
+c.setKey("FLAG_CLEAN", False)
 c.setKey("FLAG_SHOW_REPORT", True)
 c.setKey("FLAG_WRITE_XLSX", True)
 
