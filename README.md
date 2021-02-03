@@ -2,6 +2,8 @@
 
 NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
+## 悲报
+1.3版本更新后api只能获取**一个月历史记录**
 
 ## 功能
 
