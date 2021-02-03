@@ -29,7 +29,7 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
 ```
 {
-    "FLAG_CLEAN":true,
+    "FLAG_CLEAN":false,
     "FLAG_SHOW_REPORT":true,
     "FLAG_WRITE_XLSX":true,
     "FLAG_MANUAL_INPUT_URL":false,
