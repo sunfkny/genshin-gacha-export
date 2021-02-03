@@ -30,18 +30,18 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 ```
 {
     "FLAG_CLEAN":false,
+    "FLAG_MANUAL_INPUT_URL":false,
     "FLAG_SHOW_REPORT":true,
     "FLAG_WRITE_XLSX":true,
-    "FLAG_MANUAL_INPUT_URL":false,
     "url":""
 }
 ```
 | 配置名称              | 含义                   | 类型 | 默认值 |
 | --------------------- | ---------------------- | ---- | ------ |
-| FLAG_CLEAN            | 清除历史生成的excel表格 | bool | true   |
-| FLAG_SHOW_REPORT      | 展示抽卡报告           | bool | true   |
-| FLAG_WRITE_XLSX       | 生成抽卡记录excel表格 | bool | false   |
+| FLAG_CLEAN            | 清除历史生成的excel表格 | bool | false   |
 | FLAG_MANUAL_INPUT_URL | 手动输入url            | bool | false  |
+| FLAG_SHOW_REPORT      | 展示抽卡报告           | bool | true   |
+| FLAG_WRITE_XLSX       | 生成抽卡记录excel表格 | bool |  true  |
 | url                   | 抓包获取的getGachaLog  | str  |        |
 
 
