@@ -9,14 +9,14 @@ from config import Config
 def main():
 
     print("获取抽卡记录", end="...", flush=True)
-    gachaInfo = getGachaInfo()
+    # gachaInfo = getGachaInfo()
     gachaTypes = getGachaTypes()
     gachaTypeIds = [banner["key"] for banner in gachaTypes]
     gachaTypeNames = [banner["name"] for banner in gachaTypes]
     gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
     gachaData = {}
     gachaData["gachaType"] = gachaTypes
-    gachaData["gachaInfo"] = gachaInfo
+    # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
     for gachaTypeId in gachaTypeIds:
         gachaLog = getGachaLogs(gachaTypeId)

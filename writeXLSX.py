@@ -89,7 +89,7 @@ def main():
     global gachaTypeReverseDict
 
     uid = j["uid"]
-    gachaInfo = j["gachaInfo"]
+    # gachaInfo = j["gachaInfo"]
     gachaTypes = j["gachaType"]
     gachaLog = j["gachaLog"]
     gachaTypeIds = [banner["key"] for banner in gachaTypes]
