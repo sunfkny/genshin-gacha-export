@@ -39,7 +39,7 @@ def main():
     global gachaTypeReverseDict
 
     uid = j["uid"]
-    gachaInfo = j["gachaInfo"]
+    # gachaInfo = j["gachaInfo"]
     gachaTypes = j["gachaType"]
     gachaLog = j["gachaLog"]
     gachaTypeIds = [banner["key"] for banner in gachaTypes]
@@ -80,20 +80,35 @@ Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/su
             continue
         total = len(gachaLog[gechaType])
         gachaS5DataStatistics = {}
-        for i in gachaInfo:
-            gachaS5DataStatistics[i["name"]] = 0
-        for s in gachaS5Data:
-            gachaS5DataStatistics[s[2]] += 1
+        # for i in gachaInfo:
+        #     gachaS5DataStatistics[i["name"]] = 0
+        # for s in gachaS5Data:
+        #     gachaS5DataStatistics[s[2]] += 1
+        for i in gachaS5Data:
+            if i[2] in gachaS5DataStatistics:
+                gachaS5DataStatistics[i[2]] += 1
+            else:
+                gachaS5DataStatistics[i[2]] = 1
         gachaS4DataStatistics = {}
-        for i in gachaInfo:
-            gachaS4DataStatistics[i["name"]] = 0
-        for s in gachaS4Data:
-            gachaS4DataStatistics[s[2]] += 1
+        # for i in gachaInfo:
+        #     gachaS4DataStatistics[i["name"]] = 0
+        # for s in gachaS4Data:
+        #     gachaS4DataStatistics[s[2]] += 1
+        for i in gachaS4Data:
+            if i[2] in gachaS4DataStatistics:
+                gachaS4DataStatistics[i[2]] += 1
+            else:
+                gachaS4DataStatistics[i[2]] = 1
         gachaS3DataStatistics = {}
-        for i in gachaInfo:
-            gachaS3DataStatistics[i["name"]] = 0
-        for s in gachaS3Data:
-            gachaS3DataStatistics[s[2]] += 1
+        # for i in gachaInfo:
+        #     gachaS3DataStatistics[i["name"]] = 0
+        # for s in gachaS3Data:
+        #     gachaS3DataStatistics[s[2]] += 1
+        for i in gachaS3Data:
+            if i[2] in gachaS3DataStatistics:
+                gachaS3DataStatistics[i[2]] += 1
+            else:
+                gachaS3DataStatistics[i[2]] = 1
 
         gachaName = gachaTypeDict[gechaType]
         gachaS5Info = ""
