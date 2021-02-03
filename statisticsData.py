@@ -59,9 +59,14 @@ Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/su
         gachaS4Data = []
         gachaS3Data = []
         for gacha in gachaLog[gechaType]:
-            item_id = gacha["item_id"]
+            # item_id = gacha["item_id"]
+            # time = gacha["time"]
+            # name, item_type, rank_type = getInfoByItemId(item_id)
             time = gacha["time"]
-            name, item_type, rank_type = getInfoByItemId(item_id)
+            item_id="0"
+            name=gacha["name"]
+            item_type=gacha["item_type"]
+            rank_type=gacha["rank_type"]
             if rank_type == "5":
                 gachaS5Data.append([time, item_id, name, item_type, rank_type])
             if rank_type == "4":
@@ -76,19 +81,19 @@ Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/su
         total = len(gachaLog[gechaType])
         gachaS5DataStatistics = {}
         for i in gachaInfo:
-            gachaS5DataStatistics[i["item_id"]] = 0
+            gachaS5DataStatistics[i["name"]] = 0
         for s in gachaS5Data:
-            gachaS5DataStatistics[s[1]] += 1
+            gachaS5DataStatistics[s[2]] += 1
         gachaS4DataStatistics = {}
         for i in gachaInfo:
-            gachaS4DataStatistics[i["item_id"]] = 0
+            gachaS4DataStatistics[i["name"]] = 0
         for s in gachaS4Data:
-            gachaS4DataStatistics[s[1]] += 1
+            gachaS4DataStatistics[s[2]] += 1
         gachaS3DataStatistics = {}
         for i in gachaInfo:
-            gachaS3DataStatistics[i["item_id"]] = 0
+            gachaS3DataStatistics[i["name"]] = 0
         for s in gachaS3Data:
-            gachaS3DataStatistics[s[1]] += 1
+            gachaS3DataStatistics[s[2]] += 1
 
         gachaName = gachaTypeDict[gechaType]
         gachaS5Info = ""
@@ -96,16 +101,13 @@ Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/su
         gachaS3Info = ""
         for k, v in gachaS5DataStatistics.items():
             if v:
-                name, item_type, rank_type = getInfoByItemId(k)
-                gachaS5Info += f"  {rank_type}星{item_type}  {name}  数量:{v}\n"
+                gachaS5Info+=f"{k} {v}\n"
         for k, v in gachaS4DataStatistics.items():
             if v:
-                name, item_type, rank_type = getInfoByItemId(k)
-                gachaS4Info += f"  {rank_type}星{item_type}  {name}  数量:{v}\n"
+                gachaS4Info+=f"{k} {v}\n"
         for k, v in gachaS3DataStatistics.items():
             if v:
-                name, item_type, rank_type = getInfoByItemId(k)
-                gachaS3Info += f"  {rank_type}星{item_type}  {name}  数量:{v}\n"
+                gachaS3Info+=f"{k} {v}\n"
 
         gachaTable = f"""| 星级 | 数量 | 占比   |
 | ---- | ---- | -------- |
