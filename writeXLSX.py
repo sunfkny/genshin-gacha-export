@@ -44,9 +44,13 @@ def writeXLSX(gachaLog, gachaTypeIds):
         pdx = 0
         i=0
         for gacha in gachaDictList:
-            item_id = gacha["item_id"]
+            # item_id = gacha["item_id"]
             time = gacha["time"]
-            name, item_type, rank_type = getInfoByItemId(item_id)
+            # name, item_type, rank_type = getInfoByItemId(item_id)
+            item_id="0"
+            name=gacha["name"]
+            item_type=gacha["item_type"]
+            rank_type=gacha["rank_type"]
             idx = idx + 1
             pdx = pdx + 1
             excel_data = [time, item_id, name, item_type, rank_type, idx, pdx]
