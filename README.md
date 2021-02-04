@@ -1,6 +1,10 @@
 # 原神抽卡记录导出
 
-NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
+NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616  
+
+抽卡记录分析工具 from [@笑沐泽](https://bbs.nga.cn/read.php?tid=25004616&page=16#pid491033187Anchor)  
+https://voderl.github.io/genshin-gacha-analyzer/
+
 
 ## 悲报
 1.3版本更新后api只能获取 ~~**一个月历史记录**~~ 改成6个月了
@@ -18,12 +22,17 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
 
 ## 使用方法
+- 读取日志文件模式：
 
-[视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea/)  
-**运行之前务必先关闭第三方代理、加速器否则会抓不到**
- - 解压并运行 genshin-gacha-export.exe
- - 打开游戏-祈愿-历史记录
- - 等待程序获取数据生成表格和抽卡报告
+    - 只需要最近打开过抽卡记录页面直接运行即可，无需运行游戏
+
+- 抓包模式：
+
+    - [视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea/)  
+    - **运行之前务必先关闭第三方代理、加速器否则会抓不到**
+    - 解压并运行 genshin-gacha-export.exe  
+    - 打开游戏-祈愿-历史记录  
+    - 等待程序获取数据生成表格和抽卡报告  
 
 
 ## 配置文件 config.json
@@ -68,5 +77,5 @@ v1.1.8：配置文件添加手动输入选项，默认关闭
 v1.1.9：增加版本更新提示  
 v1.1.10：适配1.3  
 v1.1.11：修复新物品导致的出错  
-v1.1.12：新增使用原神客户端日志中的url
+v1.1.12：新增使用原神客户端日志中的url  
 v1.1.13：适配外服日志文件
