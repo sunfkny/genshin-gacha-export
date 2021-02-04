@@ -36,6 +36,7 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
     "FLAG_USE_LOG_URL":true,
     "FLAG_USE_CONFIG_URL":true,
     "FLAG_WRITE_XLSX":true,
+    "FLAG_USE_CAPTURE":true,
     "url":""
 }
 ```
@@ -47,6 +48,7 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 | FLAG_WRITE_XLSX       | 生成抽卡记录excel表格 | bool |  true  |
 | FLAG_USE_LOG_URL       | 使用原神客户端日志中的url | bool |  true  |
 | FLAG_USE_CONFIG_URL       | 使用配置文件缓存的历史url | bool |  true  |
+| FLAG_USE_CAPTURE       | 抓包功能 | bool |  true  |
 | url                   | 包含getGachaLog的url  | str  |        |
 
 
@@ -67,3 +69,4 @@ v1.1.9：增加版本更新提示
 v1.1.10：适配1.3  
 v1.1.11：修复新物品导致的出错  
 v1.1.12：新增使用原神客户端日志中的url
+v1.1.13：适配外服日志文件
