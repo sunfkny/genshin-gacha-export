@@ -238,7 +238,7 @@ if __name__ == "__main__":
     url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
-    latest = "https://cdn.staticaly.com/gh/sunfkny/genshin-gacha-export/main/verison.txt"
+    latest = "https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export@main/verison.txt"
     latestVerison = requests.get(latest).text
     verison = s.getKey("verison")
     if verison != latestVerison:
