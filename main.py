@@ -235,6 +235,7 @@ def capture():
 
 if __name__ == "__main__":
     global url
+    url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
     latest = "https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export@main/verison.txt"
@@ -243,31 +244,89 @@ if __name__ == "__main__":
     if verison != latestVerison:
         print(f"当前版本{verison}不是最新，请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
 
-    print("检查配置文件中的链接", end="...", flush=True)
-    url = s.getKey("url")
+    FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
+    if FLAG_USE_CONFIG_URL:
+        print("检查配置文件中的链接", end="...", flush=True)
+        url = s.getKey("url")
+        if checkApi(url):
+            print("合法")
+            main()
+            pressAnyKeyExitWithDisableProxy()
 
-    if checkApi(url):
-        print("合法")
-        main()
-        pressAnyKeyExitWithDisableProxy()
-    else:
-        FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
+    FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
+    if FLAG_USE_LOG_URL:
+        try:
+            USERPROFILE = os.environ["USERPROFILE"]
+            output_log_path = None
+            output_log_path_cn = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
+            output_log_path_global = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
 
-        while FLAG_MANUAL_INPUT_URL:
-            try:
-                url = input("输入url: ")
-                if not checkApi(url):
-                    continue
-                else:
-                    print("检查链接", end="...", flush=True)
-                    if not checkApi(url):
-                        pressAnyKeyExitWithDisableProxy()
-                    print("合法")
-                    FLAG_MANUAL_INPUT_URL = False
-                    main()
-                    pressAnyKeyExitWithDisableProxy()
-            except Exception:
+            if os.path.isfile(output_log_path_cn):
+                print("检测到国服日志文件")
+                output_log_path = output_log_path_cn
+
+            if os.path.isfile(output_log_path_global):
+                print("检测到海外服日志文件")
+                output_log_path = output_log_path_global
+
+            if os.path.isfile(output_log_path_cn) and os.path.isfile(output_log_path_global):
+                flag = True
+                while flag:
+                    c = input("检测到两个日志文件，输入1选择国服，输入2选择海外服：")
+                    if c == "1":
+                        output_log_path = output_log_path_cn
+                        flag = False
+                    elif c == "2":
+                        output_log_path = output_log_path_global
+                        flag = False
+
+            if not os.path.isfile(output_log_path_cn) and not os.path.isfile(output_log_path_global):
+                print("没有检测到日志文件")
+            else:
+                with open(output_log_path, "r", encoding="utf-8") as f:
+                    log = f.readlines()
+
+                for line in log:
+                    if line.startswith("OnGetWebViewPageFinish") and line.endswith("#/log\n"):
+                        url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
+
+        except Exception as e:
+            print("读取日志文件出错：", e)
+            pressAnyKeyExitWithDisableProxy()
+
+        if output_log_path:
+            spliturl = url.split("?")
+            spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+            url = "?".join(spliturl)
+            print("检查日志文件中的链接", end="...", flush=True)
+            if checkApi(url):
+                print("合法")
+                gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+                configPath = os.path.join(gen_path, "config.json")
+                s = Config(configPath)
+                s.setKey("url", url)
+                main()
+                pressAnyKeyExitWithDisableProxy()
+
+    FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
+    while FLAG_MANUAL_INPUT_URL:
+        try:
+            url = input("输入url: ")
+            if not checkApi(url):
                 continue
+            else:
+                print("检查链接", end="...", flush=True)
+                if not checkApi(url):
+                    pressAnyKeyExitWithDisableProxy()
+                print("合法")
+                FLAG_MANUAL_INPUT_URL = False
+                main()
+                pressAnyKeyExitWithDisableProxy()
+        except Exception:
+            continue
+
+    FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
+    if FLAG_USE_CAPTURE:
         try:
             print("设置代理", end="...", flush=True)
             enableProxy()
@@ -291,4 +350,5 @@ if __name__ == "__main__":
             pressAnyKeyExitWithDisableProxy()
 
         except KeyboardInterrupt:
+            disableProxy()
             pressAnyKeyExitWithDisableProxy()
