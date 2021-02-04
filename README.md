@@ -7,8 +7,9 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 
 ## 功能
 
- - 自动抓包本机api请求
+ - 读取客户端日志文件中的url
  - 记录历史url，如果可用无需重新抓包
+ - 自动抓包本机api请求
  - 导出抽卡记录为带格式的excel表格
  - 展示抽卡报告 [抽卡报告预览](抽卡报告.md)
  - 清除历史生成的excel表格
@@ -32,6 +33,8 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
     "FLAG_CLEAN":false,
     "FLAG_MANUAL_INPUT_URL":false,
     "FLAG_SHOW_REPORT":true,
+    "FLAG_USE_LOG_URL":true,
+    "FLAG_USE_CONFIG_URL":true,
     "FLAG_WRITE_XLSX":true,
     "url":""
 }
@@ -42,7 +45,9 @@ NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
 | FLAG_MANUAL_INPUT_URL | 手动输入url            | bool | false  |
 | FLAG_SHOW_REPORT      | 展示抽卡报告           | bool | true   |
 | FLAG_WRITE_XLSX       | 生成抽卡记录excel表格 | bool |  true  |
-| url                   | 抓包获取的getGachaLog  | str  |        |
+| FLAG_USE_LOG_URL       | 使用原神客户端日志中的url | bool |  true  |
+| FLAG_USE_CONFIG_URL       | 使用配置文件缓存的历史url | bool |  true  |
+| url                   | 包含getGachaLog的url  | str  |        |
 
 
 ## 更新日志
@@ -61,3 +66,4 @@ v1.1.8：配置文件添加手动输入选项，默认关闭
 v1.1.9：增加版本更新提示  
 v1.1.10：适配1.3  
 v1.1.11：修复新物品导致的出错  
+v1.1.12：新增使用原神客户端日志中的url

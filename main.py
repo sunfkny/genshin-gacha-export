@@ -243,14 +243,44 @@ if __name__ == "__main__":
     if verison != latestVerison:
         print(f"当前版本{verison}不是最新，请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
 
-    print("检查配置文件中的链接", end="...", flush=True)
-    url = s.getKey("url")
+    FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
+    if FLAG_USE_CONFIG_URL:
+        print("检查配置文件中的链接", end="...", flush=True)
+        url = s.getKey("url")
+        if checkApi(url):
+            print("合法")
+            main()
+            pressAnyKeyExitWithDisableProxy()
 
-    if checkApi(url):
-        print("合法")
-        main()
-        pressAnyKeyExitWithDisableProxy()
-    else:
+    FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
+    if FLAG_USE_LOG_URL:
+        try:
+            USERPROFILE = os.environ["USERPROFILE"]
+            output_log_path = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
+
+            with open(output_log_path, "r", encoding="utf-8") as f:
+                log = f.readlines()
+
+            for line in log:
+                if line.startswith("OnGetWebViewPageFinish"):
+                    url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
+
+            spliturl = url.split("?")
+            spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+            url = "?".join(spliturl)
+            print("检查日志文件中的链接", end="...", flush=True)
+            if checkApi(url):
+                print("合法")
+                gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+                configPath = os.path.join(gen_path, "config.json")
+                s = Config(configPath)
+                s.setKey("url", url)
+                main()
+                pressAnyKeyExitWithDisableProxy()
+        except Exception as e:
+            print("读取日志文件出错：", e)
+            pressAnyKeyExitWithDisableProxy()
+
         FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
 
         while FLAG_MANUAL_INPUT_URL:

@@ -13,7 +13,8 @@ c.setKey("FLAG_MANUAL_INPUT_URL", False)
 c.setKey("FLAG_CLEAN", False)
 c.setKey("FLAG_SHOW_REPORT", True)
 c.setKey("FLAG_WRITE_XLSX", True)
-
+c.setKey("FLAG_USE_LOG_URL",True)
+c.setKey("FLAG_USE_CONFIG_URL",True)
 
 activate = ".\\venv\\Scripts\\activate.bat"
 # os.system(activate)
