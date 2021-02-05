@@ -1,6 +1,10 @@
 # 原神抽卡记录导出
 
-NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
+NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616  
+
+抽卡记录分析工具 from [@笑沐泽](https://bbs.nga.cn/read.php?tid=25004616&page=16#pid491033187Anchor)  
+https://voderl.github.io/genshin-gacha-analyzer/
+
 
 ## 悲报
 1.3版本更新后api只能获取 ~~**一个月历史记录**~~ 改成6个月了
