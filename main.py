@@ -284,30 +284,30 @@ if __name__ == "__main__":
                 print("没有检测到日志文件")
             else:
                 # with open(output_log_path, "r", encoding="utf-8") as f:
-                with open(output_log_path, "r", encoding="mbcs",errors="ignore") as f:
+                with open(output_log_path, "r", encoding="mbcs", errors="ignore") as f:
                     log = f.readlines()
 
                 for line in log:
                     if line.startswith("OnGetWebViewPageFinish") and line.endswith("#/log\n"):
                         url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
 
-        except Exception as e:
-            print("读取日志文件出错：", e)
-            pressAnyKeyExitWithDisableProxy()
-
-        if output_log_path:
-            spliturl = url.split("?")
-            spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
-            url = "?".join(spliturl)
-            print("检查日志文件中的链接", end="...", flush=True)
-            if checkApi(url):
-                print("合法")
-                gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-                configPath = os.path.join(gen_path, "config.json")
-                s = Config(configPath)
-                s.setKey("url", url)
-                main()
-                pressAnyKeyExitWithDisableProxy()
+                if url == "":
+                    print("日志文件中没有链接")
+                else:
+                    spliturl = url.split("?")
+                    spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+                    url = "?".join(spliturl)
+                    print("检查日志文件中的链接", end="...", flush=True)
+                    if checkApi(url):
+                        print("合法")
+                        gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+                        configPath = os.path.join(gen_path, "config.json")
+                        s = Config(configPath)
+                        s.setKey("url", url)
+                        main()
+                        pressAnyKeyExitWithDisableProxy()
+        except:
+            pass
 
     FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
     while FLAG_MANUAL_INPUT_URL:
@@ -323,7 +323,7 @@ if __name__ == "__main__":
                 FLAG_MANUAL_INPUT_URL = False
                 main()
                 pressAnyKeyExitWithDisableProxy()
-        except Exception:
+        except:
             continue
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
@@ -353,3 +353,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             disableProxy()
             pressAnyKeyExitWithDisableProxy()
+        except Exception as e:
+            print("抓包模块出错:", e)
+            pressAnyKeyExitWithDisableProxy()
+
