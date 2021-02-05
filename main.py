@@ -283,7 +283,8 @@ if __name__ == "__main__":
             if not os.path.isfile(output_log_path_cn) and not os.path.isfile(output_log_path_global):
                 print("没有检测到日志文件")
             else:
-                with open(output_log_path, "r", encoding="utf-8") as f:
+                # with open(output_log_path, "r", encoding="utf-8") as f:
+                with open(output_log_path, "r", encoding="mbcs",errors="ignore") as f:
                     log = f.readlines()
 
                 for line in log:
