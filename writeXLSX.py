@@ -32,14 +32,15 @@ def writeXLSX(gachaLog, gachaTypeIds):
         gachaDictList.reverse()
         header = "时间,编号,名称,类别,星级,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
-        content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
-        title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
+        content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf","bg_color": "#ebebeb", "border": 1})
+        title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
         excel_header = header.split(",")
         worksheet.set_column("A:A", 22)
         worksheet.set_column("C:C", 14)
         for i in range(len(excel_col)):
             worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
+        worksheet.freeze_panes(1, 0)
         idx = 0
         pdx = 0
         i=0
@@ -64,7 +65,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
 
         star_5 = workbook.add_format({"bg_color": "#ebebeb", "color": "#bd6932", "bold": True})
         star_4 = workbook.add_format({"bg_color": "#ebebeb", "color": "#a256e1", "bold": True})
-        star_3 = workbook.add_format({"bg_color": "#ebebeb"})
+        star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#8e8e8e"})
         worksheet.conditional_format(f"A2:G{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
         worksheet.conditional_format(f"A2:G{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
         worksheet.conditional_format(f"A2:G{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
