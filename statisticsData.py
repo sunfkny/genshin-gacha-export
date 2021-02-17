@@ -8,7 +8,8 @@ def main():
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     f = open(f"{gen_path}\\gachaData.json", "r", encoding="utf-8")
     j = json.load(f)
-    
+    f.close()
+
     html = """<!DOCTYPE html>
 <html>
 
@@ -29,51 +30,54 @@ def main():
 </head>
 
 <body style="margin: 2rem;">
-  <div style="margin: auto;" id="app" class="markdown-body">
-    <h1 style="margin: 0 2rem;" >原神抽卡记录导出工具 抽卡报告</h1>
-    <div style="display: inline-table;margin: 0 2rem;" v-cloak v-for="banner in gachaType">
-      <h2> {{banner.name}} </h2>
-      <table>
-        <thead>
-          <tr>
-            <th>星级</th>
-            <th>数量</th>
-            <th>基础概率</th>
-            <th>综合概率</th>
-            <th>距上次保底</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td v-bind:title="detail[banner.key].items5str" style="cursor:help">5星</td>
-            <td>{{detail[banner.key]["5"]}}</td>
-            <td>{{percent(detail[banner.key]["5"], detail[banner.key].total)}}</td>
-            <td>{{percent(detail[banner.key]["5"], detail[banner.key].totalForRank5)}}</td>
-            <td>{{detail[banner.key].guarantee5}}</td>
-          </tr>
-          <tr>
-            <td v-bind:title="detail[banner.key].items4str" style="cursor:help">4星</td>
-            <td>{{detail[banner.key]["4"]}}</td>
-            <td>{{percent(detail[banner.key]["4"], detail[banner.key].total)}}</td>
-            <td>{{percent(detail[banner.key]["4"], detail[banner.key].totalForRank4)}}</td>
-            <td>{{detail[banner.key].guarantee4}}</td>
-          </tr>
-          <tr>
-            <td v-bind:title="detail[banner.key].items3str" style="cursor:help">3星</td>
-            <td>{{detail[banner.key]["3"]}}</td>
-            <td>{{percent(detail[banner.key]["3"], detail[banner.key].total)}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td v-bind:title="detail[banner.key].itemsstr" style="cursor:help">总计</td>
-            <td>{{detail[banner.key].total}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-        </tbody>
-      </table>
+  <div style=" margin: auto" id="app" class="markdown-body">
+    <h1 style="margin: 0 2rem;">原神抽卡记录导出工具 抽卡报告</h1>
+    <!-- <span v-cloak>{{ message }}</span> -->
+    <div>
+      <div style="display: inline-block;margin: 0 2rem;" v-cloak v-for="banner in gachaType">
+        <h2> {{banner.name}} </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>星级</th>
+              <th>数量</th>
+              <th>基础概率</th>
+              <th>综合概率</th>
+              <th>距上次保底</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="cursor:help" v-bind:title="detail[banner.key].rank5logs">5星</td>
+              <td style="cursor:help" v-bind:title="detail[banner.key].items5str">{{detail[banner.key]["5"]}}</td>
+              <td>{{percent(detail[banner.key]["5"], detail[banner.key].total)}}</td>
+              <td>{{percent(detail[banner.key]["5"], detail[banner.key].totalForRank5)}}</td>
+              <td>{{detail[banner.key].guarantee5}}</td>
+            </tr>
+            <tr>
+              <td>4星</td>
+              <td style="cursor:help" v-bind:title="detail[banner.key].items4str">{{detail[banner.key]["4"]}}</td>
+              <td>{{percent(detail[banner.key]["4"], detail[banner.key].total)}}</td>
+              <td>{{percent(detail[banner.key]["4"], detail[banner.key].totalForRank4)}}</td>
+              <td>{{detail[banner.key].guarantee4}}</td>
+            </tr>
+            <tr>
+              <td>3星</td>
+              <td style="cursor:help" v-bind:title="detail[banner.key].items3str">{{detail[banner.key]["3"]}}</td>
+              <td>{{percent(detail[banner.key]["3"], detail[banner.key].total)}}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>总计</td>
+              <td style="cursor:help" v-bind:title="detail[banner.key].itemsstr">{{detail[banner.key].total}}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <script>
@@ -81,10 +85,37 @@ def main():
     for (key in gachaData.gachaLog) {
       gachaData.gachaLog[key].reverse()
     }
+    function compare(p) {
+      return function (m, n) {
+        var a = m[p];
+        var b = n[p];
+        // return a - b;
+        return b - a;
+      }
+    }
+    gachaData.gachaType.sort(compare("key"));
+
+    // for (key in gachaData.gachaLog) {
+    //   if (key=="100"){
+    //     delete gachaData.gachaLog["100"]
+    //   }
+    // }
+    // tempGachaType=[]
+    // for (var i in gachaData.gachaType) {
+    //   var banner =gachaData.gachaType[i]
+    //   console.log(banner)
+    //   if (banner.key=="100"){
+    //     // delete gachaData.gachaType[i]
+    //   }else{
+    //     tempGachaType.push(banner)
+    //   }
+    // }
+    // gachaData.gachaType=tempGachaType;
 
     var app = new Vue({
       el: '#app',
       data: {
+        // message: '基础概率（数量/总抽数），综合概率（数量/距上次保底已抽数）',
         gachaData: gachaData,
         gachaLog: "",
         gachaType: "",
@@ -104,6 +135,22 @@ def main():
     var detail = {}
     for (var key in gachaData.gachaLog) {
       var banner = gachaData.gachaLog[key]
+      idx=0;
+      pdx=0;
+      for (var g in banner) {
+        gacha = banner[g]
+        idx+=1;
+        pdx+=1;
+        gacha["idx"]=idx
+        gacha["pdx"]=pdx
+        if(gacha.rank_type == 5){
+          pdx=0
+        }
+      }
+    }
+
+    for (var key in gachaData.gachaLog) {
+      var banner = gachaData.gachaLog[key]
       detail[key] = {
         "5": 0, "4": 0, "3": 0,
         "total": banner.length,
@@ -117,13 +164,17 @@ def main():
         "items3str": "",
         "items": { "w3": 0, "w4": 0, "w5": 0, "c4": 0, "c5": 0 },
         "itemsstr": "",
+        "rank5logs": "",
       }
 
       for (var gacha in banner) {
         rank_type = banner[gacha]["rank_type"]
         name = banner[gacha]["name"]
+        pdx = banner[gacha]["pdx"]
         if (rank_type == 5) {
+          // console.log(pdx);
           detail[key]["items5"][name] = 0;
+          detail[key]["rank5logs"] += " [" + name + "@" + pdx + "] ";
         }
         if (rank_type == 4) {
           detail[key]["items4"][name] = 0;
@@ -172,13 +223,13 @@ def main():
         }
       }
       for (k in detail[key]["items5"]) {
-        detail[key]["items5str"] += k + " " + detail[key]["items5"][k] + "\\n"
+        detail[key]["items5str"] += k + "x" + detail[key]["items5"][k] + " "
       }
       for (k in detail[key]["items4"]) {
-        detail[key]["items4str"] += k + " " + detail[key]["items4"][k] + "\\n"
+        detail[key]["items4str"] += k + "x" + detail[key]["items4"][k] + " "
       }
       for (k in detail[key]["items3"]) {
-        detail[key]["items3str"] += k + " " + detail[key]["items3"][k] + "\\n"
+        detail[key]["items3str"] += k + "x" + detail[key]["items3"][k] + " "
       }
       for (k in detail[key]["items"]) {
         switch (k) {
@@ -198,7 +249,7 @@ def main():
             keyName = "5星角色";
             break;
         }
-        detail[key]["itemsstr"] += keyName + " " + detail[key]["items"][k] + "\\n"
+        detail[key]["itemsstr"] += keyName + "x" + detail[key]["items"][k] + " "
       }
 
       detail[key]["totalForRank5"] = detail[key].total - detail[key].guarantee5
@@ -210,7 +261,6 @@ def main():
 </body>
 
 </html>"""
-    f.close()
     
     with open(f"{gen_path}\\gachaReport.html", "w", encoding="utf-8") as f:
         f.write(html)
