@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug 反馈
 about: 功能运行不正常 / 失效
 title: ''
 labels: ''
