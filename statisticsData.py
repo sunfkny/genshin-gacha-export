@@ -18,10 +18,8 @@ def main():
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>原神抽卡记录导出工具 抽卡报告</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <script src="./vue.js"></script>
+  <link rel="stylesheet" href="./github-markdown.css"/>
   <style>
     [v-cloak] {
       display: none;
@@ -32,7 +30,6 @@ def main():
 <body style="margin: 2rem;">
   <div style=" margin: auto" id="app" class="markdown-body">
     <h1 style="margin: 0 2rem;">原神抽卡记录导出工具 抽卡报告</h1>
-    <!-- <span v-cloak>{{ message }}</span> -->
     <div>
       <div style="display: inline-block;margin: 0 2rem;" v-cloak v-for="banner in gachaType">
         <h2> {{banner.name}} </h2>
