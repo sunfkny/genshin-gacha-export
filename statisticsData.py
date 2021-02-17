@@ -4,178 +4,214 @@ import sys
 import webbrowser
 import markdown
 
-
-uid = ""
-gachaInfo = []
-gachaTypes = []
-gachaLog = []
-gachaTypeIds = []
-gachaTypeNames = []
-gachaTypeDict = {}
-gachaTypeReverseDict = {}
-
-
-def getInfoByItemId(item_id):
-    for info in gachaInfo:
-        if item_id == info["item_id"]:
-            return info["name"], info["item_type"], info["rank_type"]
-    return
-
-
 def main():
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     f = open(f"{gen_path}\\gachaData.json", "r", encoding="utf-8")
-    s = f.read()
-    f.close()
-    j = json.loads(s)
-
-    global uid
-    global gachaInfo
-    global gachaTypes
-    global gachaLog
-    global gachaTypeIds
-    global gachaTypeNames
-    global gachaTypeDict
-    global gachaTypeReverseDict
-
-    uid = j["uid"]
-    # gachaInfo = j["gachaInfo"]
-    gachaTypes = j["gachaType"]
-    gachaLog = j["gachaLog"]
-    gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    gachaTypeNames = [key["name"] for key in gachaTypes]
-    gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
-    gachaTypeReverseDict = dict(zip(gachaTypeNames, gachaTypeIds))
-
-    markdown_body = """
-# 原神抽卡记录导出工具 抽卡报告 by@Sunfkny
-
-NGA原帖：[https://bbs.nga.cn/read.php?tid=25004616](https://bbs.nga.cn/read.php?tid=25004616)
-
-Github：[https://github.com/sunfkny/genshin-gacha-export](https://github.com/sunfkny/genshin-gacha-export)
-"""
-    for gechaType in gachaTypeIds:
-        gachaS5Data = []
-        gachaS4Data = []
-        gachaS3Data = []
-        for gacha in gachaLog[gechaType]:
-            # item_id = gacha["item_id"]
-            # time = gacha["time"]
-            # name, item_type, rank_type = getInfoByItemId(item_id)
-            time = gacha["time"]
-            item_id="0"
-            name=gacha["name"]
-            item_type=gacha["item_type"]
-            rank_type=gacha["rank_type"]
-            if rank_type == "5":
-                gachaS5Data.append([time, item_id, name, item_type, rank_type])
-            if rank_type == "4":
-                gachaS4Data.append([time, item_id, name, item_type, rank_type])
-            if rank_type == "3":
-                gachaS3Data.append([time, item_id, name, item_type, rank_type])
-        numS5 = len(gachaS5Data)
-        numS4 = len(gachaS4Data)
-        numS3 = len(gachaS3Data)
-        if not (numS5+numS4+numS3):
-            continue
-        total = len(gachaLog[gechaType])
-        gachaS5DataStatistics = {}
-        # for i in gachaInfo:
-        #     gachaS5DataStatistics[i["name"]] = 0
-        # for s in gachaS5Data:
-        #     gachaS5DataStatistics[s[2]] += 1
-        for i in gachaS5Data:
-            if i[2] in gachaS5DataStatistics:
-                gachaS5DataStatistics[i[2]] += 1
-            else:
-                gachaS5DataStatistics[i[2]] = 1
-        gachaS4DataStatistics = {}
-        # for i in gachaInfo:
-        #     gachaS4DataStatistics[i["name"]] = 0
-        # for s in gachaS4Data:
-        #     gachaS4DataStatistics[s[2]] += 1
-        for i in gachaS4Data:
-            if i[2] in gachaS4DataStatistics:
-                gachaS4DataStatistics[i[2]] += 1
-            else:
-                gachaS4DataStatistics[i[2]] = 1
-        gachaS3DataStatistics = {}
-        # for i in gachaInfo:
-        #     gachaS3DataStatistics[i["name"]] = 0
-        # for s in gachaS3Data:
-        #     gachaS3DataStatistics[s[2]] += 1
-        for i in gachaS3Data:
-            if i[2] in gachaS3DataStatistics:
-                gachaS3DataStatistics[i[2]] += 1
-            else:
-                gachaS3DataStatistics[i[2]] = 1
-
-        gachaName = gachaTypeDict[gechaType]
-        gachaS5Info = ""
-        gachaS4Info = ""
-        gachaS3Info = ""
-        for k, v in gachaS5DataStatistics.items():
-            if v:
-                gachaS5Info+=f"{k} {v}\n"
-        for k, v in gachaS4DataStatistics.items():
-            if v:
-                gachaS4Info+=f"{k} {v}\n"
-        for k, v in gachaS3DataStatistics.items():
-            if v:
-                gachaS3Info+=f"{k} {v}\n"
-
-        gachaTable = f"""| 星级 | 数量 | 占比   |
-| ---- | ---- | -------- |
-| 5星  | {numS5} | {round(numS5*100/total,2)}% |
-| 4星  | {numS4} | {round(numS4*100/total,2)}% |
-| 3星  |{numS3} | {round(numS3*100/total,2)}% |
-| 总计 | {total} | 100.0% |"""
-
-        gachaReport = f"""
-## {gachaName}
-{gachaTable}
-<details>
-<summary>详情</summary>
-<br>
-<details>
-<summary>5星</summary>
-```
-{gachaS5Info}
-```
-</details>
-<details>
-<summary>4星</summary>
-```
-{gachaS4Info}
-```
-</details>
-<details>
-<summary>3星</summary>
-```
-{gachaS3Info}
-```
-</details>
-</details>
-"""
-        markdown_body += gachaReport
+    j = json.load(f)
     
-    html = """<html lang="zh-cn">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>抽卡报告</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css"/> 
-    </head>
-    <body style="padding: 40px;">
-    <div class="markdown-body">
-    {}
+    html = """<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原神抽卡记录导出工具 抽卡报告</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+
+<body style="margin: 2rem;">
+  <div style="margin: auto;" id="app" class="markdown-body">
+    <h1 style="margin: 0 2rem;" >原神抽卡记录导出工具 抽卡报告</h1>
+    <div style="display: inline-table;margin: 0 2rem;" v-cloak v-for="banner in gachaType">
+      <h2> {{banner.name}} </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>星级</th>
+            <th>数量</th>
+            <th>基础概率</th>
+            <th>综合概率</th>
+            <th>距上次保底</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td v-bind:title="detail[banner.key].items5str" style="cursor:help">5星</td>
+            <td>{{detail[banner.key]["5"]}}</td>
+            <td>{{percent(detail[banner.key]["5"], detail[banner.key].total)}}</td>
+            <td>{{percent(detail[banner.key]["5"], detail[banner.key].totalForRank5)}}</td>
+            <td>{{detail[banner.key].guarantee5}}</td>
+          </tr>
+          <tr>
+            <td v-bind:title="detail[banner.key].items4str" style="cursor:help">4星</td>
+            <td>{{detail[banner.key]["4"]}}</td>
+            <td>{{percent(detail[banner.key]["4"], detail[banner.key].total)}}</td>
+            <td>{{percent(detail[banner.key]["4"], detail[banner.key].totalForRank4)}}</td>
+            <td>{{detail[banner.key].guarantee4}}</td>
+          </tr>
+          <tr>
+            <td v-bind:title="detail[banner.key].items3str" style="cursor:help">3星</td>
+            <td>{{detail[banner.key]["3"]}}</td>
+            <td>{{percent(detail[banner.key]["3"], detail[banner.key].total)}}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td v-bind:title="detail[banner.key].itemsstr" style="cursor:help">总计</td>
+            <td>{{detail[banner.key].total}}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    </body>
-    </html>"""
-    markdown_render = markdown.markdown(markdown_body,extensions=['markdown.extensions.tables','markdown.extensions.fenced_code'])
-    html = html.format(markdown_render)
+  </div>
+  <script>
+    gachaData = """+json.dumps(j)+"""
+    for (key in gachaData.gachaLog) {
+      gachaData.gachaLog[key].reverse()
+    }
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        gachaData: gachaData,
+        gachaLog: "",
+        gachaType: "",
+        detail: "",
+      },
+      methods: {
+        percent: (num, total) => {
+          if (total == 0) { return "0%" }
+          return `${Math.round(num / total * 10000) / 100}%`
+        }
+      }
+    });
+
+    app.gachaData = gachaData;
+    app.gachaType = gachaData.gachaType;
+    app.gachaLog = gachaData.gachaLog;
+    var detail = {}
+    for (var key in gachaData.gachaLog) {
+      var banner = gachaData.gachaLog[key]
+      detail[key] = {
+        "5": 0, "4": 0, "3": 0,
+        "total": banner.length,
+        "guarantee5": 0,
+        "guarantee4": 0,
+        "items5": {},
+        "items4": {},
+        "items3": {},
+        "items5str": "",
+        "items4str": "",
+        "items3str": "",
+        "items": { "w3": 0, "w4": 0, "w5": 0, "c4": 0, "c5": 0 },
+        "itemsstr": "",
+      }
+
+      for (var gacha in banner) {
+        rank_type = banner[gacha]["rank_type"]
+        name = banner[gacha]["name"]
+        if (rank_type == 5) {
+          detail[key]["items5"][name] = 0;
+        }
+        if (rank_type == 4) {
+          detail[key]["items4"][name] = 0;
+        }
+        if (rank_type == 3) {
+          detail[key]["items3"][name] = 0;
+        }
+      }
+      for (var gacha in banner) {
+        rank_type = banner[gacha]["rank_type"]
+        name = banner[gacha]["name"]
+        item_type = banner[gacha]["item_type"]
+        if (rank_type == 5) {
+          detail[key]["items5"][name] += 1;
+          detail[key]["5"] += 1;
+          detail[key]["guarantee5"] = 0;
+          detail[key]["guarantee4"] += 1;
+          if (item_type == "武器") {
+            detail[key]["items"]["w5"] += 1;
+          }
+          if (item_type == "角色") {
+            detail[key]["items"]["c5"] += 1;
+          }
+
+        }
+        if (rank_type == 4) {
+          detail[key]["items4"][name] += 1;
+          detail[key]["guarantee5"] += 1;
+          detail[key]["guarantee4"] = 0;
+          detail[key]["4"] += 1;
+          if (item_type == "武器") {
+            detail[key]["items"]["w4"] += 1;
+          }
+          if (item_type == "角色") {
+            detail[key]["items"]["c4"] += 1;
+          }
+        }
+        if (rank_type == 3) {
+          detail[key]["items3"][name] += 1;
+          detail[key]["guarantee5"] += 1;
+          detail[key]["guarantee4"] += 1;
+          detail[key]["3"] += 1;
+          if (item_type == "武器") {
+            detail[key]["items"]["w3"] += 1;
+          }
+        }
+      }
+      for (k in detail[key]["items5"]) {
+        detail[key]["items5str"] += k + " " + detail[key]["items5"][k] + "\\n"
+      }
+      for (k in detail[key]["items4"]) {
+        detail[key]["items4str"] += k + " " + detail[key]["items4"][k] + "\\n"
+      }
+      for (k in detail[key]["items3"]) {
+        detail[key]["items3str"] += k + " " + detail[key]["items3"][k] + "\\n"
+      }
+      for (k in detail[key]["items"]) {
+        switch (k) {
+          case "w3":
+            keyName = "3星武器";
+            break;
+          case "w4":
+            keyName = "4星武器";
+            break;
+          case "w5":
+            keyName = "5星武器";
+            break;
+          case "c4":
+            keyName = "4星角色";
+            break;
+          case "c5":
+            keyName = "5星角色";
+            break;
+        }
+        detail[key]["itemsstr"] += keyName + " " + detail[key]["items"][k] + "\\n"
+      }
+
+      detail[key]["totalForRank5"] = detail[key].total - detail[key].guarantee5
+      detail[key]["totalForRank4"] = detail[key].total - detail[key].guarantee4
+      app.detail = detail
+    }
+
+  </script>
+</body>
+
+</html>"""
+    f.close()
     
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     with open(f"{gen_path}\\gachaReport.html", "w", encoding="utf-8") as f:
         f.write(html)
 

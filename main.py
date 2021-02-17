@@ -8,7 +8,7 @@ from config import Config
 
 def main():
 
-    print("获取抽卡记录", end="...", flush=True)
+    print("获取抽卡记录", flush=True)
     # gachaInfo = getGachaInfo()
     gachaTypes = getGachaTypes()
     gachaTypeIds = [banner["key"] for banner in gachaTypes]
@@ -19,10 +19,8 @@ def main():
     # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
     for gachaTypeId in gachaTypeIds:
-        gachaLog = getGachaLogs(gachaTypeId)
+        gachaLog = getGachaLogs(gachaTypeId,gachaTypeDict)
         gachaData["gachaLog"][gachaTypeId] = gachaLog
-        print(gachaTypeDict[gachaTypeId], end=" ", flush=True)
-    print("")
 
     uid_flag = 1
     for gachaType in gachaData["gachaLog"]:
@@ -33,10 +31,22 @@ def main():
             # del log["uid"]
             # del log["count"]
             # del log["gacha_type"]
-    print("写入文件", end="...", flush=True)
+
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    uid = gachaData['uid']
+    localDataFilePath = f"{gen_path}\\gachaData-{uid}.json"
+
+    if os.path.isfile(localDataFilePath):
+        with open(localDataFilePath, "r", encoding="utf-8") as f:
+            localData = json.load(f)
+        mergeData = mergeDataFunc(localData,gachaData)
+    else:
+        mergeData = gachaData
+    print("写入文件", end="...", flush=True)
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
-        f.write(str(gachaData).replace("'", '"'))
+        json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
+    with open(f"{gen_path}\\gachaData-{uid}.json", "w", encoding="utf-8") as f:
+        json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     print("JSON", flush=True)
 
     if s.getKey("FLAG_CLEAN"):
@@ -62,6 +72,41 @@ def main():
         statisticsData.main()
 
 
+def mergeDataFunc(localData, gachaData):
+    gachaTypes = gachaData["gachaType"]
+    gachaTypeIds = [banner["key"] for banner in gachaTypes]
+    gachaTypeNames = [banner["name"] for banner in gachaTypes]
+    gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
+
+    for banner in gachaTypeDict:
+        print("合并",gachaTypeDict[banner])
+        bannerLocal = localData["gachaLog"][banner]
+        bannerGet = gachaData["gachaLog"][banner]
+        if (bannerGet==bannerLocal):
+            pass
+        else:
+            flaglist=[1]*len(bannerGet)
+            for i in range(len(bannerGet)):
+                gachaGet=bannerGet[i]
+                if gachaGet in bannerLocal:
+                    # flaglist.append(1)
+                    pass
+                else:
+                    flaglist[i]=0
+                    
+            print("获取到",len(flaglist),"条记录")
+            tempData = []
+            for i in range(len(bannerGet)):
+                if flaglist[i]==0:
+                    gachaGet=bannerGet[i]
+                    tempData.insert(0,gachaGet)
+            print("追加",len(tempData),"条记录")
+            for i in tempData:
+                localData["gachaLog"][banner].insert(0,i)
+                
+    return localData
+
+
 def getGachaTypes():
     r = requests.get(url.replace("getGachaLog", "getConfigList"))
     s = r.content.decode("utf-8")
@@ -70,11 +115,12 @@ def getGachaTypes():
     return configList["data"]["gacha_type_list"]
 
 
-def getGachaLogs(gachaTypeId):
+def getGachaLogs(gachaTypeId,gachaTypeDict):
     size = "20"
     # api限制一页最大20
     gachaList = []
     for page in range(1, 9999):
+        print(f"正在获取 {gachaTypeDict[gachaTypeId]} 第 {page} 页", flush=True)
         api = getApi(gachaTypeId, size, page)
         r = requests.get(api)
         s = r.content.decode("utf-8")
@@ -306,8 +352,9 @@ if __name__ == "__main__":
                         s.setKey("url", url)
                         main()
                         pressAnyKeyExitWithDisableProxy()
-        except:
-            pass
+        except Exception as e:
+            print("日志读取模块出错:", e)
+            pressAnyKeyExitWithDisableProxy()
 
     FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
     while FLAG_MANUAL_INPUT_URL:
