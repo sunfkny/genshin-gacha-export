@@ -12,8 +12,9 @@ class Config:
             f = open(path, "r", encoding="utf-8")
             self.setting = json.loads(f.read())
             f.close()
-        except:
-            print("配置文件出错, 请重新下载")
+        except Exception as e:
+            print("配置文件出错",e)
+            input("请经解压后运行或重新下载")
             exit()
 
     def setKey(self, key, value=None):
