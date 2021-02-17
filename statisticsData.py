@@ -223,13 +223,13 @@ def main():
         }
       }
       for (k in detail[key]["items5"]) {
-        detail[key]["items5str"] += k + "x" + detail[key]["items5"][k] + " "
+        detail[key]["items5str"] += k + "x" + detail[key]["items5"][k] + "\\n"
       }
       for (k in detail[key]["items4"]) {
-        detail[key]["items4str"] += k + "x" + detail[key]["items4"][k] + " "
+        detail[key]["items4str"] += k + "x" + detail[key]["items4"][k] + "\\n"
       }
       for (k in detail[key]["items3"]) {
-        detail[key]["items3str"] += k + "x" + detail[key]["items3"][k] + " "
+        detail[key]["items3str"] += k + "x" + detail[key]["items3"][k] + "\\n"
       }
       for (k in detail[key]["items"]) {
         switch (k) {
@@ -249,7 +249,7 @@ def main():
             keyName = "5星角色";
             break;
         }
-        detail[key]["itemsstr"] += keyName + "x" + detail[key]["items"][k] + " "
+        detail[key]["itemsstr"] += keyName + "x" + detail[key]["items"][k] + "\\n"
       }
 
       detail[key]["totalForRank5"] = detail[key].total - detail[key].guarantee5
