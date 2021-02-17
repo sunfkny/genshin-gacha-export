@@ -8,7 +8,7 @@ https://voderl.github.io/genshin-gacha-analyzer/
 **推荐：**[[闲聊杂谈] 抽卡记录导出两键导出工具](https://bbs.nga.cn/read.php?tid=25559039) from [@lvlvl](https://bbs.nga.cn/nuke.php?func=ucp&uid=2260231)  
 https://github.com/biuuu/genshin-gacha-export
 
-~~抽卡记录导出工具js版 https://github.com/sunfkny/genshin-gacha-export-js~~  
+抽卡记录导出工具js版 https://github.com/sunfkny/genshin-gacha-export-js  
 
 ## 悲报
 1.3版本更新后api只能获取 ~~**一个月历史记录**~~ 改成6个月了
