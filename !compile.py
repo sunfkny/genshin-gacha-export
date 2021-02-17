@@ -29,7 +29,7 @@ print("编译完成")
 
 
 zipPath = ".\\dist\\genshin-gacha-export.zip"
-zipContent = [".\\dist\\genshin-gacha-export.exe", ".\\dist\\不能上网点我-关闭代理.bat", ".\\dist\\config.json",".\\dist\\vue.js",".\\dist\\github-markdown.css"]
+zipContent = [".\\dist\\genshin-gacha-export.exe", ".\\dist\\不能上网点我-关闭代理.bat", ".\\dist\\config.json",".\\dist\\vue.js",".\\dist\\github-markdown.css",".\\dist\\bootstrap.css"]
 zipFile = zipfile.ZipFile(os.path.realpath(zipPath), "w")
 for f in zipContent:
     zipFile.write(filename=os.path.realpath(f), arcname=os.path.basename(f))
