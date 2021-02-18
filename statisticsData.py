@@ -2,7 +2,6 @@ import json
 import os
 import sys
 import webbrowser
-import markdown
 
 def main():
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
