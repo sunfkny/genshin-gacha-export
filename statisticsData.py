@@ -40,7 +40,7 @@ def main():
                 <th>数量</th>
                 <th>基础概率</th>
                 <th>综合概率</th>
-                <th>距上次保底</th>
+                <th>距上次</th>
               </tr>
             </thead>
             <tbody>
