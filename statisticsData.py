@@ -17,6 +17,9 @@ def main():
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>原神抽卡记录导出工具 抽卡报告</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.css"/>
   <script src="./vue.js"></script>
   <link rel="stylesheet" href="./github-markdown.css"/>
   <link rel="stylesheet" href="./bootstrap.css">
