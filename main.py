@@ -19,7 +19,7 @@ def main():
     # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
     for gachaTypeId in gachaTypeIds:
-        gachaLog = getGachaLogs(gachaTypeId,gachaTypeDict)
+        gachaLog = getGachaLogs(gachaTypeId, gachaTypeDict)
         gachaData["gachaLog"][gachaTypeId] = gachaLog
 
     uid_flag = 1
@@ -33,13 +33,13 @@ def main():
             # del log["gacha_type"]
 
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    uid = gachaData['uid']
+    uid = gachaData["uid"]
     localDataFilePath = f"{gen_path}\\gachaData-{uid}.json"
 
     if os.path.isfile(localDataFilePath):
         with open(localDataFilePath, "r", encoding="utf-8") as f:
             localData = json.load(f)
-        mergeData = mergeDataFunc(localData,gachaData)
+        mergeData = mergeDataFunc(localData, gachaData)
     else:
         mergeData = gachaData
     print("写入文件", end="...", flush=True)
@@ -79,31 +79,31 @@ def mergeDataFunc(localData, gachaData):
     gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
 
     for banner in gachaTypeDict:
-        print("合并",gachaTypeDict[banner])
+        print("合并", gachaTypeDict[banner])
         bannerLocal = localData["gachaLog"][banner]
         bannerGet = gachaData["gachaLog"][banner]
-        if (bannerGet==bannerLocal):
+        if bannerGet == bannerLocal:
             pass
         else:
-            flaglist=[1]*len(bannerGet)
+            flaglist = [1] * len(bannerGet)
             for i in range(len(bannerGet)):
-                gachaGet=bannerGet[i]
+                gachaGet = bannerGet[i]
                 if gachaGet in bannerLocal:
                     # flaglist.append(1)
                     pass
                 else:
-                    flaglist[i]=0
-                    
-            print("获取到",len(flaglist),"条记录")
+                    flaglist[i] = 0
+
+            print("获取到", len(flaglist), "条记录")
             tempData = []
             for i in range(len(bannerGet)):
-                if flaglist[i]==0:
-                    gachaGet=bannerGet[i]
-                    tempData.insert(0,gachaGet)
-            print("追加",len(tempData),"条记录")
+                if flaglist[i] == 0:
+                    gachaGet = bannerGet[i]
+                    tempData.insert(0, gachaGet)
+            print("追加", len(tempData), "条记录")
             for i in tempData:
-                localData["gachaLog"][banner].insert(0,i)
-                
+                localData["gachaLog"][banner].insert(0, i)
+
     return localData
 
 
@@ -115,7 +115,7 @@ def getGachaTypes():
     return configList["data"]["gacha_type_list"]
 
 
-def getGachaLogs(gachaTypeId,gachaTypeDict):
+def getGachaLogs(gachaTypeId, gachaTypeDict):
     size = "20"
     # api限制一页最大20
     gachaList = []
@@ -375,6 +375,17 @@ if __name__ == "__main__":
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
+        flag = True
+        while flag:
+            try:
+                i = input("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭\n确定使用抓包模式吗？输入yes确认执行：")
+                if i == "yes":
+                    flag = False
+            except KeyboardInterrupt:
+                pressAnyKeyExitWithDisableProxy()
+            except Exception as e:
+                print(e)
+                continue
         try:
             print("设置代理", end="...", flush=True)
             enableProxy()
