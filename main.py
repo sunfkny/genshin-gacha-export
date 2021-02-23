@@ -108,7 +108,15 @@ def mergeDataFunc(localData, gachaData):
 
 
 def getGachaTypes():
-    r = requests.get(url.replace("getGachaLog", "getConfigList"))
+    tmp_url = url.replace("getGachaLog", "getConfigList")
+    parsed = urllib.parse.urlparse(tmp_url)
+    querys = urllib.parse.parse_qsl(parsed.query)
+    param_dict = dict(querys)
+    param_dict["lang"] = "zh-cn"
+    param = urllib.parse.urlencode(param_dict)
+    path = tmp_url.split("?")[0]
+    tmp_url = path + "?" + param
+    r = requests.get(tmp_url)
     s = r.content.decode("utf-8")
     configList = json.loads(s)
     gachaTypeLists = []
@@ -141,6 +149,7 @@ def getApi(gachaType, size, page):
     param_dict["size"] = size
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
+    param_dict["lang"] = "zh-cn"
     param = urllib.parse.urlencode(param_dict)
     path = url.split("?")[0]
     api = path + "?" + param
@@ -299,6 +308,23 @@ if __name__ == "__main__":
             main()
             pressAnyKeyExitWithDisableProxy()
 
+    FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
+    while FLAG_MANUAL_INPUT_URL:
+        try:
+            url = input("输入url: ")
+            if not checkApi(url):
+                continue
+            else:
+                print("检查链接", end="...", flush=True)
+                if not checkApi(url):
+                    pressAnyKeyExitWithDisableProxy()
+                print("合法")
+                FLAG_MANUAL_INPUT_URL = False
+                main()
+                pressAnyKeyExitWithDisableProxy()
+        except:
+            continue
+
     FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
     if FLAG_USE_LOG_URL:
         try:
@@ -355,23 +381,6 @@ if __name__ == "__main__":
         except Exception as e:
             print("日志读取模块出错:", e)
             pressAnyKeyExitWithDisableProxy()
-
-    FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
-    while FLAG_MANUAL_INPUT_URL:
-        try:
-            url = input("输入url: ")
-            if not checkApi(url):
-                continue
-            else:
-                print("检查链接", end="...", flush=True)
-                if not checkApi(url):
-                    pressAnyKeyExitWithDisableProxy()
-                print("合法")
-                FLAG_MANUAL_INPUT_URL = False
-                main()
-                pressAnyKeyExitWithDisableProxy()
-        except:
-            continue
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
