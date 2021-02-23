@@ -281,6 +281,10 @@ def capture():
         asyncio.ensure_future(wakeup())
         m.run()
     except KeyboardInterrupt:
+        print("中止抓包")
+        print("清除代理", end="...", flush=True)
+        disableProxy()
+        print("成功", flush=True)
         pressAnyKeyExitWithDisableProxy()
     except TypeError:
         pass
@@ -391,6 +395,7 @@ if __name__ == "__main__":
                 if i == "yes":
                     flag = False
             except KeyboardInterrupt:
+                print("取消抓包模式")
                 pressAnyKeyExitWithDisableProxy()
             except Exception as e:
                 print(e)
@@ -401,7 +406,7 @@ if __name__ == "__main__":
             print("成功", flush=True)
 
             m = None
-            print("捕获链接", end="...", flush=True)
+            print("正在捕获链接，请打开抽卡页面", end="...", flush=True)
             capture()
             print("成功")
 
@@ -418,6 +423,10 @@ if __name__ == "__main__":
             pressAnyKeyExitWithDisableProxy()
 
         except KeyboardInterrupt:
+            print("中止抓包模式")
+            print("清除代理", end="...", flush=True)
+            disableProxy()
+            print("成功", flush=True)
             disableProxy()
             pressAnyKeyExitWithDisableProxy()
         except Exception as e:
