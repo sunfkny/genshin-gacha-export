@@ -389,9 +389,10 @@ if __name__ == "__main__":
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
         flag = True
+        print("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的关闭代理bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")
         while flag:
             try:
-                i = input("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭\n确定使用抓包模式吗？输入yes确认执行：")
+                i = input("确定使用抓包模式吗？输入yes确认执行：")
                 if i == "yes":
                     flag = False
             except KeyboardInterrupt:
@@ -406,7 +407,8 @@ if __name__ == "__main__":
             print("成功", flush=True)
 
             m = None
-            print("正在捕获链接，请打开抽卡页面", end="...", flush=True)
+            print("请打开抽卡记录页面，并翻页几次")
+            print("正在捕获链接", end="...", flush=True)
             capture()
             print("成功")
 
