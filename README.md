@@ -1,6 +1,6 @@
 # 原神抽卡记录导出
  - NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
- - 强烈建议使用本项目导出的excel配合[抽卡记录分析工具](https://github.com/voderl/genshin-gacha-analyzer)使用，可查看分析饼图、成就表  
+ - 强烈建议使用本项目导出的xlsx配合[抽卡记录分析工具](https://github.com/voderl/genshin-gacha-analyzer)使用，可查看分析饼图、成就表  
  - [抽卡记录导出工具js版](https://github.com/sunfkny/genshin-gacha-export-js)，支持安卓，油猴脚本可在浏览器导出
 
 ## Wiki
