@@ -1,7 +1,7 @@
 # 原神抽卡记录导出
  - NGA原帖：https://bbs.nga.cn/read.php?&tid=25004616
  - [抽卡记录分析工具](https://voderl.github.io/genshin-gacha-analyzer/) from [@笑沐泽](https://bbs.nga.cn/read.php?tid=25004616&page=16#pid491033187Anchor)
- - [抽卡记录导出工具js版](https://github.com/sunfkny/genshin-gacha-export-js)，含油猴脚本可在浏览器导出
+ - [抽卡记录导出工具js版](https://github.com/sunfkny/genshin-gacha-export-js)，支持安卓，油猴脚本可在浏览器导出
  - 注意：我的是python版，带饼图的是[隔壁electron版](https://github.com/biuuu/genshin-gacha-export)，功能类似
 
 ## Wiki
