@@ -127,22 +127,24 @@ def getGachaLogs(gachaTypeId, gachaTypeDict):
     size = "20"
     # api限制一页最大20
     gachaList = []
+    end_id="0"
     for page in range(1, 9999):
         print(f"正在获取 {gachaTypeDict[gachaTypeId]} 第 {page} 页", flush=True)
-        api = getApi(gachaTypeId, size, page)
+        api = getApi(gachaTypeId, size, page, end_id)
         r = requests.get(api)
         s = r.content.decode("utf-8")
         j = json.loads(s)
-
         gacha = j["data"]["list"]
         if not len(gacha):
             break
         for i in gacha:
             gachaList.append(i)
+        end_id=j["data"]["list"][-1]["id"]
+
     return gachaList
 
 
-def getApi(gachaType, size, page):
+def getApi(gachaType, size, page, end_id=""):
     parsed = urllib.parse.urlparse(url)
     querys = urllib.parse.parse_qsl(parsed.query)
     param_dict = dict(querys)
@@ -150,6 +152,7 @@ def getApi(gachaType, size, page):
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
     param_dict["lang"] = "zh-cn"
+    param_dict["end_id"] = end_id
     param = urllib.parse.urlencode(param_dict)
     path = url.split("?")[0]
     api = path + "?" + param
