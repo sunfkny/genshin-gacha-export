@@ -1,4 +1,5 @@
 import json
+import time
 import requests
 import urllib.parse
 import os
@@ -48,6 +49,9 @@ def main():
     with open(f"{gen_path}\\gachaData-{uid}.json", "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     print("JSON", flush=True)
+    t = time.strftime("%Y%m%d%H%M%S", time.localtime())
+    with open(f"{gen_path}\\gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
+        json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
 
     if s.getKey("FLAG_CLEAN"):
         print("清除记录", end="...", flush=True)
