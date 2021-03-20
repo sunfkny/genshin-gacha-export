@@ -1,5 +1,4 @@
 import json
-import time
 import requests
 import urllib.parse
 import os
@@ -37,6 +36,12 @@ def main():
     uid = gachaData["uid"]
     localDataFilePath = f"{gen_path}\\gachaData-{uid}.json"
 
+##### enhancement: store unmerged gachaData every time to avoid data destruction caused by merge errors ###################
+    import time
+    with open(f"{gen_path}\\gachaDataLog-{time.strftime('%Y-%m-%d_%H.%M.%S.jpg',time.localtime())}.json", "w", encoding="utf-8") as f:
+        json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
+##### enhancement end #####################################################################################################
+
     if os.path.isfile(localDataFilePath):
         with open(localDataFilePath, "r", encoding="utf-8") as f:
             localData = json.load(f)
@@ -49,9 +54,6 @@ def main():
     with open(f"{gen_path}\\gachaData-{uid}.json", "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     print("JSON", flush=True)
-    t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    with open(f"{gen_path}\\gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
-        json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
 
     if s.getKey("FLAG_CLEAN"):
         print("清除记录", end="...", flush=True)
@@ -85,6 +87,20 @@ def mergeDataFunc(localData, gachaData):
     for banner in gachaTypeDict:
         bannerLocal = localData["gachaLog"][banner]
         bannerGet = gachaData["gachaLog"][banner]
+
+########### bugfig: merge but ignore id, see issue#18(https://github.com/sunfkny/genshin-gacha-export/issues/18) ##########
+        for gachaGet in bannerLocal:
+            try:
+                del gachaGet["id"]
+            except KeyError:
+                pass
+        for gachaGet in bannerGet:
+            try:
+                del gachaGet["id"]
+            except KeyError:
+                pass
+########### bugfix end ####################################################################################################
+
         if bannerGet == bannerLocal:
             pass
         else:
