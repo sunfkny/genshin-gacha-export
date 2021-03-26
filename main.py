@@ -90,10 +90,13 @@ def mergeDataFunc(localData, gachaData):
         else:
             print("合并", gachaTypeDict[banner])
             flaglist = [1] * len(bannerGet)
+            loc = [[i["time"],i["name"]] for i in bannerLocal]
             for i in range(len(bannerGet)):
                 gachaGet = bannerGet[i]
-                if gachaGet in bannerLocal:
+                get = [gachaGet["time"],gachaGet["name"]]
+                # if gachaGet in bannerLocal:
                     # flaglist.append(1)
+                if get in loc:
                     pass
                 else:
                     flaglist[i] = 0
