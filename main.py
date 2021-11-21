@@ -381,7 +381,10 @@ if __name__ == "__main__":
                     print("日志文件中没有链接")
                 else:
                     spliturl = url.split("?")
-                    spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+                    if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
+                        spliturl[0] = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog"
+                    else:
+                        spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
                     url = "?".join(spliturl)
                     print("检查日志文件中的链接", end="...", flush=True)
                     if checkApi(url):
