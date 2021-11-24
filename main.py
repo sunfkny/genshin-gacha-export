@@ -5,6 +5,7 @@ import urllib.parse
 import os
 import sys
 from config import Config
+from time import sleep
 
 
 def main():
@@ -147,6 +148,7 @@ def getGachaLogs(gachaTypeId, gachaTypeDict):
         for i in gacha:
             gachaList.append(i)
         end_id=j["data"]["list"][-1]["id"]
+        sleep(0.5)
 
     return gachaList
 
