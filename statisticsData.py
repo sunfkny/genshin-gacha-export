@@ -33,8 +33,8 @@ def main():
 <body style="margin: 2rem;">
   <h1>原神抽卡记录导出工具 抽卡报告</h1>
   <div id="app" class="markdown-body row">
-      <div class="col-md-12 col-lg-6 col-xl-6" style="border: 0 2rem;" v-cloak v-for="banner in gachaType">
-        <h2> {{banner.name}} </h2>
+      <div class="col-md-12 col-lg-6 col-xl-6" style="border: 0 2rem;" v-cloak v-for="gacha_name,gacha_type in gachaType">
+        <h2> {{gacha_name}} </h2>
         <div class="table-responsive">
           <table style="display: inline-table; min-width: max-content;">
             <thead>
@@ -49,28 +49,28 @@ def main():
             <tbody>
               <tr>
                 <td>5星</td>
-                <td style="cursor:help" v-bind:title="detail[banner.key].items5str">{{detail[banner.key]["5"]}}</td>
-                <td>{{percent(detail[banner.key]["5"], detail[banner.key].total)}}</td>
-                <td>{{percent(detail[banner.key]["5"], detail[banner.key].totalForRank5)}}</td>
-                <td>{{detail[banner.key].guarantee5}}</td>
+                <td style="cursor:help" v-bind:title="detail[gacha_type].items5str">{{detail[gacha_type]["5"]}}</td>
+                <td>{{percent(detail[gacha_type]["5"], detail[gacha_type].total)}}</td>
+                <td>{{percent(detail[gacha_type]["5"], detail[gacha_type].totalForRank5)}}</td>
+                <td>{{detail[gacha_type].guarantee5}}</td>
               </tr>
               <tr>
                 <td>4星</td>
-                <td style="cursor:help" v-bind:title="detail[banner.key].items4str">{{detail[banner.key]["4"]}}</td>
-                <td>{{percent(detail[banner.key]["4"], detail[banner.key].total)}}</td>
-                <td>{{percent(detail[banner.key]["4"], detail[banner.key].totalForRank4)}}</td>
-                <td>{{detail[banner.key].guarantee4}}</td>
+                <td style="cursor:help" v-bind:title="detail[gacha_type].items4str">{{detail[gacha_type]["4"]}}</td>
+                <td>{{percent(detail[gacha_type]["4"], detail[gacha_type].total)}}</td>
+                <td>{{percent(detail[gacha_type]["4"], detail[gacha_type].totalForRank4)}}</td>
+                <td>{{detail[gacha_type].guarantee4}}</td>
               </tr>
               <tr>
                 <td>3星</td>
-                <td style="cursor:help" v-bind:title="detail[banner.key].items3str">{{detail[banner.key]["3"]}}</td>
-                <td>{{percent(detail[banner.key]["3"], detail[banner.key].total)}}</td>
+                <td style="cursor:help" v-bind:title="detail[gacha_type].items3str">{{detail[gacha_type]["3"]}}</td>
+                <td>{{percent(detail[gacha_type]["3"], detail[gacha_type].total)}}</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
               <tr>
                 <td>总计</td>
-                <td style="cursor:help" v-bind:title="detail[banner.key].itemsstr">{{detail[banner.key].total}}</td>
+                <td style="cursor:help" v-bind:title="detail[gacha_type].itemsstr">{{detail[gacha_type].total}}</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -78,9 +78,9 @@ def main():
             </tbody>
           </table>
         </div>
-        <span v-if="detail[banner.key].rank5logs[0]">5星平均出货次数：{{Math.floor(detail[banner.key].totalForRank5/detail[banner.key]["5"]*100)/100}}<br></span>
-        <span v-if="detail[banner.key].rank5logs[0]">5星历史记录：</span>
-        <span style="margin-right: .5rem;" v-for="log in detail[banner.key].rank5logs">{{log}}</span>
+        <span v-if="detail[gacha_type].rank5logs[0]">5星平均出货次数：{{Math.floor(detail[gacha_type].totalForRank5/detail[gacha_type]["5"]*100)/100}}<br></span>
+        <span v-if="detail[gacha_type].rank5logs[0]">5星历史记录：</span>
+        <span style="margin-right: .5rem;" v-for="log in detail[gacha_type].rank5logs">{{log}}</span>
       </div>
   </div>
   <script>
@@ -88,15 +88,6 @@ def main():
     for (key in gachaData.gachaLog) {
       gachaData.gachaLog[key].reverse()
     }
-    function compare(p) {
-      return function (m, n) {
-        var a = m[p];
-        var b = n[p];
-        // return a - b;
-        return b - a;
-      }
-    }
-    gachaData.gachaType.sort(compare("key"));
 
     var app = new Vue({
       el: '#app',

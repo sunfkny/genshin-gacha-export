@@ -8,9 +8,9 @@ from config import Config
 from time import sleep
 import traceback
 
-gachaTypeIds = ["100", "200", "301", "302"]
-gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
-gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
+gachaQueryTypeIds = ["100", "200", "301", "302"]
+gachaQueryTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
+gachaQueryTypeDict = dict(zip(gachaQueryTypeIds, gachaQueryTypeNames))
 
 def main():
 
@@ -24,8 +24,8 @@ def main():
     # gachaData["gachaType"] = gachaTypes
     # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
-    for gachaTypeId in gachaTypeIds:
-        gachaLog = getGachaLogs(gachaTypeId, gachaTypeDict)
+    for gachaTypeId in gachaQueryTypeIds:
+        gachaLog = getGachaLogs(gachaTypeId, gachaQueryTypeDict)
         gachaData["gachaLog"][gachaTypeId] = gachaLog
 
     uid_flag = 1
@@ -48,6 +48,8 @@ def main():
         mergeData = mergeDataFunc(localData, gachaData)
     else:
         mergeData = gachaData
+
+    mergeData["gachaType"]=gachaQueryTypeDict
     print("写入文件", end="...", flush=True)
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
@@ -87,13 +89,13 @@ def mergeDataFunc(localData, gachaData):
     # gachaTypeNames = [banner["name"] for banner in gachaTypes]
     # gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
 
-    for banner in gachaTypeDict:
+    for banner in gachaQueryTypeDict:
         bannerLocal = localData["gachaLog"][banner]
         bannerGet = gachaData["gachaLog"][banner]
         if bannerGet == bannerLocal:
             pass
         else:
-            print("合并", gachaTypeDict[banner])
+            print("合并", gachaQueryTypeDict[banner])
             flaglist = [1] * len(bannerGet)
             loc = [[i["time"],i["name"]] for i in bannerLocal]
             for i in range(len(bannerGet)):

@@ -1,16 +1,17 @@
 import json
 import os
 import sys
+import main
 
 uid = ""
 gachaInfo = []
 # gachaTypes = []
 ids = 1000000000000000000
 gachaLog = []
-gachaQueryTypeIds = ["100", "200", "301", "302"]
-gachaQueryTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
-gachaQueryTypeDict = dict(zip(gachaQueryTypeIds, gachaQueryTypeNames))
-gachaQueryTypeReverseDict = dict(zip(gachaQueryTypeNames, gachaQueryTypeIds))
+gachaQueryTypeIds = main.gachaQueryTypeIds
+gachaQueryTypeNames = main.gachaQueryTypeNames
+gachaQueryTypeDict = main.gachaQueryTypeDict
+
 gacha_type_dict = {
     "100": "新手祈愿",
     "200": "常驻祈愿",
@@ -133,12 +134,10 @@ def main():
 
     global uid
     global gachaInfo
-    global gachaTypes
     global gachaLog
     global gachaQueryTypeIds
     global gachaQueryTypeNames
     global gachaQueryTypeDict
-    global gachaQueryTypeReverseDict
 
     uid = j["uid"]
     # gachaInfo = j["gachaInfo"]
