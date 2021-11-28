@@ -4,16 +4,12 @@ import sys
 
 uid = ""
 gachaInfo = []
-gachaTypes = []
+# gachaTypes = []
 gachaLog = []
-gachaTypeIds = []
-gachaTypeNames = []
-gachaTypeDict = {}
-gachaTypeReverseDict = {}
-gachaTypeIds = ["100", "200", "301", "302"]
-gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
-gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
-gachaTypeReverseDict = dict(zip(gachaTypeNames, gachaTypeIds))
+gachaQueryTypeIds = ["100", "200", "301", "302"]
+gachaQueryTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
+gachaQueryTypeDict = dict(zip(gachaQueryTypeIds, gachaQueryTypeNames))
+gachaQueryTypeReverseDict = dict(zip(gachaQueryTypeNames, gachaQueryTypeIds))
 gacha_type_dict = {
     "100": "新手祈愿",
     "200": "常驻祈愿",
@@ -39,7 +35,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
     workbook = xlsxwriter.Workbook(f"{gen_path}\\gachaExport-{t}.xlsx")
     for id in gachaTypeIds:
         gachaDictList = gachaLog[id]
-        gachaTypeName = gachaTypeDict[id]
+        gachaTypeName = gachaQueryTypeDict[id]
         gachaDictList.reverse()
         header = "时间,名称,类别,星级,祈愿类型,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
@@ -98,21 +94,21 @@ def main():
     global gachaInfo
     global gachaTypes
     global gachaLog
-    global gachaTypeIds
-    global gachaTypeNames
-    global gachaTypeDict
-    global gachaTypeReverseDict
+    global gachaQueryTypeIds
+    global gachaQueryTypeNames
+    global gachaQueryTypeDict
+    global gachaQueryTypeReverseDict
 
     uid = j["uid"]
     # gachaInfo = j["gachaInfo"]
-    gachaTypes = j["gachaType"]
+    # gachaTypes = j["gachaType"]
     gachaLog = j["gachaLog"]
     # gachaTypeIds = [banner["key"] for banner in gachaTypes]
     # gachaTypeNames = [key["name"] for key in gachaTypes]
 
 
     print("写入文件", end="...", flush=True)
-    writeXLSX(gachaLog, gachaTypeIds)
+    writeXLSX(gachaLog, gachaQueryTypeIds)
     print("XLSX", end=" ", flush=True)
 
 
