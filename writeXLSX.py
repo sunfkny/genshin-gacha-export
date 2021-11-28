@@ -10,6 +10,10 @@ gachaTypeIds = []
 gachaTypeNames = []
 gachaTypeDict = {}
 gachaTypeReverseDict = {}
+gachaTypeIds = ["100", "200", "301", "302"]
+gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
+gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
+gachaTypeReverseDict = dict(zip(gachaTypeNames, gachaTypeIds))
 gacha_type_dict = {
     "100": "新手祈愿",
     "200": "常驻祈愿",
@@ -105,10 +109,7 @@ def main():
     gachaLog = j["gachaLog"]
     # gachaTypeIds = [banner["key"] for banner in gachaTypes]
     # gachaTypeNames = [key["name"] for key in gachaTypes]
-    gachaTypeIds = ["100", "200", "301", "302"]
-    gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
-    gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
-    gachaTypeReverseDict = dict(zip(gachaTypeNames, gachaTypeIds))
+
 
     print("写入文件", end="...", flush=True)
     writeXLSX(gachaLog, gachaTypeIds)
