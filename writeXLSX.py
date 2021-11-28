@@ -5,6 +5,7 @@ import sys
 uid = ""
 gachaInfo = []
 # gachaTypes = []
+ids = 1000000000000000000
 gachaLog = []
 gachaQueryTypeIds = ["100", "200", "301", "302"]
 gachaQueryTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
@@ -18,6 +19,10 @@ gacha_type_dict = {
     "400": "角色活动祈愿-2",
 }
 
+def get_id():
+    global ids
+    ids = ids + 1
+    return str(ids)
 
 def getInfoByItemId(item_id):
     for info in gachaInfo:
@@ -80,6 +85,42 @@ def writeXLSX(gachaLog, gachaTypeIds):
         worksheet.conditional_format(f"A2:{excel_col[-1]}{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=4", "format": star_4})
         worksheet.conditional_format(f"A2:{excel_col[-1]}{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=3", "format": star_3})
 
+    all_gachaDictList = []
+    for id in gachaTypeIds:
+        gacha_log=gachaLog[id]
+        # gacha_log.reverse()
+        all_gachaDictList.extend(gacha_log)
+
+    worksheet = workbook.add_worksheet("原始数据")
+    raw_data_header=["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid"]
+    raw_data_col = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    for i in range(len(raw_data_col)):
+        worksheet.write(f"{raw_data_col[i]}1", raw_data_header[i])
+
+    all_counter = 0
+    for gacha in all_gachaDictList:
+        if gacha.get("id", "") == "":
+            gacha["id"] = get_id()
+
+    all_gachaDictList = sorted(all_gachaDictList, key=lambda gacha: gacha["id"])
+
+    for gacha in all_gachaDictList:
+        count = gacha.get("count", "")
+        gacha_type = gacha.get("gacha_type", "")
+        id = gacha.get("id", "")
+        item_id = gacha.get("item_id", "")
+        item_type = gacha.get("item_type", "")
+        lang = gacha.get("lang", "")
+        name = gacha.get("name", "")
+        rank_type = gacha.get("rank_type", "")
+        time_str = gacha.get("time", "")
+        uid = gacha.get("uid", "")
+
+        excel_data = [count, gacha_type, id, item_id, item_type, lang, name, rank_type, time_str, uid]
+        for i in range(len(raw_data_col)):
+            worksheet.write(f"{raw_data_col[i]}{all_counter+2}", excel_data[i])
+        all_counter += 1
+    
     workbook.close()
 
 
