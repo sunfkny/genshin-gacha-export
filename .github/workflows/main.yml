@@ -1,0 +1,21 @@
+name: Auto Package Helper
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install Python lib
+        run: |
+          pip install -r requirements.txt
+      - name: Package to exe
+        run: pyinstaller -w .\main.spec
+
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export
+          path: dist
