@@ -34,7 +34,7 @@ def main():
   <h1>原神抽卡记录导出工具 抽卡报告</h1>
   <div id="app" class="markdown-body row">
       <div class="col-md-12 col-lg-6 col-xl-6" style="border: 0 2rem;" v-cloak v-for="gacha_name,gacha_type in gachaType">
-        <h2> {{gacha_name}} </h2>
+        <h2> {{gacha_name}} <a style="font-size:10px">{{detail[gacha_type].start_time}}</a></h2>
         <div class="table-responsive">
           <table style="display: inline-table; min-width: max-content;">
             <thead>
@@ -141,9 +141,13 @@ def main():
         "items": { "w3": 0, "w4": 0, "w5": 0, "c4": 0, "c5": 0 },
         "itemsstr": "",
         "rank5logs": [],
+        "start_time":""
       }
 
       for (var gacha in banner) {
+        if (detail[key]["start_time"]==""){
+          detail[key]["start_time"]=" 开始于："+banner[gacha].time
+        }
         rank_type = banner[gacha]["rank_type"]
         name = banner[gacha]["name"]
         pdx = banner[gacha]["pdx"]
