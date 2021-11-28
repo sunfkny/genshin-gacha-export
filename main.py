@@ -6,18 +6,22 @@ import os
 import sys
 from config import Config
 from time import sleep
+import traceback
 
+gachaTypeIds = ["100", "200", "301", "302"]
+gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
+gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
 
 def main():
 
     print("获取抽卡记录", flush=True)
     # gachaInfo = getGachaInfo()
-    gachaTypes = getGachaTypes()
-    gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    gachaTypeNames = [banner["name"] for banner in gachaTypes]
-    gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
+    # gachaTypes = getGachaTypes()
+    # gachaTypeIds = [banner["key"] for banner in gachaTypes]
+    # gachaTypeNames = [key["name"] for key in gachaTypes]
+
     gachaData = {}
-    gachaData["gachaType"] = gachaTypes
+    # gachaData["gachaType"] = gachaTypes
     # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
     for gachaTypeId in gachaTypeIds:
@@ -78,10 +82,10 @@ def main():
 
 
 def mergeDataFunc(localData, gachaData):
-    gachaTypes = gachaData["gachaType"]
-    gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    gachaTypeNames = [banner["name"] for banner in gachaTypes]
-    gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
+    # gachaTypes = gachaData["gachaType"]
+    # gachaTypeIds = [banner["key"] for banner in gachaTypes]
+    # gachaTypeNames = [banner["name"] for banner in gachaTypes]
+    # gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
 
     for banner in gachaTypeDict:
         bannerLocal = localData["gachaLog"][banner]
@@ -115,20 +119,20 @@ def mergeDataFunc(localData, gachaData):
     return localData
 
 
-def getGachaTypes():
-    tmp_url = url.replace("getGachaLog", "getConfigList")
-    parsed = urllib.parse.urlparse(tmp_url)
-    querys = urllib.parse.parse_qsl(parsed.query)
-    param_dict = dict(querys)
-    param_dict["lang"] = "zh-cn"
-    param = urllib.parse.urlencode(param_dict)
-    path = tmp_url.split("?")[0]
-    tmp_url = path + "?" + param
-    r = requests.get(tmp_url)
-    s = r.content.decode("utf-8")
-    configList = json.loads(s)
-    gachaTypeLists = []
-    return configList["data"]["gacha_type_list"]
+# def getGachaTypes():
+#     tmp_url = url.replace("getGachaLog", "getConfigList")
+#     parsed = urllib.parse.urlparse(tmp_url)
+#     querys = urllib.parse.parse_qsl(parsed.query)
+#     param_dict = dict(querys)
+#     param_dict["lang"] = "zh-cn"
+#     param = urllib.parse.urlencode(param_dict)
+#     path = tmp_url.split("?")[0]
+#     tmp_url = path + "?" + param
+#     r = requests.get(tmp_url)
+#     s = r.content.decode("utf-8")
+#     configList = json.loads(s)
+#     gachaTypeLists = []
+#     return configList["data"]["gacha_type_list"]
 
 
 def getGachaLogs(gachaTypeId, gachaTypeDict):
@@ -180,7 +184,7 @@ def checkApi(url):
         s = r.content.decode("utf-8")
         j = json.loads(s)
     except Exception as e:
-        print("API请求解析出错：" + str(e))
+        print("API请求解析出错：\n", traceback.format_exc())
         return False
 
     if not j["data"]:
@@ -234,7 +238,7 @@ def setProxy(enable, proxyIp, IgnoreIp):
         winreg.SetValueEx(key, "ProxyServer", 0, winreg.REG_SZ, proxyIp)
         winreg.SetValueEx(key, "ProxyOverride", 0, winreg.REG_SZ, IgnoreIp)
     except Exception as e:
-        print("设置代理出错: " + str(e.args))
+        print("设置代理出错:\n", traceback.format_exc())
     finally:
         None
 
@@ -301,7 +305,7 @@ def capture():
     except TypeError:
         pass
     except Exception as e:
-        print("抓包模块出错:", e)
+        print("抓包模块出错:\n", traceback.format_exc())
 
 
 if __name__ == "__main__":
@@ -398,7 +402,7 @@ if __name__ == "__main__":
                         main()
                         pressAnyKeyExitWithDisableProxy()
         except Exception as e:
-            print("日志读取模块出错:", e)
+            print("日志读取模块出错:\n", traceback.format_exc())
             pressAnyKeyExitWithDisableProxy()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
@@ -414,7 +418,7 @@ if __name__ == "__main__":
                 print("取消抓包模式")
                 pressAnyKeyExitWithDisableProxy()
             except Exception as e:
-                print(e)
+                print(traceback.format_exc())
                 continue
         try:
             print("设置代理", end="...", flush=True)
@@ -447,6 +451,6 @@ if __name__ == "__main__":
             disableProxy()
             pressAnyKeyExitWithDisableProxy()
         except Exception as e:
-            print("抓包模块出错:", e)
+            print("抓包模块出错:\n", traceback.format_exc())
             pressAnyKeyExitWithDisableProxy()
 

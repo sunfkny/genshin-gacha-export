@@ -61,7 +61,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
             item_type=gacha["item_type"]
             rank_type=gacha["rank_type"]
             gacha_type=gacha["gacha_type"]
-            gacha_type_name=gacha_type_dict[gacha_type]
+            gacha_type_name=gacha_type_dict.get(gacha_type, "")
             counter = counter + 1
             pity_counter = pity_counter + 1
             excel_data = [time_str, name, item_type, rank_type, gacha_type_name, counter, pity_counter]
@@ -103,8 +103,10 @@ def main():
     # gachaInfo = j["gachaInfo"]
     gachaTypes = j["gachaType"]
     gachaLog = j["gachaLog"]
-    gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    gachaTypeNames = [key["name"] for key in gachaTypes]
+    # gachaTypeIds = [banner["key"] for banner in gachaTypes]
+    # gachaTypeNames = [key["name"] for key in gachaTypes]
+    gachaTypeIds = ["100", "200", "301", "302"]
+    gachaTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
     gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
     gachaTypeReverseDict = dict(zip(gachaTypeNames, gachaTypeIds))
 

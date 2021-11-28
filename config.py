@@ -1,5 +1,5 @@
 import json
-import os
+import traceback
 
 
 class Config:
@@ -13,7 +13,7 @@ class Config:
             self.setting = json.loads(f.read())
             f.close()
         except Exception as e:
-            print("配置文件出错",e)
+            print("配置文件出错\n", traceback.format_exc())
             input("请经解压后运行或重新下载")
             exit()
 
