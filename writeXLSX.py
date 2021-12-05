@@ -90,11 +90,13 @@ def writeXLSX(gachaLog, gachaTypeIds):
     for id in gachaTypeIds:
         gacha_log=gachaLog[id]
         # gacha_log.reverse()
+        for gacha in gacha_log:
+            gacha["uigf_gacha_type"] = id
         all_gachaDictList.extend(gacha_log)
 
     worksheet = workbook.add_worksheet("原始数据")
-    raw_data_header=["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid"]
-    raw_data_col = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    raw_data_header=["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid","uigf_gacha_type"]
+    raw_data_col = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J","K"]
     for i in range(len(raw_data_col)):
         worksheet.write(f"{raw_data_col[i]}1", raw_data_header[i])
 
@@ -116,8 +118,9 @@ def writeXLSX(gachaLog, gachaTypeIds):
         rank_type = gacha.get("rank_type", "")
         time_str = gacha.get("time", "")
         uid = gacha.get("uid", "")
+        uigf_gacha_type = gacha.get("uigf_gacha_type", "")
 
-        excel_data = [count, gacha_type, id, item_id, item_type, lang, name, rank_type, time_str, uid]
+        excel_data = [count, gacha_type, id, item_id, item_type, lang, name, rank_type, time_str, uid, uigf_gacha_type]
         for i in range(len(raw_data_col)):
             worksheet.write(f"{raw_data_col[i]}{all_counter+2}", excel_data[i])
         all_counter += 1
