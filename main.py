@@ -7,10 +7,12 @@ import sys
 from config import Config
 from time import sleep
 import traceback
+import UIGF_converter
+import gachaMetadata
 
-gachaQueryTypeIds = ["100", "200", "301", "302"]
-gachaQueryTypeNames = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
-gachaQueryTypeDict = dict(zip(gachaQueryTypeIds, gachaQueryTypeNames))
+gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
+gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
+gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 
 def main():
 
@@ -50,15 +52,20 @@ def main():
         mergeData = gachaData
 
     mergeData["gachaType"]=gachaQueryTypeDict
-    print("写入文件", end="...", flush=True)
+    print("写入JSON", end="...", flush=True)
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
-    with open(f"{gen_path}\\gachaData-{uid}.json", "w", encoding="utf-8") as f:
-        json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
-    print("JSON", flush=True)
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     with open(f"{gen_path}\\gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
         json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
+    print("OK", flush=True)
+
+    if s.getKey("FLAG_UIGF_JSON"):
+        print("写入UIGF JSON", end="...", flush=True)
+        with open(f"{gen_path}\\UIGF_gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
+            UIGF_data = UIGF_converter.convert(uid)
+            json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
+        print("OK", flush=True)
 
     if s.getKey("FLAG_CLEAN"):
         print("清除记录", end="...", flush=True)

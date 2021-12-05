@@ -16,5 +16,6 @@ c.setKey("FLAG_WRITE_XLSX", True)
 c.setKey("FLAG_USE_CONFIG_URL",True)
 c.setKey("FLAG_USE_LOG_URL",True)
 c.setKey("FLAG_USE_CAPTURE",True)
+c.setKey("FLAG_UIGF_JSON",True)
 
 

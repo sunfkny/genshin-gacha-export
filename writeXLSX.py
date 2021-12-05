@@ -1,29 +1,18 @@
 import json
 import os
 import sys
-import main
+import gachaMetadata
+import UIGF_converter
 
 uid = ""
 gachaInfo = []
 # gachaTypes = []
-ids = 1000000000000000000
 gachaLog = []
-gachaQueryTypeIds = main.gachaQueryTypeIds
-gachaQueryTypeNames = main.gachaQueryTypeNames
-gachaQueryTypeDict = main.gachaQueryTypeDict
+gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
+gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
+gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
+gacha_type_dict = gachaMetadata.gacha_type_dict
 
-gacha_type_dict = {
-    "100": "新手祈愿",
-    "200": "常驻祈愿",
-    "301": "角色活动祈愿",
-    "302": "武器活动祈愿",
-    "400": "角色活动祈愿-2",
-}
-
-def get_id():
-    global ids
-    ids = ids + 1
-    return str(ids)
 
 def getInfoByItemId(item_id):
     for info in gachaInfo:
@@ -36,6 +25,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
     import xlsxwriter
     import time
 
+    uid=""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook = xlsxwriter.Workbook(f"{gen_path}\\gachaExport-{t}.xlsx")
@@ -67,6 +57,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
             item_type=gacha["item_type"]
             rank_type=gacha["rank_type"]
             gacha_type=gacha["gacha_type"]
+            uid=gacha["uid"]
             gacha_type_name=gacha_type_dict.get(gacha_type, "")
             counter = counter + 1
             pity_counter = pity_counter + 1
@@ -86,13 +77,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
         worksheet.conditional_format(f"A2:{excel_col[-1]}{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=4", "format": star_4})
         worksheet.conditional_format(f"A2:{excel_col[-1]}{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=3", "format": star_3})
 
-    all_gachaDictList = []
-    for id in gachaTypeIds:
-        gacha_log=gachaLog[id]
-        # gacha_log.reverse()
-        for gacha in gacha_log:
-            gacha["uigf_gacha_type"] = id
-        all_gachaDictList.extend(gacha_log)
+
 
     worksheet = workbook.add_worksheet("原始数据")
     raw_data_header=["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid","uigf_gacha_type"]
@@ -100,12 +85,9 @@ def writeXLSX(gachaLog, gachaTypeIds):
     for i in range(len(raw_data_col)):
         worksheet.write(f"{raw_data_col[i]}1", raw_data_header[i])
 
+    UIGF_data = UIGF_converter.convert(uid)
+    all_gachaDictList=UIGF_data["list"]
     all_counter = 0
-    for gacha in all_gachaDictList:
-        if gacha.get("id", "") == "":
-            gacha["id"] = get_id()
-
-    all_gachaDictList = sorted(all_gachaDictList, key=lambda gacha: gacha["id"])
 
     for gacha in all_gachaDictList:
         count = gacha.get("count", "")
@@ -150,9 +132,9 @@ def main():
     # gachaTypeNames = [key["name"] for key in gachaTypes]
 
 
-    print("写入文件", end="...", flush=True)
+    print("写入XLSX", end="...", flush=True)
     writeXLSX(gachaLog, gachaQueryTypeIds)
-    print("XLSX", end=" ", flush=True)
+    print("OK", end=" ", flush=True)
 
 
 if __name__ == "__main__":
