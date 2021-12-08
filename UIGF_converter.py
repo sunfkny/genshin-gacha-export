@@ -8,15 +8,14 @@ import json
 gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
 gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
 gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
-ids = 1000000000000000000
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 s = Config(gen_path + "\\config.json")
 
-def get_id():
-    global ids
-    ids = ids + 1
-    return str(ids)
-
+def id_generator():
+    id = 1000000000000000000
+    while True:
+        id = id + 1
+        yield str(id)
 
 def convert(uid=""):
     UIGF_data = {}
@@ -39,10 +38,11 @@ def convert(uid=""):
         for gacha in gacha_log:
             gacha["uigf_gacha_type"] = id
         all_gachaDictList.extend(gacha_log)
-        
+
+    id = id_generator()
     for gacha in all_gachaDictList:
         if gacha.get("id", "") == "":
-            gacha["id"] = get_id()
+            gacha["id"] = next(id)
     all_gachaDictList = sorted(all_gachaDictList, key=lambda gacha: gacha["id"])
     UIGF_data["list"] = all_gachaDictList
     return UIGF_data
