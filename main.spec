@@ -2,8 +2,18 @@
 
 block_cipher = None
 
+py_files = [
+    'main.py',
+    'statisticsData.py',
+    'writeXLSX.py',
+    'config.py',
+    'UIGF_converter.py',
+    'gachaMetadata.py',
+]
+exe_name = 'genshin-gacha-export'
+icon_path = 'ys.ico'
 
-a = Analysis(['main.py', 'statisticsData.py','writeXLSX.py','config.py'],
+a = Analysis(py_files,
              pathex=[],
              binaries=[],
              datas=[],
@@ -23,7 +33,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='genshin-gacha-export',
+          name=exe_name,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -31,4 +41,4 @@ exe = EXE(pyz,
           upx_exclude=[],
           runtime_tmpdir=None,
           console=True,
-          icon="ys.ico" )
+          icon=icon_path)
