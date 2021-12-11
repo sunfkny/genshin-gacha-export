@@ -3,3 +3,6 @@ contact_links:
   - name: 常见问题
     url: https://github.com/sunfkny/genshin-gacha-export/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98
     about: 默认所有 Issues 发起者均已了解此处的内容
+  - name: 转到讨论区
+    url: https://github.com/sunfkny/genshin-gacha-export/discussions
+    about: Issues 用于反馈 Bug, 新的功能建议和提问答疑请到讨论区发起
