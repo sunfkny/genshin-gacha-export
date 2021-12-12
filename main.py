@@ -53,9 +53,14 @@ def main():
 
     mergeData["gachaType"]=gachaQueryTypeDict
     print("写入JSON", end="...", flush=True)
+    # 抽卡报告读取 gachaData.json
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
+    # 待合并数据 gachaData-{uid}.json
+    with open(f"{gen_path}\\gachaData-{uid}.json", "w", encoding="utf-8") as f:
+        json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
+    # 备份历史数据防止爆炸 gachaData-{uid}-{t}.json
     with open(f"{gen_path}\\gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
         json.dump(gachaData, f, ensure_ascii=False, sort_keys=False, indent=4)
     print("OK", flush=True)
