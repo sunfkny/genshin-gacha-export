@@ -49,5 +49,5 @@ def convert(uid=""):
 
 if __name__ == "__main__":
     with open(f"{gen_path}\\UIGF_gachaData.json", "w", encoding="utf-8") as f:
-        UIGF_data = convert("100205551")
+        UIGF_data = convert("")
         json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
