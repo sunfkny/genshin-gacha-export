@@ -32,11 +32,11 @@ def convert(uid=""):
     j = json.load(f)
     f.close()
     gachaLog = j["gachaLog"]
-    for id in gachaQueryTypeIds:
-        gacha_log = gachaLog.get(id, [])
+    for gacha_type in gachaQueryTypeIds:
+        gacha_log = gachaLog.get(gacha_type, [])
         # gacha_log.reverse()
         for gacha in gacha_log:
-            gacha["uigf_gacha_type"] = id
+            gacha["uigf_gacha_type"] = gacha_type
         all_gachaDictList.extend(gacha_log)
 
     id = id_generator()
