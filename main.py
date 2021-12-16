@@ -1,7 +1,7 @@
 import json
 import time
 import requests
-import urllib.parse
+from urllib import parse
 import os
 import sys
 from config import Config
@@ -172,16 +172,16 @@ def getGachaLogs(gachaTypeId, gachaTypeDict):
 
 
 def getApi(gachaType, size, page, end_id=""):
-    parsed = urllib.parse.urlparse(url)
-    querys = urllib.parse.parse_qsl(parsed.query)
+    parsed = parse.urlparse(url)
+    querys = parse.parse_qsl(str(parsed.query))
     param_dict = dict(querys)
     param_dict["size"] = size
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
     param_dict["lang"] = "zh-cn"
     param_dict["end_id"] = end_id
-    param = urllib.parse.urlencode(param_dict)
-    path = url.split("?")[0]
+    param = parse.urlencode(param_dict)
+    path = str(url).split("?")[0]
     api = path + "?" + param
     return api
 
@@ -211,7 +211,7 @@ def checkApi(url):
 
 
 def getQueryVariable(variable):
-    query = url.split("?")[1]
+    query = str(url).split("?")[1]
     vars = query.split("&")
     for v in vars:
         if v.split("=")[0] == variable:
@@ -245,7 +245,7 @@ def pressAnyKeyExitWithDisableProxy(msg="执行结束，按任意键退出"):
 def setProxy(enable, proxyIp, IgnoreIp):
     import winreg
 
-    xpath = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+    xpath = r"Software\Microsoft\Windows\CurrentVersion\Internet Settings"
     try:
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, xpath, 0, winreg.KEY_WRITE)
         winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, enable)
@@ -363,7 +363,7 @@ if __name__ == "__main__":
     if FLAG_USE_LOG_URL:
         try:
             USERPROFILE = os.environ["USERPROFILE"]
-            output_log_path = None
+            output_log_path = ""
             output_log_path_cn = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
             output_log_path_global = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
 
@@ -400,7 +400,7 @@ if __name__ == "__main__":
                 if url == "":
                     print("日志文件中没有链接")
                 else:
-                    spliturl = url.split("?")
+                    spliturl = str(url).split("?")
                     if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
                         spliturl[0] = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog"
                     else:
@@ -439,7 +439,6 @@ if __name__ == "__main__":
             enableProxy()
             print("成功", flush=True)
 
-            m = None
             print("请打开抽卡记录页面，并翻页几次")
             print("正在捕获链接", end="...", flush=True)
             capture()
