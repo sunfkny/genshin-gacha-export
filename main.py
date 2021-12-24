@@ -327,7 +327,7 @@ if __name__ == "__main__":
     url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
-    latest = "https://raw.fastgit.org/sunfkny/genshin-gacha-export/main/verison.txt"
+    latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/verison.txt"
     try:
         print("检查更新中...", end="", flush=True)
         latestVerison = requests.get(latest).text
