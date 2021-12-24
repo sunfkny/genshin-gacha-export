@@ -329,10 +329,11 @@ if __name__ == "__main__":
     s = Config(gen_path + "\\config.json")
     latest = "https://raw.fastgit.org/sunfkny/genshin-gacha-export/main/verison.txt"
     try:
+        print("检查更新中...", end="", flush=True)
         latestVerison = requests.get(latest).text
         verison = s.getKey("verison")
         if verison != latestVerison:
-            print(f"当前版本{verison}不是最新，请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
+            print(f"当前版本{verison}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
     except Exception:
         print("检查更新失败", flush=True)
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
