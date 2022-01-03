@@ -229,13 +229,12 @@ def getGachaInfo():
     return gachaInfo
 
 
-def pressAnyKeyExitWithDisableProxy(msg="执行结束，按任意键退出"):
+def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     from sys import exit
 
     print("")
     print(msg, end="...", flush=True)
     try:
-        disableProxy()
         input()
     except:
         pass
@@ -315,7 +314,7 @@ def capture():
         print("清除代理", end="...", flush=True)
         disableProxy()
         print("成功", flush=True)
-        pressAnyKeyExitWithDisableProxy()
+        pressAnyKeyToExit()
     except TypeError:
         pass
     except Exception as e:
@@ -343,7 +342,7 @@ if __name__ == "__main__":
         if checkApi(url):
             print("合法")
             main()
-            pressAnyKeyExitWithDisableProxy()
+            pressAnyKeyToExit()
 
     FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
     while FLAG_MANUAL_INPUT_URL:
@@ -352,13 +351,9 @@ if __name__ == "__main__":
             if not checkApi(url):
                 continue
             else:
-                print("检查链接", end="...", flush=True)
-                if not checkApi(url):
-                    pressAnyKeyExitWithDisableProxy()
-                print("合法")
                 FLAG_MANUAL_INPUT_URL = False
                 main()
-                pressAnyKeyExitWithDisableProxy()
+                pressAnyKeyToExit()
         except:
             continue
 
@@ -417,10 +412,10 @@ if __name__ == "__main__":
                         s = Config(configPath)
                         s.setKey("url", url)
                         main()
-                        pressAnyKeyExitWithDisableProxy()
+                        pressAnyKeyToExit()
         except Exception as e:
             print("日志读取模块出错:\n", traceback.format_exc())
-            pressAnyKeyExitWithDisableProxy()
+            pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
@@ -433,7 +428,7 @@ if __name__ == "__main__":
                     flag = False
             except KeyboardInterrupt:
                 print("取消抓包模式")
-                pressAnyKeyExitWithDisableProxy()
+                pressAnyKeyToExit()
             except Exception as e:
                 print(traceback.format_exc())
                 continue
@@ -453,20 +448,20 @@ if __name__ == "__main__":
 
             print("检查链接", end="...", flush=True)
             if not checkApi(url):
-                pressAnyKeyExitWithDisableProxy()
+                pressAnyKeyToExit()
             print("合法")
 
             main()
-            pressAnyKeyExitWithDisableProxy()
+            pressAnyKeyToExit()
 
         except KeyboardInterrupt:
             print("中止抓包模式")
             print("清除代理", end="...", flush=True)
             disableProxy()
             print("成功", flush=True)
-            disableProxy()
-            pressAnyKeyExitWithDisableProxy()
+            pressAnyKeyToExit()
         except Exception as e:
+            disableProxy()
             print("抓包模块出错:\n", traceback.format_exc())
-            pressAnyKeyExitWithDisableProxy()
+            pressAnyKeyToExit()
 
