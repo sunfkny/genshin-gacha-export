@@ -15,17 +15,20 @@ jobs:
         run: |
           pip install -r requirements.txt
           
-      - name: init config.json
+      - name: Init config.json
         run: |
           python config_initer.py
           
+      - name: Get version
+        run: echo "version=`cat version.txt`" >> $GITHUB_ENV
+        
       - name: Package to exe
         run: pyinstaller -w .\main.spec
         
       - name: Upload output
         uses: actions/upload-artifact@v2
         with:
-          name: genshin-gacha-export
+          name: genshin-gacha-export_${{ env.version }}
           path: dist
 
   build-py37:
@@ -38,9 +41,12 @@ jobs:
         run: |
           pip install -r requirements.txt
           
-      - name: init config.json
+      - name: Init config.json
         run: |
           python config_initer.py
+          
+      - name: Get version
+        run: echo "version=`cat version.txt`" >> $GITHUB_ENV
           
       - name: Package to exe
         run: pyinstaller -w .\main.spec
@@ -48,5 +54,5 @@ jobs:
       - name: Upload output
         uses: actions/upload-artifact@v2
         with:
-          name: genshin-gacha-export-win7
+          name: genshin-gacha-export-win7_${{ env.version }}
           path: dist
