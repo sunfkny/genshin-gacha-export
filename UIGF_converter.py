@@ -24,7 +24,7 @@ def convert(uid=""):
     UIGF_data["info"]["lang"] = "zh-cn"
     UIGF_data["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     UIGF_data["info"]["export_app"] = "genshin-gacha-export"
-    UIGF_data["info"]["export_app_version"] = s.getKey("verison")
+    UIGF_data["info"]["export_app_version"] = s.getKey("version")
     UIGF_data["info"]["uigf_version"] = "v2.0"
     all_gachaDictList = []
     

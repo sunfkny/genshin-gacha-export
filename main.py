@@ -326,13 +326,13 @@ if __name__ == "__main__":
     url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
-    latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/verison.txt"
+    latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/version.txt"
     try:
         print("检查更新中...", end="", flush=True)
-        latestVerison = requests.get(latest).text
-        verison = s.getKey("verison")
-        if verison != latestVerison:
-            print(f"当前版本{verison}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestVerison}")
+        latestversion = requests.get(latest).text
+        version = s.getKey("version")
+        if version != latestversion:
+            print(f"当前版本{version}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestversion}")
     except Exception:
         print("检查更新失败", flush=True)
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
