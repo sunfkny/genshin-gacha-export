@@ -20,7 +20,7 @@ jobs:
           python config_initer.py
           
       - name: Get version
-        run: echo "version=`cat version.txt`" >> $GITHUB_ENV
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
         run: pyinstaller -w .\main.spec
@@ -46,7 +46,7 @@ jobs:
           python config_initer.py
           
       - name: Get version
-        run: echo "version=`cat version.txt`" >> $GITHUB_ENV
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
           
       - name: Package to exe
         run: pyinstaller -w .\main.spec
