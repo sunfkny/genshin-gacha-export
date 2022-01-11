@@ -90,9 +90,9 @@ def main():
         writeXLSX.main()
 
     if s.getKey("FLAG_SHOW_REPORT"):
-        import statisticsData
+        import render_html
 
-        statisticsData.main()
+        render_html.main()
 
 
 def mergeDataFunc(localData, gachaData):

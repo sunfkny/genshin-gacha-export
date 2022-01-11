@@ -4,7 +4,7 @@ block_cipher = None
 
 py_files = [
     'main.py',
-    'statisticsData.py',
+    'render_html.py',
     'writeXLSX.py',
     'config.py',
     'UIGF_converter.py',
