@@ -328,7 +328,7 @@ if __name__ == "__main__":
     s = Config(gen_path + "\\config.json")
     latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/version.txt"
     try:
-        print("检查更新中...", end="", flush=True)
+        print("检查更新中...\n", end="", flush=True)
         latestversion = requests.get(latest).text
         version = s.getKey("version")
         if version != latestversion:
