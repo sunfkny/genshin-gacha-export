@@ -84,7 +84,7 @@ def main():
         </table>
       </div>
       {% if detail[gacha_type]["5"] > 0 %}
-        <span>5星平均出货次数：<br></span>
+        <span>5星平均出货次数：{{ (detail[gacha_type]["totalForRank5"] / detail[gacha_type]["5"]) | round(2) }}</span><br>
         <span>5星历史记录：</span>
         {% for rank5 in detail[gacha_type]["rank5logs"] %}
         <span style="margin-right: .5rem;">{{rank5}}</span>
