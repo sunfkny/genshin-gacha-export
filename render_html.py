@@ -213,10 +213,9 @@ def main():
         detail[key]["total_percent5"] = percent(detail[key]["5"], detail[key]["totalForRank5"])
         detail[key]["total_percent4"] = percent(detail[key]["4"], detail[key]["totalForRank4"])
 
-    with open("details.json","w",encoding="utf-8") as f:
-        json.dump(detail,f,ensure_ascii=False,indent=4)
+    # with open("details.json","w",encoding="utf-8") as f:
+    #     json.dump(detail,f,ensure_ascii=False,indent=4)
         
-    json.dumps(gachaLog,ensure_ascii=False, sort_keys=False, indent=4)
     html = j2_templ.render(
         gachaQueryTypeIds=gachaQueryTypeIds,
         gachaQueryTypeDict=gachaQueryTypeDict,
