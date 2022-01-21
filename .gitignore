@@ -1,0 +1,7 @@
+.vscode/settings.json
+UIGF_gachaData-*.json
+__pycache__/
+config.json
+gachaData*.json
+gachaExport-*.xlsx
+gachaReport.html
