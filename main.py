@@ -61,13 +61,6 @@ def main():
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     print("OK", flush=True)
 
-    if s.getKey("FLAG_UIGF_JSON"):
-        print("写入UIGF JSON", end="...", flush=True)
-        with open(f"{gen_path}\\UIGF_gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
-            UIGF_data = UIGF_converter.convert(uid)
-            json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
-        print("OK", flush=True)
-
     if s.getKey("FLAG_AUTO_ARCHIVE"):
         print("自动归档...", flush=True)
         archive_path = f"{gen_path}\\archive"
@@ -88,6 +81,13 @@ def main():
                     os.remove(f"{archive_path}\\{file}")
                 except:
                     pass
+                
+    if s.getKey("FLAG_UIGF_JSON"):
+        print("写入UIGF JSON", end="...", flush=True)
+        with open(f"{gen_path}\\UIGF_gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
+            UIGF_data = UIGF_converter.convert(uid)
+            json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
+        print("OK", flush=True)
 
     if s.getKey("FLAG_WRITE_XLSX"):
         import writeXLSX
