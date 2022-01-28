@@ -4,7 +4,7 @@ import requests
 from urllib import parse
 import os
 import sys
-from config import Config
+from config import Config, version
 from time import sleep
 import traceback
 import UIGF_converter
@@ -17,17 +17,11 @@ gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 def main():
 
     print("获取抽卡记录", flush=True)
-    # gachaInfo = getGachaInfo()
-    # gachaTypes = getGachaTypes()
-    # gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    # gachaTypeNames = [key["name"] for key in gachaTypes]
 
     gachaData = {}
-    # gachaData["gachaType"] = gachaTypes
-    # gachaData["gachaInfo"] = gachaInfo
     gachaData["gachaLog"] = {}
     for gachaTypeId in gachaQueryTypeIds:
-        gachaLog = getGachaLogs(gachaTypeId, gachaQueryTypeDict)
+        gachaLog = getGachaLogs(gachaTypeId)
         gachaData["gachaLog"][gachaTypeId] = gachaLog
 
     uid_flag = 1
@@ -96,10 +90,6 @@ def main():
 
 
 def mergeDataFunc(localData, gachaData):
-    # gachaTypes = gachaData["gachaType"]
-    # gachaTypeIds = [banner["key"] for banner in gachaTypes]
-    # gachaTypeNames = [banner["name"] for banner in gachaTypes]
-    # gachaTypeDict = dict(zip(gachaTypeIds, gachaTypeNames))
 
     for banner in gachaQueryTypeDict:
         bannerLocal = localData["gachaLog"][banner]
@@ -113,8 +103,6 @@ def mergeDataFunc(localData, gachaData):
             for i in range(len(bannerGet)):
                 gachaGet = bannerGet[i]
                 get = [gachaGet["time"],gachaGet["name"]]
-                # if gachaGet in bannerLocal:
-                    # flaglist.append(1)
                 if get in loc:
                     pass
                 else:
@@ -133,29 +121,13 @@ def mergeDataFunc(localData, gachaData):
     return localData
 
 
-# def getGachaTypes():
-#     tmp_url = url.replace("getGachaLog", "getConfigList")
-#     parsed = urllib.parse.urlparse(tmp_url)
-#     querys = urllib.parse.parse_qsl(parsed.query)
-#     param_dict = dict(querys)
-#     param_dict["lang"] = "zh-cn"
-#     param = urllib.parse.urlencode(param_dict)
-#     path = tmp_url.split("?")[0]
-#     tmp_url = path + "?" + param
-#     r = requests.get(tmp_url)
-#     s = r.content.decode("utf-8")
-#     configList = json.loads(s)
-#     gachaTypeLists = []
-#     return configList["data"]["gacha_type_list"]
-
-
-def getGachaLogs(gachaTypeId, gachaTypeDict):
+def getGachaLogs(gachaTypeId):
     size = "20"
     # api限制一页最大20
     gachaList = []
     end_id="0"
     for page in range(1, 9999):
-        print(f"正在获取 {gachaTypeDict[gachaTypeId]} 第 {page} 页", flush=True)
+        print(f"正在获取 {gachaQueryTypeDict[gachaTypeId]} 第 {page} 页", flush=True)
         api = getApi(gachaTypeId, size, page, end_id)
         r = requests.get(api)
         s = r.content.decode("utf-8")
@@ -330,7 +302,6 @@ if __name__ == "__main__":
     try:
         print("检查更新中...\n", end="", flush=True)
         latestversion = requests.get(latest).text
-        version = s.getKey("version")
         if version != latestversion:
             print(f"当前版本{version}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestversion}")
     except Exception:
