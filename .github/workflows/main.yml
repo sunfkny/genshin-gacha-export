@@ -28,7 +28,7 @@ jobs:
           path: dist
 
       - name: Remove output
-        run: rm dist\genshin-gacha-export_capture_${{ env.version }}
+        run: rm dist\genshin-gacha-export.exe
 
       - name: Package to exe
         run: pyinstaller -w .\main.spec
@@ -63,7 +63,7 @@ jobs:
           path: dist
 
       - name: Remove output
-        run: rm dist\genshin-gacha-export-win7_capture_${{ env.version }}
+        run: rm dist\genshin-gacha-export.exe
 
       - name: Package to exe
         run: pyinstaller -w .\main.spec

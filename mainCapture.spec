@@ -11,7 +11,7 @@ py_files = [
     'gachaMetadata.py',
     'capture.py'
 ]
-exe_name = 'genshin-gacha-export_cap'
+exe_name = 'genshin-gacha-export'
 icon_path = 'ys.ico'
 
 a = Analysis(py_files,
