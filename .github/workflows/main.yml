@@ -25,8 +25,21 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: genshin-gacha-export_${{ env.version }}
-          path: dist
+          path: dist\genshin-gacha-export.exe
 
+      - name: Install mitmproxy
+      run: |
+        pip install mitmproxy==5.3.0
+
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export_capture_${{ env.version }}
+          path: dist
+      
   build-py37:
     runs-on: windows-2019
     steps:
@@ -47,4 +60,17 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: genshin-gacha-export-win7_${{ env.version }}
+          path: dist\genshin-gacha-export.exe
+          
+      - name: Install mitmproxy
+      run: |
+        pip install mitmproxy==5.3.0
+
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export-win7_capture_${{ env.version }}
           path: dist
