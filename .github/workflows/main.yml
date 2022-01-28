@@ -19,6 +19,18 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export_capture_${{ env.version }}
+          path: dist
+
+      - name: Remove output
+        run: rm dist\genshin-gacha-export_capture_${{ env.version }}
+
+      - name: Package to exe
         run: pyinstaller -w .\main.spec
         
       - name: Upload output
@@ -27,21 +39,6 @@ jobs:
           name: genshin-gacha-export_${{ env.version }}
           path: dist\genshin-gacha-export.exe
 
-      - name: Remove output
-        run: rm dist\genshin-gacha-export.exe
-
-      - name: Install mitmproxy
-        run: |
-          pip install mitmproxy==5.3.0
-
-      - name: Package to exe
-        run: pyinstaller -w .\mainCapture.spec
-
-      - name: Upload output
-        uses: actions/upload-artifact@v2
-        with:
-          name: genshin-gacha-export_capture_${{ env.version }}
-          path: dist
       
   build-py37:
     runs-on: windows-2019
@@ -57,22 +54,6 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
           
       - name: Package to exe
-        run: pyinstaller -w .\main.spec
-        
-      - name: Upload output
-        uses: actions/upload-artifact@v2
-        with:
-          name: genshin-gacha-export-win7_${{ env.version }}
-          path: dist\genshin-gacha-export.exe
-          
-      - name: Remove output
-        run: rm dist\genshin-gacha-export.exe
-
-      - name: Install mitmproxy
-        run: |
-          pip install mitmproxy==5.3.0
-
-      - name: Package to exe
         run: pyinstaller -w .\mainCapture.spec
 
       - name: Upload output
@@ -80,3 +61,15 @@ jobs:
         with:
           name: genshin-gacha-export-win7_capture_${{ env.version }}
           path: dist
+
+      - name: Remove output
+        run: rm dist\genshin-gacha-export-win7_capture_${{ env.version }}
+
+      - name: Package to exe
+        run: pyinstaller -w .\main.spec
+        
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export-win7_${{ env.version }}
+          path: dist\genshin-gacha-export.exe
