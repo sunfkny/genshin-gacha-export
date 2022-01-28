@@ -1,0 +1,52 @@
+name: Auto Package Helper 2
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  build-py39:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        
+      - name: Install Python lib
+        run: |
+          pip install -r requirements.txt
+          pip install mitmproxy==5.3.0
+          
+      - name: Get version
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
+        
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+        
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export_capture_${{ env.version }}
+          path: dist
+
+  build-py37:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        
+      - name: Install Python lib
+        run: |
+          pip install -r requirements.txt
+          pip install mitmproxy==5.3.0
+          
+      - name: Get version
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
+          
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+        
+      - name: Upload output
+        uses: actions/upload-artifact@v2
+        with:
+          name: genshin-gacha-export_capture-win7_${{ env.version }}
+          path: dist
