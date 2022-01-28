@@ -27,6 +27,9 @@ jobs:
           name: genshin-gacha-export_${{ env.version }}
           path: dist\genshin-gacha-export.exe
 
+      - name: Remove output
+        run: rm dist\genshin-gacha-export.exe
+
       - name: Install mitmproxy
         run: |
           pip install mitmproxy==5.3.0
@@ -62,6 +65,9 @@ jobs:
           name: genshin-gacha-export-win7_${{ env.version }}
           path: dist\genshin-gacha-export.exe
           
+      - name: Remove output
+        run: rm dist\genshin-gacha-export.exe
+
       - name: Install mitmproxy
         run: |
           pip install mitmproxy==5.3.0
