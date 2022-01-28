@@ -1,5 +1,4 @@
 import time
-from config import Config
 import os
 import sys
 import gachaMetadata
@@ -25,7 +24,8 @@ def convert(uid=""):
     UIGF_data["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     UIGF_data["info"]["export_app"] = "genshin-gacha-export"
     UIGF_data["info"]["export_app_version"] = version
-    UIGF_data["info"]["uigf_version"] = "v2.0"
+    UIGF_data["info"]["uigf_version"] = "v2.2"
+    UIGF_data["info"]["export_timestamp"] = int(time.time())
     all_gachaDictList = []
     
     f = open(f"{gen_path}\\gachaData.json", "r", encoding="utf-8")
@@ -34,10 +34,12 @@ def convert(uid=""):
     gachaLog = j["gachaLog"]
     for gacha_type in gachaQueryTypeIds:
         gacha_log = gachaLog.get(gacha_type, [])
-        # gacha_log.reverse()
+        gacha_log = sorted(gacha_log, key=lambda gacha: gacha["time"], reverse=True)
+        gacha_log.reverse()
         for gacha in gacha_log:
             gacha["uigf_gacha_type"] = gacha_type
         all_gachaDictList.extend(gacha_log)
+    all_gachaDictList = sorted(all_gachaDictList, key=lambda gacha: gacha["time"])
 
     id = id_generator()
     for gacha in all_gachaDictList:
