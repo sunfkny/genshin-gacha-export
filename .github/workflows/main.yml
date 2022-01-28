@@ -28,8 +28,8 @@ jobs:
           path: dist\genshin-gacha-export.exe
 
       - name: Install mitmproxy
-      run: |
-        pip install mitmproxy==5.3.0
+        run: |
+          pip install mitmproxy==5.3.0
 
       - name: Package to exe
         run: pyinstaller -w .\mainCapture.spec
@@ -63,8 +63,8 @@ jobs:
           path: dist\genshin-gacha-export.exe
           
       - name: Install mitmproxy
-      run: |
-        pip install mitmproxy==5.3.0
+        run: |
+          pip install mitmproxy==5.3.0
 
       - name: Package to exe
         run: pyinstaller -w .\mainCapture.spec
