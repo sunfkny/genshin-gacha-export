@@ -5,7 +5,7 @@ version = "2.4.0.01281254"
 class Config:
     setting = {
         "FLAG_MANUAL_INPUT_URL": False,
-        "FLAG_CLEAN": False,
+        "FLAG_AUTO_ARCHIVE": True,
         "FLAG_SHOW_REPORT": True,
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,

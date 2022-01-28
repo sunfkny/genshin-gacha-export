@@ -4,6 +4,8 @@ import requests
 from urllib import parse
 import os
 import sys
+import re
+import shutil
 from config import Config, version
 from time import sleep
 import traceback
@@ -66,17 +68,26 @@ def main():
             json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
         print("OK", flush=True)
 
-    if s.getKey("FLAG_CLEAN"):
-        print("清除记录", end="...", flush=True)
-        gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-        del_paths = [name for name in os.listdir(gen_path) if name.startswith("gacha") and (name.endswith(".csv") or name.endswith(".xlsx"))]
-        for del_path in del_paths:
+    if s.getKey("FLAG_AUTO_ARCHIVE"):
+        print("自动归档...", flush=True)
+        archive_path = f"{gen_path}\\archive"
+        if not os.path.exists(archive_path):
+            os.mkdir(archive_path)
+        files = os.listdir(gen_path)
+        archive_UIGF = [f for f in files if re.match(r"UIGF_gachaData-\d+-\d+.json", f)]
+        archive_json = [f for f in files if re.match(r"gachaData-\d+-\d+.json", f)]
+        archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+.xlsx", f)]
+        archive_files = archive_UIGF + archive_json + archive_xlsx
+        for file in archive_files:
             try:
-                os.remove(gen_path + "\\" + del_path)
-                print(del_path, end=" ", flush=True)
-            except:
-                pass
-        print("")
+                shutil.move(f"{gen_path}\\{file}", f"{archive_path}\\")
+                print(file, flush=True)
+            except Exception as e:
+                print(e)
+                try:
+                    os.remove(f"{archive_path}\\{file}")
+                except:
+                    pass
 
     if s.getKey("FLAG_WRITE_XLSX"):
         import writeXLSX
