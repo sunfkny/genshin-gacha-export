@@ -64,7 +64,7 @@ if __name__ == "__main__":
         return version
 
     version_str = get_version() + '.' + time.strftime("%m%d%H%M")
-    print(f"{version_str=}")
+    print(f"version_str = {version_str}")
     
     with open('version.txt', 'w', encoding='utf8') as f:
         f.write(version_str)
