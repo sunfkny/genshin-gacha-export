@@ -1,6 +1,6 @@
 import json
 
-version = "2.4.0.01281254"
+version = "v2.4.0.01122052"
 
 class Config:
     setting = {
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         version = j['data']['game']['latest']['version']
         return version
 
-    version_str = get_version() + '.' + time.strftime("%m%d%H%M")
+    version_str = "v" + get_version() + '.' + time.strftime("%m%d%H%M")
     print(f"version_str = {version_str}")
     
     with open('version.txt', 'w', encoding='utf8') as f:

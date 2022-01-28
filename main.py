@@ -99,6 +99,7 @@ def main():
 
         render_html.main()
 
+    pressAnyKeyToExit()
 
 def mergeDataFunc(localData, gachaData):
 
@@ -108,7 +109,7 @@ def mergeDataFunc(localData, gachaData):
         if bannerGet == bannerLocal:
             pass
         else:
-            print("合并", gachaQueryTypeDict[banner])
+            print("合并", gachaQueryTypeDict[banner], end=": ", flush=True)
             flaglist = [1] * len(bannerGet)
             loc = [[i["time"],i["name"]] for i in bannerLocal]
             for i in range(len(bannerGet)):
@@ -119,13 +120,12 @@ def mergeDataFunc(localData, gachaData):
                 else:
                     flaglist[i] = 0
 
-            print("获取到", len(flaglist), "条记录")
             tempData = []
             for i in range(len(bannerGet)):
                 if flaglist[i] == 0:
                     gachaGet = bannerGet[i]
                     tempData.insert(0, gachaGet)
-            print("追加", len(tempData), "条记录")
+            print("追加", len(tempData), "条记录", flush=True)
             for i in tempData:
                 localData["gachaLog"][banner].insert(0, i)
 
@@ -215,93 +215,12 @@ def getGachaInfo():
 def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     from sys import exit
 
-    print("")
     print(msg, end="...", flush=True)
     try:
         input()
     except:
         pass
     exit()
-
-
-def setProxy(enable, proxyIp, IgnoreIp):
-    import winreg
-
-    xpath = r"Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, xpath, 0, winreg.KEY_WRITE)
-        winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, enable)
-        winreg.SetValueEx(key, "ProxyServer", 0, winreg.REG_SZ, proxyIp)
-        winreg.SetValueEx(key, "ProxyOverride", 0, winreg.REG_SZ, IgnoreIp)
-    except Exception as e:
-        print("设置代理出错:\n", traceback.format_exc())
-    finally:
-        None
-
-
-def enableProxy():
-    proxyIP = "127.0.0.1:8889"
-    IgnoreIp = "172.*;192.*;"
-    setProxy(1, proxyIP, IgnoreIp)
-
-
-def disableProxy():
-    setProxy(0, "", "")
-
-
-class Addon(object):
-    def __init__(self):
-        pass
-
-    def request(self, flow):
-        if "mihoyo.com/event/gacha_info/api/getGachaLog" in flow.request.url:
-            global url
-            url = flow.request.url
-            s.setKey("url", url)
-            m.shutdown()
-
-    def response(self, flow):
-        pass
-
-
-def capture():
-    from mitmproxy.options import Options
-    from mitmproxy.proxy.config import ProxyConfig
-    from mitmproxy.proxy.server import ProxyServer
-    from mitmproxy.tools.dump import DumpMaster
-    import asyncio
-    import signal
-
-    try:
-        options = Options(listen_host="0.0.0.0", listen_port=8889, http2=True)
-        config = ProxyConfig(options)
-        global m
-        m = DumpMaster(options, with_termlog=False, with_dumper=False)
-        m.server = ProxyServer(config)
-        m.addons.add(Addon())
-        loop = asyncio.get_event_loop()
-        try:
-            loop.add_signal_handler(signal.SIGINT, getattr(m, "prompt_for_exit", m.shutdown))
-            loop.add_signal_handler(signal.SIGTERM, m.shutdown)
-        except NotImplementedError:
-            pass
-
-        async def wakeup():
-            while True:
-                await asyncio.sleep(0.2)
-
-        asyncio.ensure_future(wakeup())
-        m.run()
-    except KeyboardInterrupt:
-        print("中止抓包")
-        print("清除代理", end="...", flush=True)
-        disableProxy()
-        print("成功", flush=True)
-        pressAnyKeyToExit()
-    except TypeError:
-        pass
-    except Exception as e:
-        print("抓包模块出错:\n", traceback.format_exc())
 
 
 if __name__ == "__main__":
@@ -311,10 +230,12 @@ if __name__ == "__main__":
     s = Config(gen_path + "\\config.json")
     latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/version.txt"
     try:
-        print("检查更新中...\n", end="", flush=True)
+        print("检查更新...",end="", flush=True)
         latestversion = requests.get(latest).text
         if version != latestversion:
             print(f"当前版本{version}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestversion}")
+        else:
+            print("OK")
     except Exception:
         print("检查更新失败", flush=True)
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
@@ -324,7 +245,6 @@ if __name__ == "__main__":
         if checkApi(url):
             print("合法")
             main()
-            pressAnyKeyToExit()
 
     FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
     while FLAG_MANUAL_INPUT_URL:
@@ -335,7 +255,6 @@ if __name__ == "__main__":
             else:
                 FLAG_MANUAL_INPUT_URL = False
                 main()
-                pressAnyKeyToExit()
         except:
             continue
 
@@ -394,56 +313,24 @@ if __name__ == "__main__":
                         s = Config(configPath)
                         s.setKey("url", url)
                         main()
-                        pressAnyKeyToExit()
         except Exception as e:
             print("日志读取模块出错:\n", traceback.format_exc())
             pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
-        flag = True
-        print("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的关闭代理bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")
-        while flag:
-            try:
-                i = input("确定使用抓包模式吗？输入yes确认执行：")
-                if i == "yes":
-                    flag = False
-            except KeyboardInterrupt:
-                print("取消抓包模式")
-                pressAnyKeyToExit()
-            except Exception as e:
-                print(traceback.format_exc())
-                continue
         try:
-            print("设置代理", end="...", flush=True)
-            enableProxy()
-            print("成功", flush=True)
-
-            print("请打开抽卡记录页面，并翻页几次")
-            print("正在捕获链接", end="...", flush=True)
-            capture()
-            print("成功")
-
-            print("清除代理", end="...", flush=True)
-            disableProxy()
-            print("成功", flush=True)
-
-            print("检查链接", end="...", flush=True)
-            if not checkApi(url):
-                pressAnyKeyToExit()
-            print("合法")
-
-            main()
+            from capture import capture
+            url = capture()
+        except ModuleNotFoundError:
+            print("此版本没有抓包功能")
             pressAnyKeyToExit()
-
-        except KeyboardInterrupt:
-            print("中止抓包模式")
-            print("清除代理", end="...", flush=True)
-            disableProxy()
-            print("成功", flush=True)
+        sleep(1)
+        print("检查链接", end="...", flush=True)
+        sleep(1)
+        if not checkApi(url):
             pressAnyKeyToExit()
-        except Exception as e:
-            disableProxy()
-            print("抓包模块出错:\n", traceback.format_exc())
-            pressAnyKeyToExit()
+        print("合法")
+        main()
 
+    pressAnyKeyToExit()

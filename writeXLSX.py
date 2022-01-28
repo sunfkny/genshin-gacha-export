@@ -134,7 +134,7 @@ def main():
 
     print("写入XLSX", end="...", flush=True)
     writeXLSX(gachaLog, gachaQueryTypeIds)
-    print("OK", end=" ", flush=True)
+    print("OK", flush=True)
 
 
 if __name__ == "__main__":
