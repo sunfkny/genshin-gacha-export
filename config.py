@@ -4,6 +4,7 @@ version = "v2.4.0.01122052"
 
 class Config:
     setting = {
+        "FLAG_CHECK_UPDATE": True,
         "FLAG_MANUAL_INPUT_URL": False,
         "FLAG_AUTO_ARCHIVE": True,
         "FLAG_SHOW_REPORT": True,
