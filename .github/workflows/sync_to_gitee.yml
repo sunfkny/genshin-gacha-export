@@ -1,0 +1,26 @@
+name: Sync Github Repos To Gitee
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+
+    - name: Sync Github Repos To Gitee
+      uses: Yikun/hub-mirror-action@v1.2
+      with:
+        src: github/sunfkny
+        dst: gitee/sunfkny
+        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+        dst_token:  ${{ secrets.GITEE_TOKEN }}
+        account_type: user
+        clone_style: "https"
+        debug: true
+        force_update: true
+        static_list: "genshin-gacha-export"
+        timeout: '600s'
