@@ -228,16 +228,26 @@ if __name__ == "__main__":
     url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
-    latest = "https://pd.zwc365.com/seturl/https://raw.githubusercontent.com/sunfkny/genshin-gacha-export/main/version.txt"
-    try:
-        print("检查更新...",end="", flush=True)
-        latestversion = requests.get(latest).text
-        if version != latestversion:
-            print(f"当前版本{version}不是最新\n请到 https://github.com/sunfkny/genshin-gacha-export/releases 下载最新版本{latestversion}")
-        else:
-            print("OK")
-    except Exception:
-        print("检查更新失败", flush=True)
+    
+    print("项目主页: https://github.com/sunfkny/genshin-gacha-export")
+    print("作者: sunfkny")
+    print(f"版本: {version}")
+    
+    FLAG_CHECK_UPDATE = s.getKey("FLAG_CHECK_UPDATE")
+    if FLAG_CHECK_UPDATE:
+        latest = "https://gitee.com/sunfkny/genshin-gacha-export/raw/main/version.txt"
+        try:
+            print("检查更新...",end="", flush=True)
+            latestversion = requests.get(latest).text
+            if version != latestversion:
+                print(f"检测到最新版本 {latestversion}", flush=True)
+                print("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
+                print("国内镜像: https://gitee.com/sunfkny/genshin-gacha-export/releases", flush=True)
+            else:
+                print("已是最新版本", flush=True)
+        except Exception:
+            print("检查更新失败", flush=True)
+    
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
     if FLAG_USE_CONFIG_URL:
         print("检查配置文件中的链接", end="...", flush=True)

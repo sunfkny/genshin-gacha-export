@@ -1,12 +1,13 @@
 import json
 
-version = "v2.4.0.01122052"
+version = "v2.4.0.02081346"
 
 class Config:
     setting = {
         "FLAG_MANUAL_INPUT_URL": False,
         "FLAG_AUTO_ARCHIVE": True,
         "FLAG_SHOW_REPORT": True,
+        "FLAG_CHECK_UPDATE": True,
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,
         "FLAG_USE_LOG_URL": True,
