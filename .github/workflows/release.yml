@@ -1,0 +1,80 @@
+name: Auto Release
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "v*.*.*"
+
+jobs:
+  build-py39:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install Python lib
+        run: pip install -r requirements.txt
+
+      - name: Get version
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
+        
+
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+      - name: Zip files
+        run: Compress-Archive dist\* genshin-gacha-export_capture.zip
+      - name: Upload Artifacts
+        run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export_capture.zip genshin-gacha-export_capture.zip ${{ env.version }}
+
+
+      - name: Package to exe
+        run: pyinstaller -w .\main.spec
+      - name: Zip files
+        run: Compress-Archive dist\* genshin-gacha-export.zip
+      - name: Upload Artifacts
+        run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export.zip genshin-gacha-export.zip ${{ env.version }}
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          files: |
+            genshin-gacha-export.zip
+            genshin-gacha-export_capture.zip
+
+  build-py37:
+    runs-on: windows-2019
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install Python lib
+        run: pip install -r requirements.txt
+
+      - name: Get version
+        run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
+        
+
+      - name: Package to exe
+        run: pyinstaller -w .\mainCapture.spec
+      - name: Zip files
+        run: Compress-Archive dist\* genshin-gacha-export-win7_capture.zip
+      - name: Upload Artifacts
+        run: run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export-win7_capture.zip genshin-gacha-export-win7_capture.zip ${{ env.version }}
+
+
+      - name: Package to exe
+        run: pyinstaller -w .\main.spec
+      - name: Zip files
+        run: Compress-Archive dist\* genshin-gacha-export-win7.zip
+      - name: Upload Artifacts
+        run: run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export-win7.zip genshin-gacha-export-win7.zip ${{ env.version }}
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          files: |
+            genshin-gacha-export-win7.zip
+            genshin-gacha-export-win7_capture.zip
