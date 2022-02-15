@@ -1,6 +1,5 @@
 name: Auto Release
 on:
-  workflow_dispatch:
   push:
     tags:
     - "v*.*.*"
@@ -11,6 +10,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
+
+      - name: Release body
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
 
       - name: Install Python lib
         run: pip install -r requirements.txt
@@ -35,10 +39,9 @@ jobs:
         run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export.zip genshin-gacha-export.zip ${{ env.version }}
 
 
-      - name: Release
+      - name: Release files
         uses: softprops/action-gh-release@v1
         with:
-          body_path: CHANGELOG.md
           files: |
             genshin-gacha-export.zip
             genshin-gacha-export_capture.zip
@@ -48,6 +51,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
+
+      - name: Release body
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
 
       - name: Install Python lib
         run: pip install -r requirements.txt
@@ -72,10 +80,9 @@ jobs:
         run: python upload_artifacts.py ${{ secrets.CODING_ARTIFACTS_TOKEN }} ${{ secrets.CODING_ARTIFACTS_PASSWORD }} genshin-gacha-export-win7.zip genshin-gacha-export-win7.zip ${{ env.version }}
 
 
-      - name: Release
+      - name: Release files
         uses: softprops/action-gh-release@v1
         with:
-          body_path: CHANGELOG.md
           files: |
             genshin-gacha-export-win7.zip
             genshin-gacha-export-win7_capture.zip
