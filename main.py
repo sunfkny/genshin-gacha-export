@@ -8,6 +8,7 @@ import sys
 import re
 import shutil
 from config import Config, version
+import updater
 from time import sleep
 import traceback
 import UIGF_converter
@@ -236,18 +237,22 @@ if __name__ == "__main__":
     
     FLAG_CHECK_UPDATE = s.getKey("FLAG_CHECK_UPDATE")
     if FLAG_CHECK_UPDATE:
-        latest = "https://gitee.com/sunfkny/genshin-gacha-export/raw/main/version.txt"
         try:
-            print("检查更新...",end="", flush=True)
-            latestversion = requests.get(latest).text
-            if version != latestversion:
-                print(f"检测到最新版本 {latestversion}", flush=True)
-                print("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
-                print("国内镜像: https://gitee.com/sunfkny/genshin-gacha-export/releases", flush=True)
-            else:
-                print("已是最新版本", flush=True)
-        except Exception:
-            print("检查更新失败", flush=True)
+            updater.update()
+        except Exception as e:
+            print("检查更新失败: {}".format(e))
+        # latest = "https://gitee.com/sunfkny/genshin-gacha-export/raw/main/version.txt"
+        # try:
+        #     print("检查更新...",end="", flush=True)
+        #     latestversion = requests.get(latest).text
+        #     if version != latestversion:
+        #         print(f"检测到最新版本 {latestversion}", flush=True)
+        #         print("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
+        #         print("国内镜像: https://gitee.com/sunfkny/genshin-gacha-export/releases", flush=True)
+        #     else:
+        #         print("已是最新版本", flush=True)
+        # except Exception:
+        #     print("检查更新失败", flush=True)
     
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
     if FLAG_USE_CONFIG_URL:
