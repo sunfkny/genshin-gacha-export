@@ -6,19 +6,12 @@ import UIGF_converter
 
 uid = ""
 gachaInfo = []
-# gachaTypes = []
 gachaLog = []
 gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
 gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
 gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 gacha_type_dict = gachaMetadata.gacha_type_dict
 
-
-# def getInfoByItemId(item_id):
-#     for info in gachaInfo:
-#         if item_id == info["item_id"]:
-#             return info["name"], info["item_type"], info["rank_type"]
-#     return
 
 
 def writeXLSX(gachaLog, gachaTypeIds):
@@ -33,27 +26,19 @@ def writeXLSX(gachaLog, gachaTypeIds):
         gachaDictList = gachaLog[id]
         gachaTypeName = gachaQueryTypeDict[id]
         gachaDictList.reverse()
-        # header = "时间,名称,类别,星级,祈愿类型,总次数,保底内"
         worksheet = workbook.add_worksheet(gachaTypeName)
         content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf","bg_color": "#ebebeb", "border": 1})
         title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
-        # excel_col = ["A", "B", "C", "D", "E", "F", "G"]
-        # excel_header = header.split(",")
         excel_header=["时间", "名称", "类别", "星级", "祈愿类型", "总次数", "保底内"]
         worksheet.set_column("A:A", 22)
         worksheet.set_column("B:B", 14)
         worksheet.set_column("E:E", 14)
-        # for i in range(len(excel_col)):
-        #     worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
         worksheet.write_row(0, 0, excel_header, title_css)
         worksheet.freeze_panes(1, 0)
         counter = 0
         pity_counter = 0
         for gacha in gachaDictList:
-            # item_id = gacha["item_id"]
             time_str = gacha["time"]
-            # name, item_type, rank_type = getInfoByItemId(item_id)
-            # item_id="0"
             name=gacha["name"]
             item_type=gacha["item_type"]
             rank_type=gacha["rank_type"]
@@ -64,8 +49,6 @@ def writeXLSX(gachaLog, gachaTypeIds):
             pity_counter = pity_counter + 1
             excel_data = [time_str, name, item_type, rank_type, gacha_type_name, counter, pity_counter]
             excel_data[3] = int(excel_data[3])
-            # for j in range(len(excel_col)):
-            #     worksheet.write(f"{excel_col[j]}{counter+1}", excel_data[j], content_css)
             worksheet.write_row(counter , 0, excel_data, content_css)
             if excel_data[3] == 5:
                 pity_counter = 0
@@ -84,9 +67,6 @@ def writeXLSX(gachaLog, gachaTypeIds):
 
     worksheet = workbook.add_worksheet("原始数据")
     raw_data_header=["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid","uigf_gacha_type"]
-    # raw_data_col = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J","K"]
-    # for i in range(len(raw_data_col)):
-    #     worksheet.write(f"{raw_data_col[i]}1", raw_data_header[i])
     worksheet.write_row(0, 0, raw_data_header)
 
     UIGF_data = UIGF_converter.convert(uid)
@@ -107,8 +87,6 @@ def writeXLSX(gachaLog, gachaTypeIds):
         uigf_gacha_type = gacha.get("uigf_gacha_type", "")
 
         excel_data = [count, gacha_type, id, item_id, item_type, lang, name, rank_type, time_str, uid, uigf_gacha_type]
-        # for i in range(len(raw_data_col)):
-            # worksheet.write(f"{raw_data_col[i]}{all_counter+2}", excel_data[i])
         worksheet.write_row(all_counter+1 , 0, excel_data)
         all_counter += 1
     
