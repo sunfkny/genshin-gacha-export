@@ -1,4 +1,5 @@
 import json
+from msvcrt import getch
 import time
 import requests
 from urllib import parse
@@ -217,7 +218,7 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
 
     print(msg, end="...", flush=True)
     try:
-        input()
+        getch()
     except:
         pass
     exit()
