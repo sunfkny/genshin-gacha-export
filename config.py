@@ -1,6 +1,6 @@
 import json
 
-version = "v2.4.0.02081346"
+version = "v2.5.0.02161654"
 
 class Config:
     setting = {
