@@ -5,12 +5,14 @@ import webbrowser
 import gachaMetadata
 from jinja2 import Template
 
+
 def main():
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     f = open(f"{gen_path}\\gachaData.json", "r", encoding="utf-8")
     j = json.load(f)
     f.close()
-    j2_templ = Template("""
+    j2_templ = Template(
+        """
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,7 +95,8 @@ def main():
     </div>
     {% endfor %}
 </body>
-</html>""")
+</html>"""
+    )
     gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
     gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
     gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
@@ -124,13 +127,7 @@ def main():
             "items5": {},
             "items4": {},
             "items3": {},
-            "items": {
-                "w3": 0,
-                "w4": 0,
-                "w5": 0,
-                "c4": 0,
-                "c5": 0
-            },
+            "items": {"w3": 0, "w4": 0, "w5": 0, "c4": 0, "c5": 0},
             "itemsstr": "",
             "items5str": "",
             "items4str": "",
@@ -215,7 +212,7 @@ def main():
 
     # with open("details.json","w",encoding="utf-8") as f:
     #     json.dump(detail,f,ensure_ascii=False,indent=4)
-        
+
     html = j2_templ.render(
         gachaQueryTypeIds=gachaQueryTypeIds,
         gachaQueryTypeDict=gachaQueryTypeDict,
@@ -224,7 +221,8 @@ def main():
     with open(f"{gen_path}\\gachaReport.html", "w", encoding="utf-8") as f:
         f.write(str(html))
 
-    webbrowser.open_new_tab('gachaReport.html')
-    
+    webbrowser.open_new_tab("gachaReport.html")
+
+
 if __name__ == "__main__":
     main()
