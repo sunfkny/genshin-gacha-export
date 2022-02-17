@@ -309,7 +309,7 @@ if __name__ == "__main__":
                     log = f.readlines()
 
                 for line in log:
-                    if line.startswith("OnGetWebViewPageFinish") and line.endswith("#/log\n"):
+                    if line.startswith("OnGetWebViewPageFinish:") and line.endswith("#/log\n"):
                         url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
 
                 if url == "":
