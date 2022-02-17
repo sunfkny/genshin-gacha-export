@@ -2,6 +2,7 @@ import json
 
 version = "v2.5.0.02161654"
 
+
 class Config:
     setting = {
         "FLAG_MANUAL_INPUT_URL": False,
@@ -22,7 +23,7 @@ class Config:
         try:
             self.read()
         except:
-            print("配置文件不存在或出错, 重新生成")
+            print("配置文件不存在或出错, 重新生成", flush=True)
         self.save()
 
     def read(self):
@@ -52,30 +53,31 @@ class Config:
         f.write(json.dumps(self.setting, sort_keys=True, indent=4, separators=(",", ":")))
         f.close()
 
+
 if __name__ == "__main__":
-    '''更新前运行一次, 修改自身版本号'''
-    
+    """更新前运行一次, 修改自身版本号"""
+
     import time
     import requests
-    
+
     def get_version():
-        '''从PC启动器api获取游戏版本号'''
+        """从PC启动器api获取游戏版本号"""
         j = requests.get("https://sdk-static.mihoyo.com/hk4e_cn/mdk/launcher/api/resource?key=eYd89JmJ&launcher_id=18").json()
-        version = j['data']['game']['latest']['version']
-        return "v{}.{}" .format(version, time.strftime("%m%d%H%M"))
+        version = j["data"]["game"]["latest"]["version"]
+        return "v{}.{}".format(version, time.strftime("%m%d%H%M"))
 
     version = get_version()
     print(f"{version}")
-    
-    with open('version.txt', 'w', encoding='utf8') as f:
+
+    with open("version.txt", "w", encoding="utf8") as f:
         f.write(version)
 
-    with open(__file__, 'r', encoding='utf8') as f:
+    with open(__file__, "r", encoding="utf8") as f:
         lines = []
         for line in f.readlines():
             if line.startswith('version = "'):
                 line = 'version = "{}"\n'.format(version)
             lines.append(line)
-                
-    with open(__file__, 'w', encoding='utf8') as f:
+
+    with open(__file__, "w", encoding="utf8") as f:
         f.writelines(lines)
