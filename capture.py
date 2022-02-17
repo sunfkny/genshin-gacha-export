@@ -1,7 +1,10 @@
 import traceback
 import asyncio
 import signal
+
 url = ""
+
+
 def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     from sys import exit
 
@@ -12,7 +15,8 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     except:
         pass
     exit()
-    
+
+
 def setProxy(enable, proxyIp, IgnoreIp):
     import winreg
 
@@ -26,6 +30,7 @@ def setProxy(enable, proxyIp, IgnoreIp):
         print("设置代理出错:\n", traceback.format_exc())
     finally:
         None
+
 
 def enableProxy():
     proxyIP = "127.0.0.1:8889"
@@ -56,7 +61,7 @@ def capture():
     from mitmproxy.proxy.config import ProxyConfig
     from mitmproxy.proxy.server import ProxyServer
     from mitmproxy.tools.dump import DumpMaster
-    
+
     flag = True
     print("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的关闭代理bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")
     while flag:
@@ -100,7 +105,7 @@ def capture():
         disableProxy()
         print("成功", flush=True)
         return url
-    
+
     except KeyboardInterrupt:
         print("中止抓包")
         print("清除代理", end="...", flush=True)
@@ -111,6 +116,7 @@ def capture():
         pass
     except Exception as e:
         print("抓包模块出错:\n", traceback.format_exc())
+
 
 if __name__ == "__main__":
     url = capture()
