@@ -6,7 +6,6 @@ import sys
 from config import version
 from msvcrt import getch
 from hashlib import md5
-from main import pressAnyKeyToExit
 
 
 class Package(Enum):
@@ -45,23 +44,27 @@ def get_package():
 def check_update(package):
     if isinstance(package, Package):
         package = package.value
-    url = "https://sunfkny.coding.net/api/team/sunfkny/anonymity/artifacts/repositories/12991235/packages/{}/versions?page=1&pageSize=1&type=1".format(package)
-    r = requests.get(url)
-    j = r.json()
-    artifact = j["data"]["list"][0]
-    version = artifact["version"]
-    hash = artifact["hash"]
-    size = artifact["size"]
-    pkgName = artifact["pkgName"]
-    registryUrl = artifact["registryUrl"]
-    projectName = artifact["projectName"]
-    repoName = artifact["repoName"]
-    pkgName = artifact["pkgName"]
-    size = "{:.2f}".format(size)
-    if "md5 " in hash:
-        hash = hash.split()[1]
-    url = "{}/{}/{}/{}?version={}".format(registryUrl, projectName, repoName, pkgName, version)
-    return dict(version=version, hash=hash, size=size, url=url, name=pkgName)
+    try:
+        url = "https://sunfkny.coding.net/api/team/sunfkny/anonymity/artifacts/repositories/12991235/packages/{}/versions?page=1&pageSize=1&type=1".format(package)
+        r = requests.get(url)
+        j = r.json()
+        artifact = j["data"]["list"][0]
+        version = artifact["version"]
+        hash = artifact["hash"]
+        size = artifact["size"]
+        pkgName = artifact["pkgName"]
+        registryUrl = artifact["registryUrl"]
+        projectName = artifact["projectName"]
+        repoName = artifact["repoName"]
+        pkgName = artifact["pkgName"]
+        size = "{:.2f}".format(size)
+        if "md5 " in hash:
+            hash = hash.split()[1]
+        url = "{}/{}/{}/{}?version={}".format(registryUrl, projectName, repoName, pkgName, version)
+        return dict(version=version, hash=hash, size=size, url=url, name=pkgName)
+    except Exception:
+        print("检查更新失败, 建议手动下载更新", flush=True)
+        return {}
 
 
 def calc_md5(filename):
@@ -97,29 +100,39 @@ def download_file_hash_check(url, file_name, md5):
 
 
 def update():
+    print("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
+    print("Coding 制品库(国内推荐): https://sunfkny.coding.net/public-artifacts/genshin-gacha-export/releases/packages", flush=True)
+
     package = get_package()
     artifact = check_update(package)
-    latest_ver = artifact["version"]
-
-    if version != latest_ver:
-        print("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
-        print("Coding 制品库(国内推荐): https://sunfkny.coding.net/public-artifacts/genshin-gacha-export/releases/packages", flush=True)
-        print("手动下载: {}".format(artifact["url"]), flush=True)
-        print("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver), end="", flush=True)
-        try:
-            i = str(getch(), encoding="utf-8")
-        except InterruptedError:
-            i = "n"
-        print()
-        if i in ["Y", "y", "\r"]:
-            if download_file_hash_check(artifact["url"], artifact["name"], artifact["hash"]):
-                print("下载完成, 文件位于 {}".format(os.path.abspath(artifact["name"])), flush=True)
-                print("请解压替换文件", flush=True)
-                pressAnyKeyToExit()
-            else:
-                print("下载失败", flush=True)
-    else:
-        print("当前已是最新版本", flush=True)
+    if artifact != {}:
+        latest_ver = artifact["version"]
+        if version != latest_ver:
+            print("手动下载: {}".format(artifact["url"]), flush=True)
+            print("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver), end="", flush=True)
+            try:
+                i = str(getch(), encoding="utf-8")
+            except InterruptedError:
+                i = "n"
+            print()
+            if i in ["Y", "y", "\r"]:
+                if download_file_hash_check(artifact["url"], artifact["name"], artifact["hash"]):
+                    print("下载完成, 文件位于 {}".format(os.path.abspath(artifact["name"])), flush=True)
+                    print("请解压替换文件", flush=True)
+                    print("是否继续运行? (y/N): ".format(version, latest_ver), end="", flush=True)
+                    try:
+                        i = str(getch(), encoding="utf-8")
+                    except InterruptedError:
+                        i = "n"
+                    print()
+                    if i in ["Y", "y"]:
+                        return
+                    else:
+                        sys.exit()
+                else:
+                    print("下载失败", flush=True)
+        else:
+            print("当前已是最新版本", flush=True)
 
 
 if __name__ == "__main__":
