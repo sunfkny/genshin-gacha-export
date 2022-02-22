@@ -11,11 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Release body
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: CHANGELOG.md
-
       - name: Install Python lib
         run: pip install -r requirements.txt
 
@@ -35,6 +30,7 @@ jobs:
       - name: Release files
         uses: softprops/action-gh-release@v1
         with:
+          body_path: CHANGELOG.md
           files: |
             genshin-gacha-export.zip
             genshin-gacha-export_capture.zip
@@ -55,11 +51,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Release body
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: CHANGELOG.md
-
       - name: Install Python lib
         run: pip install -r requirements.txt
 
@@ -79,6 +70,7 @@ jobs:
       - name: Release files
         uses: softprops/action-gh-release@v1
         with:
+          body_path: CHANGELOG.md
           files: |
             genshin-gacha-export-win7.zip
             genshin-gacha-export-win7_capture.zip
