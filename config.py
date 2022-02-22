@@ -1,6 +1,6 @@
 import json
 
-version = "v2.5.0.02161654"
+version = "v2.5.0.02221942"
 
 
 class Config:
