@@ -18,6 +18,7 @@ gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
 gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
 gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 
+
 def main():
 
     print("获取抽卡记录", flush=True)
@@ -49,7 +50,7 @@ def main():
     else:
         mergeData = gachaData
 
-    mergeData["gachaType"]=gachaQueryTypeDict
+    mergeData["gachaType"] = gachaQueryTypeDict
     print("写入JSON", end="...", flush=True)
     # 抽卡报告读取 gachaData.json
     with open(f"{gen_path}\\gachaData.json", "w", encoding="utf-8") as f:
@@ -83,7 +84,7 @@ def main():
                     os.remove(f"{archive_path}\\{file}")
                 except:
                     pass
-                
+
     if s.getKey("FLAG_UIGF_JSON"):
         print("写入UIGF JSON", end="...", flush=True)
         with open(f"{gen_path}\\UIGF_gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
@@ -103,6 +104,7 @@ def main():
 
     pressAnyKeyToExit()
 
+
 def mergeDataFunc(localData, gachaData):
 
     for banner in gachaQueryTypeDict:
@@ -113,10 +115,10 @@ def mergeDataFunc(localData, gachaData):
         else:
             print("合并", gachaQueryTypeDict[banner], end=": ", flush=True)
             flaglist = [1] * len(bannerGet)
-            loc = [[i["time"],i["name"]] for i in bannerLocal]
+            loc = [[i["time"], i["name"]] for i in bannerLocal]
             for i in range(len(bannerGet)):
                 gachaGet = bannerGet[i]
-                get = [gachaGet["time"],gachaGet["name"]]
+                get = [gachaGet["time"], gachaGet["name"]]
                 if get in loc:
                     pass
                 else:
@@ -138,7 +140,7 @@ def getGachaLogs(gachaTypeId):
     size = "20"
     # api限制一页最大20
     gachaList = []
-    end_id="0"
+    end_id = "0"
     for page in range(1, 9999):
         print(f"正在获取 {gachaQueryTypeDict[gachaTypeId]} 第 {page} 页", flush=True)
         api = getApi(gachaTypeId, size, page, end_id)
@@ -150,10 +152,20 @@ def getGachaLogs(gachaTypeId):
             break
         for i in gacha:
             gachaList.append(i)
-        end_id=j["data"]["list"][-1]["id"]
+        end_id = j["data"]["list"][-1]["id"]
         sleep(0.5)
 
     return gachaList
+
+
+def toApi(url):
+    spliturl = str(url).split("?")
+    if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
+        spliturl[0] = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog"
+    else:
+        spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+    url = "?".join(spliturl)
+    return url
 
 
 def getApi(gachaType, size, page, end_id=""):
@@ -174,9 +186,6 @@ def getApi(gachaType, size, page, end_id=""):
 def checkApi(url):
     if not url:
         print("url为空")
-        return False
-    if "getGachaLog" not in url:
-        print("错误的url，检查是否包含getGachaLog")
         return False
     try:
         r = requests.get(url)
@@ -230,11 +239,11 @@ if __name__ == "__main__":
     url = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     s = Config(gen_path + "\\config.json")
-    
+
     print("项目主页: https://github.com/sunfkny/genshin-gacha-export")
     print("作者: sunfkny")
     print(f"版本: {version}")
-    
+
     FLAG_CHECK_UPDATE = s.getKey("FLAG_CHECK_UPDATE")
     if FLAG_CHECK_UPDATE:
         try:
@@ -253,11 +262,12 @@ if __name__ == "__main__":
         #         print("已是最新版本", flush=True)
         # except Exception:
         #     print("检查更新失败", flush=True)
-    
+
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
     if FLAG_USE_CONFIG_URL:
         print("检查配置文件中的链接", end="...", flush=True)
         url = s.getKey("url")
+        url = toApi(url)
         if checkApi(url):
             print("合法")
             main()
@@ -266,6 +276,7 @@ if __name__ == "__main__":
     while FLAG_MANUAL_INPUT_URL:
         try:
             url = input("输入url: ")
+            url = toApi(url)
             if not checkApi(url):
                 continue
             else:
@@ -315,12 +326,7 @@ if __name__ == "__main__":
                 if url == "":
                     print("日志文件中没有链接")
                 else:
-                    spliturl = str(url).split("?")
-                    if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
-                        spliturl[0] = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog"
-                    else:
-                        spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
-                    url = "?".join(spliturl)
+                    url = toApi(url)
                     print("检查日志文件中的链接", end="...", flush=True)
                     if checkApi(url):
                         print("合法")
@@ -337,6 +343,7 @@ if __name__ == "__main__":
     if FLAG_USE_CAPTURE:
         try:
             from capture import capture
+
             url = capture()
         except ModuleNotFoundError:
             print("此版本没有抓包功能")
