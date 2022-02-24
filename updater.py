@@ -96,6 +96,9 @@ def download_file_hash_check(url, file_name, md5):
                     if chunk:
                         f.write(chunk)
                         pbar.update(1024)
+    if len(md5) != 32:
+        print(f"请手动校验文件完整性 hash: {md5}", flush=True)
+        return True
     return calc_md5(file_path).upper() == md5.upper()
 
 
