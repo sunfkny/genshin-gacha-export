@@ -11,6 +11,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      - name: Cache Python packages
+        uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        id: cache-pip
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
       - name: Install Python lib
         run: pip install -r requirements.txt
 
@@ -50,6 +58,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
+
+      - name: Cache Python packages
+        uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        id: cache-pip
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
 
       - name: Install Python lib
         run: pip install -r requirements.txt
