@@ -20,7 +20,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
     uid = ""
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    workbook = xlsxwriter.Workbook(f"{gen_path}\\gachaExport-{t}.xlsx")
+    workbook = xlsxwriter.Workbook(os.path.join(gen_path, f"gachaExport-{t}.xlsx"))
     for id in gachaTypeIds:
         gachaDictList = gachaLog[id]
         gachaTypeName = gachaQueryTypeDict[id]
@@ -93,7 +93,7 @@ def writeXLSX(gachaLog, gachaTypeIds):
 
 def main():
     gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    f = open(f"{gen_path}\\gachaData.json", "r", encoding="utf-8")
+    f = open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8")
     s = f.read()
     f.close()
     j = json.loads(s)
