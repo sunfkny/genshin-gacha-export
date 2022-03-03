@@ -4,7 +4,7 @@ import requests
 import os
 import sys
 from config import version
-from msvcrt import getch
+import platform
 from hashlib import md5
 
 
@@ -16,7 +16,10 @@ class Package(Enum):
 
 
 def is_win7():
-    return sys.getwindowsversion().major < 10
+    try:
+        return sys.getwindowsversion().major < 10
+    except:
+        return True
 
 
 def is_cap():
@@ -111,6 +114,10 @@ def update():
     if artifact != {}:
         latest_ver = artifact["version"]
         if version != latest_ver:
+            if platform.system() != "Windows":
+                print("当前版本为 {} , 最新版本为 {}, 非 Windows 系统, 请自行同步代码".format(version, latest_ver), flush=True)
+                return
+            from msvcrt import getch
             print("手动下载: {}".format(artifact["url"]), flush=True)
             print("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver), end="", flush=True)
             try:
