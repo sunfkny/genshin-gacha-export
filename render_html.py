@@ -220,7 +220,8 @@ def main():
     )
     with open(os.path.join(gen_path, "gachaReport.html"), "w", encoding="utf-8") as f:
         f.write(str(html))
-
+        
+    webbrowser.register("termux", None, webbrowser.GenericBrowser("termux-open")) # 注册 termux 打开网页
     webbrowser.open_new_tab("gachaReport.html")
 
 
