@@ -194,8 +194,10 @@ def checkApi(url):
         return False
 
     if not j["data"]:
-        if j["message"] == "authkey valid error":
-            print("authkey错误")
+        if j["message"] == "authkey timeout":
+            print("链接过期")
+        elif j["message"] == "authkey error":
+            print("链接错误")
         else:
             print("数据为空，错误代码：" + j["message"])
         return False
