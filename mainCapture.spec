@@ -9,7 +9,9 @@ py_files = [
     'config.py',
     'UIGF_converter.py',
     'gachaMetadata.py',
-    'capture.py'
+    'capture.py',
+    'updater.py',
+    'utils.py',
 ]
 exe_name = 'genshin-gacha-export'
 icon_path = 'ys.ico'
