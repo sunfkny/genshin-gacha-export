@@ -4,15 +4,15 @@ import sys
 import webbrowser
 import gachaMetadata
 from jinja2 import Template
+from utils import logger, gachaDataPath, gachaReportPath
 
 
-def main():
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    f = open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8")
-    j = json.load(f)
-    f.close()
-    j2_templ = Template(
-        """
+gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
+gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
+gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
+
+j2_templ = Template(
+"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -86,8 +86,8 @@ def main():
         </table>
       </div>
       {% if detail[gacha_type]["5"] > 0 %}
-        <span>5星平均出货次数：{{ (detail[gacha_type]["totalForRank5"] / detail[gacha_type]["5"]) | round(2) }}</span><br>
-        <span>5星历史记录：</span>
+        <span>5星平均出货次数: {{ (detail[gacha_type]["totalForRank5"] / detail[gacha_type]["5"]) | round(2) }}</span><br>
+        <span>5星历史记录: </span>
         {% for rank5 in detail[gacha_type]["rank5logs"] %}
         <span style="margin-right: .5rem;">{{rank5}}</span>
         {% endfor %}
@@ -96,14 +96,12 @@ def main():
     {% endfor %}
 </body>
 </html>"""
-    )
-    gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
-    gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
-    gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+)
 
+def main():
     gachaLog = {}
-    with open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8") as f:
+    with open(gachaDataPath, "r", encoding="utf-8") as f:
+        logger.debug("打开文件: {}", gachaDataPath)
         j = json.load(f)
         gachaLog = j["gachaLog"]
 
@@ -116,6 +114,7 @@ def main():
     detail = {}
     for key in gachaLog:
         banner = gachaLog[key]
+        logger.debug("处理卡池: {} {} 数量: {}", key, gachaQueryTypeDict.get(key, key), len(banner))
         banner.reverse()
         detail[key] = {
             "5": 0,
@@ -151,7 +150,7 @@ def main():
                 pity = 0
         for log in banner:
             if detail[key]["start_time"] == "":
-                detail[key]["start_time"] = " 开始于：" + log.get("time")
+                detail[key]["start_time"] = " 开始于: " + log.get("time")
             rank_type = log.get("rank_type")
             name = log.get("name")
             pity = log.get("pity")
@@ -212,18 +211,22 @@ def main():
 
     # with open("details.json","w",encoding="utf-8") as f:
     #     json.dump(detail,f,ensure_ascii=False,indent=4)
-
+    logger.debug("处理完成")
+    logger.debug(detail)
     html = j2_templ.render(
         gachaQueryTypeIds=gachaQueryTypeIds,
         gachaQueryTypeDict=gachaQueryTypeDict,
         detail=detail,
     )
-    with open(os.path.join(gen_path, "gachaReport.html"), "w", encoding="utf-8") as f:
+    logger.debug("写入 {}", gachaReportPath)
+    with open(gachaReportPath, "w", encoding="utf-8") as f:
         f.write(str(html))
-        
+    logger.debug("写入成功")
+    
+    logger.debug("打开 {}", gachaReportPath)
     webbrowser.register("termux", None, webbrowser.GenericBrowser("termux-open")) # 注册 termux 打开网页
     webbrowser.open_new_tab("gachaReport.html")
-
+    logger.debug("打开成功")
 
 if __name__ == "__main__":
     main()

@@ -3,6 +3,7 @@ import os
 import sys
 import gachaMetadata
 import json
+from utils import logger
 
 gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
 gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
@@ -17,6 +18,7 @@ def id_generator():
         yield str(id)
 
 def convert(uid=""):
+    logger.debug("开始转换UIGF")
     UIGF_data = {}
     UIGF_data["info"] = {}
     UIGF_data["info"]["uid"] = uid
@@ -47,6 +49,7 @@ def convert(uid=""):
             gacha["id"] = next(id)
     all_gachaDictList = sorted(all_gachaDictList, key=lambda gacha: gacha["id"])
     UIGF_data["list"] = all_gachaDictList
+    logger.debug("转换完成 {} 条", len(all_gachaDictList))
     return UIGF_data
 
 if __name__ == "__main__":

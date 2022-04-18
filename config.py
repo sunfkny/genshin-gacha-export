@@ -1,4 +1,5 @@
 import json
+from utils import logger
 
 version = "v2.5.0.02221942"
 
@@ -12,7 +13,7 @@ class Config:
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,
         "FLAG_USE_LOG_URL": True,
-        "FLAG_USE_CAPTURE": True,
+        "FLAG_USE_CAPTURE": False,
         "FLAG_UIGF_JSON": True,
         "url": "",
     }
@@ -23,7 +24,7 @@ class Config:
         try:
             self.read()
         except:
-            print("配置文件不存在或出错, 重新生成", flush=True)
+            logger.warning("配置文件不存在或出错, 重新生成", flush=True)
         self.save()
 
     def read(self):

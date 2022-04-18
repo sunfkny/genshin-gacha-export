@@ -6,3 +6,6 @@ archive
 dist
 build
 venv
+*.lnk
+log.txt
+*.zip

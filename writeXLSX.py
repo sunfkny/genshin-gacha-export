@@ -1,10 +1,10 @@
 import json
 import os
-import sys
 import gachaMetadata
 import UIGF_converter
+from utils import logger, gachaDataPath, gen_path
 
-uid = ""
+
 gachaInfo = []
 gachaLog = []
 gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
@@ -13,18 +13,19 @@ gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 gacha_type_dict = gachaMetadata.gacha_type_dict
 
 
-def writeXLSX(gachaLog, gachaTypeIds):
+def writeXLSX(uid, gachaLog):
     import xlsxwriter
     import time
 
-    uid = ""
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    workbook = xlsxwriter.Workbook(os.path.join(gen_path, f"gachaExport-{t}.xlsx"))
-    for id in gachaTypeIds:
+    workbook_path = os.path.join(gen_path, f"gachaExport-{t}.xlsx")
+    logger.debug("创建工作簿: {}", workbook_path)
+    workbook = xlsxwriter.Workbook(workbook_path)
+    for id in gachaQueryTypeIds:
         gachaDictList = gachaLog[id]
         gachaTypeName = gachaQueryTypeDict[id]
         gachaDictList.reverse()
+        logger.debug("开始写入 {} {}", gachaTypeName, len(gachaDictList))
         worksheet = workbook.add_worksheet(gachaTypeName)
         content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "bg_color": "#ebebeb", "border": 1})
         title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
@@ -89,28 +90,22 @@ def writeXLSX(gachaLog, gachaTypeIds):
         all_counter += 1
 
     workbook.close()
+    logger.debug("工作簿写入完成")
 
 
 def main():
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    f = open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8")
+    logger.debug("打开文件: {}", gachaDataPath)
+    f = open(gachaDataPath, "r", encoding="utf-8")
     s = f.read()
     f.close()
     j = json.loads(s)
 
-    global uid
-    global gachaInfo
-    global gachaLog
-    global gachaQueryTypeIds
-    global gachaQueryTypeNames
-    global gachaQueryTypeDict
-
     uid = j["uid"]
     gachaLog = j["gachaLog"]
 
-    print("写入XLSX", end="...", flush=True)
-    writeXLSX(gachaLog, gachaQueryTypeIds)
-    print("OK", flush=True)
+    logger.info("开始写入XLSX")
+    writeXLSX(uid,gachaLog)
+    logger.debug("写入完成")
 
 
 if __name__ == "__main__":

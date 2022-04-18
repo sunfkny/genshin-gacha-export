@@ -1,6 +1,8 @@
 import traceback
 import asyncio
 import signal
+import platform
+from loguru import logger
 
 url = ""
 
@@ -8,11 +10,17 @@ url = ""
 def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     from sys import exit
 
-    print("")
-    print(msg, end="...", flush=True)
+    logger.info(msg)
     try:
-        input()
-    except:
+        if platform.system() == "Windows":
+            from msvcrt import getch
+            getch()
+        else:
+            input()
+    except KeyboardInterrupt:
+        exit()
+    except Exception:
+        logger.error(traceback.format_exc())
         pass
     exit()
 
@@ -26,10 +34,9 @@ def setProxy(enable, proxyIp, IgnoreIp):
         winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, enable)
         winreg.SetValueEx(key, "ProxyServer", 0, winreg.REG_SZ, proxyIp)
         winreg.SetValueEx(key, "ProxyOverride", 0, winreg.REG_SZ, IgnoreIp)
-    except Exception as e:
-        print("设置代理出错:\n", traceback.format_exc())
-    finally:
-        None
+    except Exception:
+        logger.error("设置代理出错")
+        logger.error(traceback.format_exc())
 
 
 def enableProxy():
@@ -63,17 +70,18 @@ def capture():
     from mitmproxy.tools.dump import DumpMaster
 
     flag = True
-    print("开始通过抓包模式捕获链接\n注意：必须等程序运行结束或者Ctrl+C退出，不要直接关闭，否则会上不了网\n可以用解压出来的关闭代理bat脚本恢复，或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")
+    logger.info("开始通过抓包模式捕获链接")
     while flag:
         try:
-            i = input("确定使用抓包模式吗？请打开抽卡记录页面后输入yes确认执行：")
+            logger.info("确定使用抓包模式吗? 请打开抽卡记录页面后输入yes并回车确认执行")
+            i = input()
             if i == "yes":
                 flag = False
         except KeyboardInterrupt:
-            print("取消抓包模式")
+            logger.info("取消抓包模式")
             pressAnyKeyToExit()
-        except Exception as e:
-            print(traceback.format_exc())
+        except Exception:
+            logger.error(traceback.format_exc())
             continue
 
     try:
@@ -95,29 +103,32 @@ def capture():
                 await asyncio.sleep(0.2)
 
         asyncio.ensure_future(wakeup())
-        print("设置代理", end="...", flush=True)
+        logger.warning("抓包模式运行时 Ctrl+C 退出, 不要直接关闭, 否则会上不了网")
+        logger.warning("可以用解压出来的关闭代理bat脚本恢复")
+        logger.warning("或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")    
+        logger.info("开始设置代理")
         enableProxy()
-        print("成功", flush=True)
-        print("正在捕获链接，请在抽卡记录页翻页一次", end="...", flush=True)
+        logger.info("代理设置完成")
+        logger.info("正在捕获链接，请在抽卡记录页翻页一次")
         m.run()
-        print("成功", flush=True)
-        print("清除代理", end="...", flush=True)
+        logger.info("捕获成功")
+        logger.info("开始清除代理")
         disableProxy()
-        print("成功", flush=True)
+        logger.info("代理清除完成")
         return url
 
     except KeyboardInterrupt:
-        print("中止抓包")
-        print("清除代理", end="...", flush=True)
+        logger.info("中止抓包")
+        logger.info("清除代理")
         disableProxy()
-        print("成功", flush=True)
+        logger.info("成功")
         pressAnyKeyToExit()
     except TypeError:
         pass
-    except Exception as e:
-        print("抓包模块出错:\n", traceback.format_exc())
+    except Exception:
+        logger.error("抓包模块出错:\n", traceback.format_exc())
 
 
 if __name__ == "__main__":
     url = capture()
-    print("抓包结果：\n", url)
+    logger.info("抓包结果：\n", url)
