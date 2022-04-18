@@ -1,28 +1,9 @@
 import traceback
 import asyncio
 import signal
-import platform
-from loguru import logger
+from utils import logger, pressAnyKeyToExit
 
 url = ""
-
-
-def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
-    from sys import exit
-
-    logger.info(msg)
-    try:
-        if platform.system() == "Windows":
-            from msvcrt import getch
-            getch()
-        else:
-            input()
-    except KeyboardInterrupt:
-        exit()
-    except Exception:
-        logger.error(traceback.format_exc())
-        pass
-    exit()
 
 
 def setProxy(enable, proxyIp, IgnoreIp):
@@ -131,4 +112,4 @@ def capture():
 
 if __name__ == "__main__":
     url = capture()
-    logger.info("抓包结果：\n", url)
+    logger.info("抓包结果：{}", url)
