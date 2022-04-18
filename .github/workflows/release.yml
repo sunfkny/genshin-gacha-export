@@ -26,12 +26,12 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
-        run: pyinstaller -w .\mainCapture.spec
+        run: pyinstaller .\mainCapture.spec
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export_capture.zip
 
       - name: Package to exe
-        run: pyinstaller -w .\main.spec
+        run: pyinstaller .\main.spec
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export.zip
 
@@ -74,12 +74,12 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
-        run: pyinstaller -w .\mainCapture.spec
+        run: pyinstaller .\mainCapture.spec
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export-win7_capture.zip
 
       - name: Package to exe
-        run: pyinstaller -w .\main.spec
+        run: pyinstaller .\main.spec
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export-win7.zip
 
