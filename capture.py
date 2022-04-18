@@ -107,7 +107,7 @@ def capture():
     except TypeError:
         pass
     except Exception:
-        logger.error("抓包模块出错:\n", traceback.format_exc())
+        logger.error("抓包模块出错: " + traceback.format_exc())
 
 
 if __name__ == "__main__":

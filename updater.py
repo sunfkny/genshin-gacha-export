@@ -66,7 +66,7 @@ def check_update(package):
         url = "{}/{}/{}/{}?version={}".format(registryUrl, projectName, repoName, pkgName, version)
         return dict(version=version, hash=hash, size=size, url=url, name=pkgName)
     except Exception:
-        logger.error("检查更新失败, 建议手动下载更新", flush=True)
+        logger.error("检查更新失败, 建议手动下载更新")
         return {}
 
 
@@ -110,8 +110,8 @@ def download_file_hash_check(url, file_name, md5):
 
 
 def update():
-    logger.info("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases", flush=True)
-    logger.info("Coding 制品库(国内推荐): https://sunfkny.coding.net/public-artifacts/genshin-gacha-export/releases/packages", flush=True)
+    logger.info("更新发布: https://github.com/sunfkny/genshin-gacha-export/releases")
+    logger.info("Coding 制品库(国内推荐): https://sunfkny.coding.net/public-artifacts/genshin-gacha-export/releases/packages")
 
     package = get_package()
     artifact = check_update(package)
@@ -119,11 +119,11 @@ def update():
         latest_ver = artifact["version"]
         if version != latest_ver:
             if platform.system() != "Windows":
-                logger.warning("当前版本为 {} , 最新版本为 {}, 非 Windows 系统, 请自行同步代码".format(version, latest_ver), flush=True)
+                logger.warning("当前版本为 {} , 最新版本为 {}, 非 Windows 系统, 请自行同步代码".format(version, latest_ver))
                 return
             from msvcrt import getch
-            logger.info("手动下载: {}".format(artifact["url"]), flush=True)
-            logger.info("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver), end="", flush=True)
+            logger.info("手动下载: {}".format(artifact["url"]))
+            logger.info("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver))
             try:
                 i = str(getch(), encoding="utf-8")
             except InterruptedError:
@@ -131,9 +131,9 @@ def update():
             print()
             if i in ["Y", "y", "\r"]:
                 if download_file_hash_check(artifact["url"], artifact["name"], artifact["hash"]):
-                    logger.info("下载完成, 文件位于 {}".format(os.path.abspath(artifact["name"])), flush=True)
-                    logger.info("请解压替换文件", flush=True)
-                    logger.info("是否继续运行? (y/N): ".format(version, latest_ver), end="", flush=True)
+                    logger.info("下载完成, 文件位于 {}".format(os.path.abspath(artifact["name"])))
+                    logger.info("请解压替换文件")
+                    logger.info("是否继续运行? (y/N): ")
                     try:
                         i = str(getch(), encoding="utf-8")
                     except InterruptedError:
@@ -144,9 +144,9 @@ def update():
                     else:
                         pressAnyKeyToExit()
                 else:
-                    logger.error("下载失败", flush=True)
+                    logger.error("下载失败")
         else:
-            logger.info("当前已是最新版本", flush=True)
+            logger.info("当前已是最新版本")
 
 
 if __name__ == "__main__":

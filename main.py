@@ -195,7 +195,7 @@ def checkApi(url):
         s = r.content.decode("utf-8")
         j = json.loads(s)
     except Exception:
-        logger.error("API请求解析出错：\n", traceback.format_exc())
+        logger.error("API请求解析出错: " + traceback.format_exc())
         return False
     logger.debug(j)
     if not j["data"]:
@@ -244,8 +244,8 @@ if __name__ == "__main__":
         try:
             import updater
             updater.update()
-        except Exception as e:
-            logger.error("检查更新失败: {}".format(e))
+        except Exception:
+            logger.error("检查更新失败: " + traceback.format_exc())
 
     FLAG_USE_CONFIG_URL = s.getKey("FLAG_USE_CONFIG_URL")
     if FLAG_USE_CONFIG_URL:
@@ -316,13 +316,13 @@ if __name__ == "__main__":
                     logger.error("日志文件中没有链接")
                 else:
                     url = toApi(url)
-                    logger.info("检查日志文件中的链接", end="...", flush=True)
+                    logger.info("检查日志文件中的链接")
                     if checkApi(url):
                         s = Config(configPath)
                         s.setKey("url", url)
                         main()
         except Exception as e:
-            logger.error("日志读取模块出错:\n", traceback.format_exc())
+            logger.error("日志读取模块出错: " + traceback.format_exc())
             pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
@@ -335,9 +335,9 @@ if __name__ == "__main__":
             logger.error("此版本没有抓包功能")
             pressAnyKeyToExit()
         except Exception:
-            logger.error("抓包模块出错:\n", traceback.format_exc())
+            logger.error("抓包模块出错: " + traceback.format_exc())
         sleep(1)
-        logger.info("检查链接", end="...", flush=True)
+        logger.info("检查链接")
         sleep(1)
         if not checkApi(url):
             pressAnyKeyToExit()

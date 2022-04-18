@@ -19,7 +19,7 @@ def writeXLSX(uid, gachaLog):
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     workbook_path = os.path.join(gen_path, f"gachaExport-{t}.xlsx")
-    logger.debug("创建工作簿: {}", workbook_path)
+    logger.debug("创建工作簿: " + workbook_path)
     workbook = xlsxwriter.Workbook(workbook_path)
     for id in gachaQueryTypeIds:
         gachaDictList = gachaLog[id]
@@ -94,7 +94,7 @@ def writeXLSX(uid, gachaLog):
 
 
 def main():
-    logger.debug("打开文件: {}", gachaDataPath)
+    logger.debug("打开文件: " + gachaDataPath)
     f = open(gachaDataPath, "r", encoding="utf-8")
     s = f.read()
     f.close()

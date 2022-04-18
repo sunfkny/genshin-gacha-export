@@ -27,7 +27,6 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
         exit()
     except Exception:
         logger.error(traceback.format_exc())
-        pass
     exit()
     
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))

@@ -24,7 +24,7 @@ class Config:
         try:
             self.read()
         except:
-            logger.warning("配置文件不存在或出错, 重新生成", flush=True)
+            logger.warning("配置文件不存在或出错, 重新生成")
         self.save()
 
     def read(self):

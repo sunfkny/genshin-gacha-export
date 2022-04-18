@@ -74,7 +74,7 @@ def get_banner(gacha_type, detail):
 def main():
     gachaLog = {}
     with open(gachaDataPath, "r", encoding="utf-8") as f:
-        logger.debug("打开文件: {}", gachaDataPath)
+        logger.debug("打开文件: " + gachaDataPath)
         j = json.load(f)
         gachaLog = j["gachaLog"]
 
@@ -224,12 +224,12 @@ def main():
         html_body += get_banner(gacha_type, detail)
     html = html.format(html_head, html_body)
 
-    logger.debug("写入 {}", gachaReportPath)
+    logger.debug("写入 " + gachaReportPath)
     with open(gachaReportPath, "w", encoding="utf-8") as f:
         f.write(str(html))
     logger.debug("写入成功")
 
-    logger.debug("打开 {}", gachaReportPath)
+    logger.debug("打开 " + gachaReportPath)
     webbrowser.register("termux", None, webbrowser.GenericBrowser("termux-open"))  # 注册 termux 打开网页
     webbrowser.open_new_tab("gachaReport.html")
     logger.debug("打开成功")
