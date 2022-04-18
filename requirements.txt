@@ -3,7 +3,5 @@ requests==2.27.1
 urllib3==1.26.8
 XlsxWriter==3.0.3
 pyinstaller==5.0
-MarkupSafe==2.0.1
-jinja2==2.11.3
 tqdm==4.62.0
 loguru==0.6.0
