@@ -25,7 +25,7 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
-        run: pyinstaller -w .\mainCapture.spec
+        run: pyinstaller .\mainCapture.spec
 
       - name: Upload output
         uses: actions/upload-artifact@v2
@@ -37,7 +37,7 @@ jobs:
         run: rm dist\genshin-gacha-export.exe
 
       - name: Package to exe
-        run: pyinstaller -w .\main.spec
+        run: pyinstaller .\main.spec
         
       - name: Upload output
         uses: actions/upload-artifact@v2
@@ -68,7 +68,7 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
           
       - name: Package to exe
-        run: pyinstaller -w .\mainCapture.spec
+        run: pyinstaller .\mainCapture.spec
 
       - name: Upload output
         uses: actions/upload-artifact@v2
@@ -80,7 +80,7 @@ jobs:
         run: rm dist\genshin-gacha-export.exe
 
       - name: Package to exe
-        run: pyinstaller -w .\main.spec
+        run: pyinstaller .\main.spec
         
       - name: Upload output
         uses: actions/upload-artifact@v2
