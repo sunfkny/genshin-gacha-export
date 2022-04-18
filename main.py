@@ -17,7 +17,7 @@ gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
 gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
 gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 
-    
+
 def main():
 
     logger.info("开始获取抽卡记录")
@@ -228,7 +228,6 @@ def getGachaInfo():
     return gachaInfo
 
 
-
 if __name__ == "__main__":
     global url
     url = ""
@@ -243,6 +242,7 @@ if __name__ == "__main__":
     if FLAG_CHECK_UPDATE:
         try:
             import updater
+
             updater.update()
         except Exception:
             logger.error("检查更新失败: " + traceback.format_exc())

@@ -104,7 +104,7 @@ def main():
     gachaLog = j["gachaLog"]
 
     logger.info("开始写入XLSX")
-    writeXLSX(uid,gachaLog)
+    writeXLSX(uid, gachaLog)
     logger.debug("写入完成")
 
 

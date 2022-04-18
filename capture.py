@@ -86,7 +86,7 @@ def capture():
         asyncio.ensure_future(wakeup())
         logger.warning("抓包模式运行时 Ctrl+C 退出, 不要直接关闭, 否则会上不了网")
         logger.warning("可以用解压出来的关闭代理bat脚本恢复")
-        logger.warning("或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")    
+        logger.warning("或者 设置 - 网络和Internet - 代理 - 使用代理服务器 - 关闭")
         logger.info("开始设置代理")
         enableProxy()
         logger.info("代理设置完成")

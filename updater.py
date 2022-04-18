@@ -8,6 +8,7 @@ import platform
 from hashlib import md5
 from utils import logger, pressAnyKeyToExit, gen_path
 
+
 class Package(Enum):
     win10 = 3990132
     win10_cap = 3990120
@@ -122,6 +123,7 @@ def update():
                 logger.warning("当前版本为 {} , 最新版本为 {}, 非 Windows 系统, 请自行同步代码".format(version, latest_ver))
                 return
             from msvcrt import getch
+
             logger.info("手动下载: {}".format(artifact["url"]))
             logger.info("当前版本为 {} , 最新版本为 {} , 是否下载更新? (Y/n): ".format(version, latest_ver))
             try:

@@ -11,11 +11,13 @@ gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 from config import version
 
+
 def id_generator():
     id = 1000000000000000000
     while True:
         id = id + 1
         yield str(id)
+
 
 def convert(uid=""):
     logger.debug("开始转换UIGF")
@@ -29,7 +31,7 @@ def convert(uid=""):
     UIGF_data["info"]["uigf_version"] = "v2.2"
     UIGF_data["info"]["export_timestamp"] = int(time.time())
     all_gachaDictList = []
-    
+
     f = open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8")
     j = json.load(f)
     f.close()
@@ -51,6 +53,7 @@ def convert(uid=""):
     UIGF_data["list"] = all_gachaDictList
     logger.debug("转换完成 {} 条", len(all_gachaDictList))
     return UIGF_data
+
 
 if __name__ == "__main__":
     with open(os.path.join(gen_path, "UIGF_gachaData.json"), "w", encoding="utf-8") as f:
