@@ -40,6 +40,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGELOG.md
+          tag_name: ${{ env.version }}
           files: |
             genshin-gacha-export.zip
             genshin-gacha-export_capture.zip
@@ -88,6 +89,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGELOG.md
+          tag_name: ${{ env.version }}
           files: |
             genshin-gacha-export-win7.zip
             genshin-gacha-export-win7_capture.zip
