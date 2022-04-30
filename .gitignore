@@ -9,3 +9,6 @@ venv
 *.lnk
 log.txt
 *.zip
+bin
+CaptureApp.exe
+rootCert.pfx
