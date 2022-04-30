@@ -14,7 +14,7 @@ class Config:
         "FLAG_USE_LOG_URL": True,
         "FLAG_USE_CLIPBOARD": True,
         "FLAG_USE_CAPTURE": True,
-        "FLAG_USE_CAPTURE_BINARY": "CaptureApp.exe -autoexit",
+        "FLAG_USE_CAPTURE_BINARY": "CaptureApp.exe",
         "FLAG_UIGF_JSON": True,
         "url": "",
     }
