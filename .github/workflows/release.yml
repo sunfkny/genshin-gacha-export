@@ -28,9 +28,14 @@ jobs:
         
       - name: Package to exe
         run: pyinstaller .\mainCapture.spec
+      - name: Download plugin
+        run: Invoke-WebRequest -Uri "https://github.com/sunfkny/CaptureApp/releases/latest/download/CaptureApp.exe" -OutFile "dist/CaptureApp.exe"
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export_capture.zip
-
+        
+      - name: Remove output
+        run: rm -r dist\*
+        
       - name: Package to exe
         run: pyinstaller .\main.spec
       - name: Zip files
@@ -77,8 +82,13 @@ jobs:
         
       - name: Package to exe
         run: pyinstaller .\mainCapture.spec
+      - name: Download plugin
+        run: Invoke-WebRequest -Uri "https://github.com/sunfkny/CaptureApp/releases/latest/download/CaptureApp.exe" -OutFile "dist/CaptureApp.exe"
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export-win7_capture.zip
+
+      - name: Remove output
+        run: rm -r dist\*
 
       - name: Package to exe
         run: pyinstaller .\main.spec
