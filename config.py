@@ -6,14 +6,15 @@ version = "v2.6.0.04181243"
 
 class Config:
     setting = {
-        "FLAG_MANUAL_INPUT_URL": False,
         "FLAG_AUTO_ARCHIVE": True,
-        "FLAG_SHOW_REPORT": True,
         "FLAG_CHECK_UPDATE": True,
+        "FLAG_SHOW_REPORT": True,
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,
         "FLAG_USE_LOG_URL": True,
-        "FLAG_USE_CAPTURE": False,
+        "FLAG_USE_CLIPBOARD": True,
+        "FLAG_USE_CAPTURE": True,
+        "FLAG_USE_CAPTURE_BINARY": "CaptureApp.exe -autoexit",
         "FLAG_UIGF_JSON": True,
         "url": "",
     }

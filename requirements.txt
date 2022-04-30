@@ -1,8 +1,7 @@
-﻿mitmproxy==5.3.0
-MarkupSafe==2.0.1 # mitmproxy 5.3.0 不锁定版本会 ImportError
-requests==2.27.1
+﻿requests==2.27.1
 urllib3==1.26.8
 XlsxWriter==3.0.3
 pyinstaller==5.0
 tqdm==4.62.0
 loguru==0.6.0
+pyperclip==1.8.2

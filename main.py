@@ -1,5 +1,6 @@
 import json
 import time
+import pyperclip
 import requests
 from urllib import parse
 import os
@@ -257,19 +258,19 @@ if __name__ == "__main__":
             logger.warning("如需多账号请设置 FLAG_USE_CONFIG_URL 为 false 关闭链接缓存")
             main()
 
-    FLAG_MANUAL_INPUT_URL = s.getKey("FLAG_MANUAL_INPUT_URL")
-    while FLAG_MANUAL_INPUT_URL:
+    FLAG_USE_CLIPBOARD = s.getKey("FLAG_USE_CLIPBOARD")
+    if FLAG_USE_CLIPBOARD:
         try:
-            logger.info("输入url: ")
-            url = input()
+            logger.info("获取剪贴板")
+            url = pyperclip.paste()
             url = toApi(url)
             if not checkApi(url):
-                continue
+                logger.error("剪贴板链接不可用")
             else:
                 FLAG_MANUAL_INPUT_URL = False
                 main()
-        except:
-            continue
+        except Exception:
+            logger.error("抓包模块出错: " + traceback.format_exc())
 
     FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
     if FLAG_USE_LOG_URL:
@@ -327,10 +328,11 @@ if __name__ == "__main__":
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if FLAG_USE_CAPTURE:
+        logger.info("使用抓包模式")
         try:
             from capture import capture
-
-            url = capture()
+            FLAG_USE_CAPTURE_BINARY = str(s.getKey("FLAG_USE_CAPTURE_BINARY"))
+            url = capture(FLAG_USE_CAPTURE_BINARY)
         except ModuleNotFoundError:
             logger.error("此版本没有抓包功能")
             pressAnyKeyToExit()
@@ -339,8 +341,7 @@ if __name__ == "__main__":
         sleep(1)
         logger.info("检查链接")
         sleep(1)
-        if not checkApi(url):
-            pressAnyKeyToExit()
-        main()
+        if checkApi(url):
+            main()
 
     pressAnyKeyToExit()
