@@ -4,9 +4,7 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
-同步 2.6 版本号
-升级 pyinstaller 5.0
-新增 使用 loguru 记录详细日志
-修改 抓包功能默认关闭
-适配 termux-open, 安卓机可以在 Termux 上打开抽卡报告了
-优化 部分程序逻辑和提示
+删除 mitmproxy 抓包
+增加 基于 [Titanium.Web.Proxy](https://github.com/justcoding121/titanium-web-proxy) 的抓包插件
+移除 手动输入
+增加 自动获取剪贴板
