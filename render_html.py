@@ -30,7 +30,7 @@ def get_banner(gacha_type, detail):
               <th>星级</th>
               <th>数量</th>
               <th style="cursor:help" title="物品数 / 总数">基础概率</th>
-              <th style="cursor:help" title="(物品数 - 距上次) / 总数">综合概率</th>
+              <th style="cursor:help" title="物品数 / (总数 - 距上次)">综合概率</th>
               <th>距上次</th>
             </tr>
           </thead>
