@@ -108,5 +108,11 @@ def main():
     logger.debug("写入完成")
 
 
+def write(uid, mergeData):
+    gachaLog = mergeData["gachaLog"]
+    logger.info("开始写入XLSX")
+    writeXLSX(uid, gachaLog)
+    logger.debug("写入完成")
+
 if __name__ == "__main__":
     main()
