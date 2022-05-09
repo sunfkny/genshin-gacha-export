@@ -82,13 +82,13 @@ def render_html(uid, gachaLog):
 
     detail = {}
     for key in gachaLog:
-        banner = gachaLog[key]
-        logger.debug("处理卡池: {} {} 数量: {}", key, gachaQueryTypeDict.get(key, key), len(banner))
+        gachaDictList = gachaLog[key][::-1]
+        logger.debug("处理卡池: {} {} 数量: {}", key, gachaQueryTypeDict.get(key, key), len(gachaDictList))
         detail[key] = {
             "5": 0,
             "4": 0,
             "3": 0,
-            "total": len(banner),
+            "total": len(gachaDictList),
             "pity5": 0,
             "pity4": 0,
             "items5": {},
@@ -109,19 +109,19 @@ def render_html(uid, gachaLog):
         }
         count = 0
         pity = 0
-        for log in banner:
+        for log in gachaDictList:
             count += 1
             pity += 1
             log["count"] = count
             log["pity"] = pity
             if log["rank_type"] == "5":
                 pity = 0
-        for log in banner:
+        for log in gachaDictList:
             if detail[key]["start_time"] == "":
-                detail[key]["start_time"] = " 开始于: " + log.get("time")
-            rank_type = log.get("rank_type")
-            name = log.get("name")
-            pity = log.get("pity")
+                detail[key]["start_time"] = " 开始于: " + log["time"]
+            rank_type = log["rank_type"]
+            name = log["name"]
+            pity = log["pity"]
             if rank_type == "5":
                 detail[key]["items5"][name] = 0
                 detail[key]["rank5logs"].append(name + "@" + str(pity))
@@ -129,7 +129,7 @@ def render_html(uid, gachaLog):
                 detail[key]["items4"][name] = 0
             if rank_type == "3":
                 detail[key]["items3"][name] = 0
-        for log in banner:
+        for log in gachaDictList:
             rank_type = log["rank_type"]
             name = log["name"]
             item_type = log["item_type"]

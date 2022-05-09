@@ -21,10 +21,9 @@ def writeXLSX(uid, gachaLog):
     workbook_path = os.path.join(gen_path, f"gachaExport-{uid}-{t}.xlsx")
     logger.debug("创建工作簿: " + workbook_path)
     workbook = xlsxwriter.Workbook(workbook_path)
-    for id in gachaQueryTypeIds:
-        gachaDictList = gachaLog[id]
-        gachaTypeName = gachaQueryTypeDict[id]
-        gachaDictList.reverse()
+    for key in gachaLog:
+        gachaDictList = gachaLog[key][::-1]
+        gachaTypeName = gachaQueryTypeDict[key]
         logger.debug("开始写入 {} {}", gachaTypeName, len(gachaDictList))
         worksheet = workbook.add_worksheet(gachaTypeName)
         content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "bg_color": "#ebebeb", "border": 1})
