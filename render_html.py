@@ -1,4 +1,5 @@
 import json
+import time
 import webbrowser
 import gachaMetadata
 from utils import logger, gachaDataPath, gachaReportPath
@@ -71,12 +72,7 @@ def get_banner(gacha_type, detail):
 """
 
 
-def main():
-    gachaLog = {}
-    with open(gachaDataPath, "r", encoding="utf-8") as f:
-        logger.debug("打开文件: " + gachaDataPath)
-        j = json.load(f)
-        gachaLog = j["gachaLog"]
+def render_html(uid, gachaLog):
 
     def percent(a, b):
         if b == 0:
@@ -195,7 +191,10 @@ def main():
     </head>
     <body style="margin: 2rem;">
     <h1>原神抽卡记录导出工具 抽卡报告</h1>
-    <span>基础概率 = 物品数 / 总数<br>综合概率 = (物品数 - 距上次) / 总数</span>
+    <div>导出时间: {}</div>
+    <div id="uid" onclick="javascript:document.querySelector('#uid').hidden=true;document.querySelector('#hide_uid').hidden=false">UID: {}（点击隐藏）</div>
+    <div id="hide_uid" hidden onclick="javascript:document.querySelector('#uid').hidden=false;document.querySelector('#hide_uid').hidden=true">UID: （已隐藏）</div>
+    <span>基础概率 = 物品数 / 总数<br>综合概率 = 物品数 / (总数 - 距上次)</span>
     <div id="app" class="markdown-body row">
     {}
     </div>
@@ -217,12 +216,16 @@ def main():
     th {
         text-align: left;
     }
+    #uid, #hide_uid{
+        cursor: pointer;
+    }
     </style>
     """
     html_body = ""
     for gacha_type in gachaQueryTypeIds:
         html_body += get_banner(gacha_type, detail)
-    html = html.format(html_head, html_body)
+    export_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    html = html.format(html_head, export_time, uid, html_body)
 
     logger.debug("写入 " + gachaReportPath)
     with open(gachaReportPath, "w", encoding="utf-8") as f:
@@ -234,6 +237,28 @@ def main():
     webbrowser.open_new_tab("gachaReport.html")
     logger.debug("打开成功")
 
+
+def main():
+    logger.debug("打开文件: " + gachaDataPath)
+    f = open(gachaDataPath, "r", encoding="utf-8")
+    s = f.read()
+    f.close()
+    j = json.loads(s)
+
+    uid = j["uid"]
+    gachaLog = j["gachaLog"]
+    
+    logger.info("开始写入抽卡报告HTML")
+    render_html(uid, gachaLog)
+    logger.debug("写入完成")
+
+
+def write(uid, mergeData):
+    gachaLog = mergeData["gachaLog"]
+    logger.info("开始写入抽卡报告HTML")
+    render_html(uid, gachaLog)
+    logger.debug("写入完成")
+    
 
 if __name__ == "__main__":
     main()
