@@ -4,7 +4,7 @@ import pyperclip
 import requests
 from urllib import parse
 import os
-import sys
+import platform
 import re
 import shutil
 from config import Config, version
@@ -35,11 +35,7 @@ def main():
             if uid_flag and log["uid"]:
                 gachaData["uid"] = log["uid"]
                 uid_flag = 0
-            # del log["uid"]
-            # del log["count"]
-            # del log["gacha_type"]
 
-    gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     uid = gachaData["uid"]
     localDataFilePath = os.path.join(gen_path, f"gachaData-{uid}.json")
 
@@ -259,6 +255,9 @@ if __name__ == "__main__":
             main()
 
     FLAG_USE_CLIPBOARD = s.getKey("FLAG_USE_CLIPBOARD")
+    if platform.system() not in ["Windows", "Darwin", "Linux"]:
+        logger.warning(f"{platform.system()} 无法使用剪贴板获取链接")
+        FLAG_USE_CLIPBOARD = False
     if FLAG_USE_CLIPBOARD:
         try:
             logger.info("获取剪贴板")
@@ -273,6 +272,9 @@ if __name__ == "__main__":
             logger.error("抓包模块出错: " + traceback.format_exc())
 
     FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
+    if platform.system() != "Windows":
+        logger.warning("非 Windows 系统无法使用日志获取链接")
+        FLAG_USE_LOG_URL = False
     if FLAG_USE_LOG_URL:
         try:
             USERPROFILE = os.environ["USERPROFILE"]
@@ -327,6 +329,9 @@ if __name__ == "__main__":
             pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
+    if platform.system() != "Windows":
+        logger.warning("非 Windows 系统无法使用抓包获取链接")
+        FLAG_USE_CAPTURE = False
     if FLAG_USE_CAPTURE:
         logger.info("使用抓包模式")
         try:
