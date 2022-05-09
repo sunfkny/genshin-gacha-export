@@ -69,7 +69,7 @@ def main():
         files = os.listdir(gen_path)
         archive_UIGF = [f for f in files if re.match(r"UIGF_gachaData-\d+-\d+.json", f)]
         archive_json = [f for f in files if re.match(r"gachaData-\d+-\d+.json", f)]
-        archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+.xlsx", f)]
+        archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+-\d+.xlsx", f)]
         archive_files = archive_UIGF + archive_json + archive_xlsx
         logger.debug("待归档文件 {}".format(archive_files))
         for file in archive_files:
