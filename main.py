@@ -266,7 +266,6 @@ if __name__ == "__main__":
             if not checkApi(url):
                 logger.error("剪贴板链接不可用")
             else:
-                FLAG_MANUAL_INPUT_URL = False
                 main()
         except Exception:
             logger.error("抓包模块出错: " + traceback.format_exc())

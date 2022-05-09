@@ -14,5 +14,5 @@ def capture(FLAG_USE_CAPTURE_BINARY):
 
 
 if __name__ == "__main__":
-    url = capture("CaptureApp.exe -autoexit")
+    url = capture("CaptureApp.exe")
     logger.info("抓包结果：{}", url)
