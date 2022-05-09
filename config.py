@@ -1,7 +1,7 @@
 import json
 from utils import logger
 
-version = "v2.6.0.04301038"
+version = "v2.6.0.05091700"
 
 
 class Config:

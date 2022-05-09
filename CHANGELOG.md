@@ -4,7 +4,8 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
-删除 mitmproxy 抓包
-增加 基于 [Titanium.Web.Proxy](https://github.com/justcoding121/titanium-web-proxy) 的抓包插件
-移除 手动输入
-增加 自动获取剪贴板
+修改 excel 文件名增加 uid
+去除 gachaData.json文件, 直接传 gachaLog
+增加 抽卡报告 UID 和 导出时间
+修复 抽卡报告计算公式错误（实际结果未出现错误）
+增加 当前系统判断, 不支持则不使用：日志、抓包（仅支持 Windows 系统），剪贴板功能（仅支持 Windows、Darwin、Linux 系统）
