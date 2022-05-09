@@ -2,7 +2,7 @@ import json
 import os
 import gachaMetadata
 import UIGF_converter
-from utils import logger, gachaDataPath, gen_path
+from utils import logger, gen_path
 
 
 gachaInfo = []

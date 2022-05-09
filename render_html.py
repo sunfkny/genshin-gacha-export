@@ -2,7 +2,7 @@ import json
 import time
 import webbrowser
 import gachaMetadata
-from utils import logger, gachaDataPath, gachaReportPath
+from utils import logger, gachaReportPath
 
 
 gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds

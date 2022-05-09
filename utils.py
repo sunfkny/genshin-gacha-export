@@ -34,10 +34,8 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
 
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 configPath = os.path.join(gen_path, "config.json")
-gachaDataPath = os.path.join(gen_path, "gachaData.json")
 gachaReportPath = os.path.join(gen_path, "gachaReport.html")
 
 logger.debug("gen_path: {}", gen_path)
 logger.debug("configPath: {}", configPath)
-logger.debug("gachaDataPath: {}", gachaDataPath)
 logger.debug("gachaReportPath: {}", gachaReportPath)
