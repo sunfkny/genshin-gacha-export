@@ -48,9 +48,9 @@ def main():
 
     mergeData["gachaType"] = gachaQueryTypeDict
     logger.info("开始写入JSON")
-    # 抽卡报告读取 gachaData.json
-    with open(os.path.join(gen_path, "gachaData.json"), "w", encoding="utf-8") as f:
-        json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
+    # # 抽卡报告读取 gachaData.json
+    # with open(os.path.join(gen_path, "gachaData.json"), "w", encoding="utf-8") as f:
+    #     json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     # 待合并数据 gachaData-{uid}.json
     with open(os.path.join(gen_path, f"gachaData-{uid}.json"), "w", encoding="utf-8") as f:
         json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
@@ -88,19 +88,19 @@ def main():
     if s.getKey("FLAG_UIGF_JSON"):
         logger.info("开始写入UIGF JSON")
         with open(os.path.join(gen_path, f"UIGF_gachaData-{uid}-{t}.json"), "w", encoding="utf-8") as f:
-            UIGF_data = UIGF_converter.convert(uid)
+            UIGF_data = UIGF_converter.convert(uid, mergeData)
             json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
         logger.debug("写入完成")
 
     if s.getKey("FLAG_WRITE_XLSX"):
         import writeXLSX
 
-        writeXLSX.main()
+        writeXLSX.write(uid, mergeData)
 
     if s.getKey("FLAG_SHOW_REPORT"):
         import render_html
 
-        render_html.main()
+        render_html.write(uid, mergeData)
 
     pressAnyKeyToExit()
 

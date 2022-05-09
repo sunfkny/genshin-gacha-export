@@ -19,7 +19,7 @@ def id_generator():
         yield str(id)
 
 
-def convert(uid=""):
+def convert(uid, gachaLog):
     logger.debug("开始转换UIGF")
     UIGF_data = {}
     UIGF_data["info"] = {}
@@ -32,10 +32,6 @@ def convert(uid=""):
     UIGF_data["info"]["export_timestamp"] = int(time.time())
     all_gachaDictList = []
 
-    f = open(os.path.join(gen_path, "gachaData.json"), "r", encoding="utf-8")
-    j = json.load(f)
-    f.close()
-    gachaLog = j["gachaLog"]
     for gacha_type in gachaQueryTypeIds:
         gacha_log = gachaLog.get(gacha_type, [])
         gacha_log = sorted(gacha_log, key=lambda gacha: gacha["time"], reverse=True)
@@ -54,8 +50,3 @@ def convert(uid=""):
     logger.debug("转换完成 {} 条", len(all_gachaDictList))
     return UIGF_data
 
-
-if __name__ == "__main__":
-    with open(os.path.join(gen_path, "UIGF_gachaData.json"), "w", encoding="utf-8") as f:
-        UIGF_data = convert("")
-        json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)

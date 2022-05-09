@@ -68,7 +68,7 @@ def writeXLSX(uid, gachaLog):
     raw_data_header = ["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid", "uigf_gacha_type"]
     worksheet.write_row(0, 0, raw_data_header)
 
-    UIGF_data = UIGF_converter.convert(uid)
+    UIGF_data = UIGF_converter.convert(uid, gachaLog)
     all_gachaDictList = UIGF_data["list"]
     all_counter = 0
 
@@ -93,26 +93,9 @@ def writeXLSX(uid, gachaLog):
     logger.debug("工作簿写入完成")
 
 
-def main():
-    logger.debug("打开文件: " + gachaDataPath)
-    f = open(gachaDataPath, "r", encoding="utf-8")
-    s = f.read()
-    f.close()
-    j = json.loads(s)
-
-    uid = j["uid"]
-    gachaLog = j["gachaLog"]
-
-    logger.info("开始写入XLSX")
-    writeXLSX(uid, gachaLog)
-    logger.debug("写入完成")
-
-
 def write(uid, mergeData):
     gachaLog = mergeData["gachaLog"]
     logger.info("开始写入XLSX")
     writeXLSX(uid, gachaLog)
     logger.debug("写入完成")
 
-if __name__ == "__main__":
-    main()

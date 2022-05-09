@@ -238,27 +238,9 @@ def render_html(uid, gachaLog):
     logger.debug("打开成功")
 
 
-def main():
-    logger.debug("打开文件: " + gachaDataPath)
-    f = open(gachaDataPath, "r", encoding="utf-8")
-    s = f.read()
-    f.close()
-    j = json.loads(s)
-
-    uid = j["uid"]
-    gachaLog = j["gachaLog"]
-    
-    logger.info("开始写入抽卡报告HTML")
-    render_html(uid, gachaLog)
-    logger.debug("写入完成")
-
-
 def write(uid, mergeData):
     gachaLog = mergeData["gachaLog"]
     logger.info("开始写入抽卡报告HTML")
     render_html(uid, gachaLog)
     logger.debug("写入完成")
-    
 
-if __name__ == "__main__":
-    main()
