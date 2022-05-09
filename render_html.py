@@ -84,7 +84,6 @@ def render_html(uid, gachaLog):
     for key in gachaLog:
         banner = gachaLog[key]
         logger.debug("处理卡池: {} {} 数量: {}", key, gachaQueryTypeDict.get(key, key), len(banner))
-        banner.reverse()
         detail[key] = {
             "5": 0,
             "4": 0,

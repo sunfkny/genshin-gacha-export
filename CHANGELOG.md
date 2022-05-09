@@ -4,6 +4,7 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
+bug fix: 抽卡报告顺序
 修改 excel 文件名增加 uid
 去除 gachaData.json文件, 直接传 gachaLog
 增加 抽卡报告 UID 和 导出时间
