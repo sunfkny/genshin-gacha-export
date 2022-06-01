@@ -92,8 +92,10 @@ def writeXLSX(uid, gachaLog):
     logger.debug("工作簿写入完成")
 
 
-def write(uid, mergeData):
-    gachaLog = mergeData["gachaLog"]
+def write(uid, gachaLog):
+    if "gachaLog" in gachaLog:
+        logger.debug("gachaLog key 存在")
+        gachaLog = gachaLog["gachaLog"]
     logger.info("开始写入XLSX")
     writeXLSX(uid, gachaLog)
     logger.debug("写入完成")

@@ -237,8 +237,10 @@ def render_html(uid, gachaLog):
     logger.debug("打开成功")
 
 
-def write(uid, mergeData):
-    gachaLog = mergeData["gachaLog"]
+def write(uid, gachaLog):
+    if "gachaLog" in gachaLog:
+        logger.debug("gachaLog key 存在")
+        gachaLog = gachaLog["gachaLog"]
     logger.info("开始写入抽卡报告HTML")
     render_html(uid, gachaLog)
     logger.debug("写入完成")

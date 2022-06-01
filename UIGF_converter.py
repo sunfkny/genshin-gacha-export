@@ -21,6 +21,9 @@ def id_generator():
 
 def convert(uid, gachaLog):
     logger.debug("开始转换UIGF")
+    if "gachaLog" in gachaLog:
+        logger.debug("gachaLog key 存在")
+        gachaLog = gachaLog["gachaLog"]
     UIGF_data = {}
     UIGF_data["info"] = {}
     UIGF_data["info"]["uid"] = uid
