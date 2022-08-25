@@ -161,7 +161,7 @@ def toApi(url):
     logger.debug(url)
     spliturl = str(url).split("?")
     if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
-        spliturl[0] = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog"
+        spliturl[0] = "https://hk4e-api-os.hoyoverse.com/event/gacha_info/api/getGachaLog"
     else:
         spliturl[0] = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
     url = "?".join(spliturl)
