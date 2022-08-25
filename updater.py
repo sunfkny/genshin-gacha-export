@@ -23,26 +23,11 @@ def is_win7():
         return True
 
 
-def is_cap():
-    try:
-        import capture
-
-        return True
-    except ImportError:
-        return False
-
-
 def get_package():
     if is_win7():
-        if is_cap():
-            return Package.win7_cap
-        else:
-            return Package.win7
+        return Package.win7_cap
     else:
-        if is_cap():
-            return Package.win10_cap
-        else:
-            return Package.win10
+        return Package.win10_cap
 
 
 def check_update(package):
