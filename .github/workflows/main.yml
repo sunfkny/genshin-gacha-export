@@ -36,17 +36,17 @@ jobs:
           name: genshin-gacha-export_capture_${{ env.version }}
           path: dist
 
-      - name: Remove output
-        run: rm dist\genshin-gacha-export.exe
+      # - name: Remove output
+      #   run: rm dist\genshin-gacha-export.exe
 
-      - name: Package to exe
-        run: pyinstaller .\main.spec
+      # - name: Package to exe
+      #   run: pyinstaller .\main.spec
         
-      - name: Upload output
-        uses: actions/upload-artifact@v2
-        with:
-          name: genshin-gacha-export_${{ env.version }}
-          path: dist\genshin-gacha-export.exe
+      # - name: Upload output
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: genshin-gacha-export_${{ env.version }}
+      #     path: dist\genshin-gacha-export.exe
 
       
   build-py37:
@@ -82,14 +82,14 @@ jobs:
           name: genshin-gacha-export-win7_capture_${{ env.version }}
           path: dist
 
-      - name: Remove output
-        run: rm dist\genshin-gacha-export.exe
+      # - name: Remove output
+      #   run: rm dist\genshin-gacha-export.exe
 
-      - name: Package to exe
-        run: pyinstaller .\main.spec
+      # - name: Package to exe
+      #   run: pyinstaller .\main.spec
         
-      - name: Upload output
-        uses: actions/upload-artifact@v2
-        with:
-          name: genshin-gacha-export-win7_${{ env.version }}
-          path: dist\genshin-gacha-export.exe
+      # - name: Upload output
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: genshin-gacha-export-win7_${{ env.version }}
+      #     path: dist\genshin-gacha-export.exe
