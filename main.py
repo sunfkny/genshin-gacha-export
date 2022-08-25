@@ -270,62 +270,62 @@ if __name__ == "__main__":
         except Exception:
             logger.error("抓包模块出错: " + traceback.format_exc())
 
-    FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
-    if platform.system() != "Windows":
-        logger.warning("非 Windows 系统无法使用日志获取链接")
-        FLAG_USE_LOG_URL = False
-    if FLAG_USE_LOG_URL:
-        try:
-            USERPROFILE = os.environ["USERPROFILE"]
-            output_log_path = ""
-            output_log_path_cn = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
-            output_log_path_global = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
+    # FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
+    # if platform.system() != "Windows":
+    #     logger.warning("非 Windows 系统无法使用日志获取链接")
+    #     FLAG_USE_LOG_URL = False
+    # if FLAG_USE_LOG_URL:
+    #     try:
+    #         USERPROFILE = os.environ["USERPROFILE"]
+    #         output_log_path = ""
+    #         output_log_path_cn = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
+    #         output_log_path_global = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
 
-            if os.path.isfile(output_log_path_cn):
-                logger.info("检测到国服日志文件")
-                logger.debug("output_log_path_cn: " + output_log_path_cn)
-                output_log_path = output_log_path_cn
+    #         if os.path.isfile(output_log_path_cn):
+    #             logger.info("检测到国服日志文件")
+    #             logger.debug("output_log_path_cn: " + output_log_path_cn)
+    #             output_log_path = output_log_path_cn
 
-            if os.path.isfile(output_log_path_global):
-                logger.info("检测到海外服日志文件")
-                logger.debug("output_log_path_global: " + output_log_path_global)
-                output_log_path = output_log_path_global
+    #         if os.path.isfile(output_log_path_global):
+    #             logger.info("检测到海外服日志文件")
+    #             logger.debug("output_log_path_global: " + output_log_path_global)
+    #             output_log_path = output_log_path_global
 
-            if os.path.isfile(output_log_path_cn) and os.path.isfile(output_log_path_global):
-                flag = True
-                while flag:
-                    logger.info("检测到两个日志文件, 输入1选择国服, 输入2选择海外服: ")
-                    c = input()
-                    if c == "1":
-                        output_log_path = output_log_path_cn
-                        flag = False
-                    elif c == "2":
-                        output_log_path = output_log_path_global
-                        flag = False
+    #         if os.path.isfile(output_log_path_cn) and os.path.isfile(output_log_path_global):
+    #             flag = True
+    #             while flag:
+    #                 logger.info("检测到两个日志文件, 输入1选择国服, 输入2选择海外服: ")
+    #                 c = input()
+    #                 if c == "1":
+    #                     output_log_path = output_log_path_cn
+    #                     flag = False
+    #                 elif c == "2":
+    #                     output_log_path = output_log_path_global
+    #                     flag = False
 
-            if not os.path.isfile(output_log_path_cn) and not os.path.isfile(output_log_path_global):
-                logger.warning("没有检测到日志文件")
-            else:
-                # with open(output_log_path, "r", encoding="utf-8") as f:
-                with open(output_log_path, "r", encoding="mbcs", errors="ignore") as f:
-                    log = f.readlines()
+    #         if not os.path.isfile(output_log_path_cn) and not os.path.isfile(output_log_path_global):
+    #             logger.warning("没有检测到日志文件")
+    #         else:
+    #             # with open(output_log_path, "r", encoding="utf-8") as f:
+    #             with open(output_log_path, "r", encoding="mbcs", errors="ignore") as f:
+    #                 log = f.readlines()
 
-                for line in log:
-                    if line.startswith("OnGetWebViewPageFinish:") and line.endswith("#/log\n"):
-                        url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
+    #             for line in log:
+    #                 if line.startswith("OnGetWebViewPageFinish:") and line.endswith("#/log\n"):
+    #                     url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
 
-                if url == "":
-                    logger.error("日志文件中没有链接")
-                else:
-                    url = toApi(url)
-                    logger.info("检查日志文件中的链接")
-                    if checkApi(url):
-                        s = Config(configPath)
-                        s.setKey("url", url)
-                        main()
-        except Exception as e:
-            logger.error("日志读取模块出错: " + traceback.format_exc())
-            pressAnyKeyToExit()
+    #             if url == "":
+    #                 logger.error("日志文件中没有链接")
+    #             else:
+    #                 url = toApi(url)
+    #                 logger.info("检查日志文件中的链接")
+    #                 if checkApi(url):
+    #                     s = Config(configPath)
+    #                     s.setKey("url", url)
+    #                     main()
+    #     except Exception as e:
+    #         logger.error("日志读取模块出错: " + traceback.format_exc())
+    #         pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if platform.system() != "Windows":
