@@ -33,13 +33,22 @@ jobs:
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export_capture.zip
         
-      - name: Remove output
-        run: rm -r dist\*
+      # - name: Remove output
+      #   run: rm -r dist\*
         
-      - name: Package to exe
-        run: pyinstaller .\main.spec
-      - name: Zip files
-        run: Compress-Archive dist\* genshin-gacha-export.zip
+      # - name: Package to exe
+      #   run: pyinstaller .\main.spec
+      # - name: Zip files
+      #   run: Compress-Archive dist\* genshin-gacha-export.zip
+
+      # - name: Release files
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     body_path: CHANGELOG.md
+      #     tag_name: ${{ env.version }}
+      #     files: |
+      #       genshin-gacha-export.zip
+      #       genshin-gacha-export_capture.zip
 
       - name: Release files
         uses: softprops/action-gh-release@v1
@@ -47,14 +56,13 @@ jobs:
           body_path: CHANGELOG.md
           tag_name: ${{ env.version }}
           files: |
-            genshin-gacha-export.zip
             genshin-gacha-export_capture.zip
 
       - name: Install CODING Generic
         run: npm install coding-generic -g
         
-      - name: Upload Artifacts
-        run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export.zip?version=${{ env.version }}"
+      # - name: Upload Artifacts
+      #   run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export.zip?version=${{ env.version }}"
 
       - name: Upload Artifacts
         run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export_capture.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export_capture.zip?version=${{ env.version }}"
@@ -87,28 +95,35 @@ jobs:
       - name: Zip files
         run: Compress-Archive dist\* genshin-gacha-export-win7_capture.zip
 
-      - name: Remove output
-        run: rm -r dist\*
+      # - name: Remove output
+      #   run: rm -r dist\*
 
-      - name: Package to exe
-        run: pyinstaller .\main.spec
-      - name: Zip files
-        run: Compress-Archive dist\* genshin-gacha-export-win7.zip
+      # - name: Package to exe
+      #   run: pyinstaller .\main.spec
+      # - name: Zip files
+      #   run: Compress-Archive dist\* genshin-gacha-export-win7.zip
 
+      # - name: Release files
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     body_path: CHANGELOG.md
+      #     tag_name: ${{ env.version }}
+      #     files: |
+      #       genshin-gacha-export-win7.zip
+      #       genshin-gacha-export-win7_capture.zip
       - name: Release files
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGELOG.md
           tag_name: ${{ env.version }}
           files: |
-            genshin-gacha-export-win7.zip
             genshin-gacha-export-win7_capture.zip
 
       - name: Install CODING Generic
         run: npm install coding-generic -g
 
-      - name: Upload Artifacts
-        run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export-win7.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export-win7.zip?version=${{ env.version }}"
+      # - name: Upload Artifacts
+      #   run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export-win7.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export-win7.zip?version=${{ env.version }}"
 
       - name: Upload Artifacts
         run: coding-generic -u="${{ secrets.CODING_ARTIFACTS_TOKEN }}:${{ secrets.CODING_ARTIFACTS_PASSWORD }}" -p="genshin-gacha-export-win7_capture.zip" -r="https://sunfkny-generic.pkg.coding.net/genshin-gacha-export/releases/chunks/genshin-gacha-export-win7_capture.zip?version=${{ env.version }}"
