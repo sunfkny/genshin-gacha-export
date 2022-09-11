@@ -12,11 +12,13 @@ def get_clipboad_text_or_html() -> Optional[str]:
         # 注册 CF_HTML 格式剪贴板
         CF_HTML = win32clipboard.RegisterClipboardFormat("HTML Format")
         CF_TEXT = win32con.CF_TEXT
+        logger.debug(f"CF_HTML={CF_HTML}")
 
         cf = win32clipboard.EnumClipboardFormats(0)
         while cf != 0:
             formats.append(cf)
             cf = win32clipboard.EnumClipboardFormats(cf)
+        logger.debug(f"EnumClipboardFormats={formats}")
 
         if CF_HTML in formats:
             data = win32clipboard.GetClipboardData(CF_HTML)
@@ -25,6 +27,7 @@ def get_clipboad_text_or_html() -> Optional[str]:
         else:
             return None
 
+        logger.debug(f"GetClipboardData={data}")
         if isinstance(data, bytes):
             data = data.decode(errors="ignore")
         if not isinstance(data, str):
