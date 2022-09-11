@@ -1,15 +1,11 @@
+from clipboard_utils import get_url_from_clipboard
 from utils import logger
 import subprocess
-import pyperclip
+
 
 def capture(FLAG_USE_CAPTURE_BINARY):
-
-
     subprocess.Popen(FLAG_USE_CAPTURE_BINARY, stdout=subprocess.PIPE, shell=True).communicate()
-    
-    
-    url = pyperclip.paste()
-    print(url)
+    url = get_url_from_clipboard()
     return url
 
 

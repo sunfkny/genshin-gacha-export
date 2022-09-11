@@ -1,6 +1,5 @@
 import json
 import time
-import pyperclip
 import requests
 from urllib import parse
 import os
@@ -158,8 +157,9 @@ def getGachaLogs(gachaTypeId):
 
 
 def toApi(url):
+    url = str(url)
     logger.debug(url)
-    spliturl = str(url).split("?")
+    spliturl = url.split("?")
     if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
         spliturl[0] = "https://hk4e-api-os.hoyoverse.com/event/gacha_info/api/getGachaLog"
     else:
@@ -185,7 +185,7 @@ def getApi(gachaType, size, page, end_id=""):
 
 def checkApi(url):
     if "?" not in url:
-        logger.error("链接为空")
+        logger.error("链接错误")
         return False
     try:
         r = requests.get(url)
@@ -260,13 +260,18 @@ if __name__ == "__main__":
         FLAG_USE_CLIPBOARD = False
     if FLAG_USE_CLIPBOARD:
         try:
-            logger.info("获取剪贴板")
-            url = pyperclip.paste()
-            url = toApi(url)
-            if not checkApi(url):
-                logger.error("剪贴板链接不可用")
+            from clipboard_utils import get_url_from_clipboard
+
+            logger.info("使用剪贴板模式")
+            url = get_url_from_clipboard()
+            if url:
+                url = toApi(url)
+                logger.info("检查链接")
+                if checkApi(url):
+                    main()
             else:
-                main()
+                logger.info("剪贴板中无链接")
+
         except Exception:
             logger.error("抓包模块出错: " + traceback.format_exc())
 
@@ -335,6 +340,7 @@ if __name__ == "__main__":
         logger.info("使用抓包模式")
         try:
             from capture import capture
+
             FLAG_USE_CAPTURE_BINARY = str(s.getKey("FLAG_USE_CAPTURE_BINARY"))
             url = capture(FLAG_USE_CAPTURE_BINARY)
         except ModuleNotFoundError:
@@ -342,10 +348,13 @@ if __name__ == "__main__":
             pressAnyKeyToExit()
         except Exception:
             logger.error("抓包模块出错: " + traceback.format_exc())
-        sleep(1)
-        logger.info("检查链接")
-        sleep(1)
-        if checkApi(url):
-            main()
+        if url:
+            sleep(1)
+            logger.info("检查链接")
+            sleep(1)
+            if checkApi(url):
+                main()
+        else:
+            logger.info("抓包模式获取链接失败")
 
     pressAnyKeyToExit()
