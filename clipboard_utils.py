@@ -32,7 +32,7 @@ def get_clipboad_text_or_html() -> Optional[str]:
 
         return data
     except Exception as e:
-        print(e)
+        logger.error(f"读取剪贴板错误 {e}")
         return None
     finally:
         win32clipboard.CloseClipboard()
