@@ -1,0 +1,17 @@
+altgraph==0.17.2
+certifi==2022.6.15.1
+charset-normalizer==2.0.12
+colorama==0.4.5
+future==0.18.2
+idna==3.3
+loguru==0.6.0
+pefile==2022.5.30
+pyinstaller==5.0
+pyinstaller-hooks-contrib==2022.10
+pywin32==304
+pywin32-ctypes==0.2.0
+requests==2.27.1
+tqdm==4.62.0
+urllib3==1.26.8
+win32-setctime==1.1.0
+XlsxWriter==3.0.3

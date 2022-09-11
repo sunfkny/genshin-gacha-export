@@ -4,3 +4,4 @@ XlsxWriter==3.0.3
 pyinstaller==5.0
 tqdm==4.62.0
 loguru==0.6.0
+pywin32==304
