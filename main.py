@@ -330,7 +330,7 @@ if __name__ == "__main__":
             #             f.seek((f.tell() // 16 + 1) * 16)  # 对齐16字节
             results = gge_tmp.read_bytes().split(b"1/0/")
             for result in results:
-                result = result.replace(b"\0", b" ").decode(errors="ignore")
+                result = result.decode(errors="ignore")
                 text = get_url_from_string(result)
                 if text:
                     url = text
