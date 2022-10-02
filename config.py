@@ -11,7 +11,7 @@ class Config:
         "FLAG_SHOW_REPORT": True,
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,
-        "FLAG_USE_LOG_URL": False,
+        "FLAG_USE_LOG_URL": True,
         "FLAG_USE_CLIPBOARD": True,
         "FLAG_USE_CAPTURE": True,
         "FLAG_USE_CAPTURE_BINARY": "CaptureApp.exe",

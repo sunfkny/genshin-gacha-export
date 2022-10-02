@@ -312,23 +312,28 @@ if __name__ == "__main__":
             CopyFile(str(data_2), str(gge_tmp))
 
             logger.info(f"开始读取缓存 {data_2}")
-            with gge_tmp.open("rb") as f:
-                while True:
-                    a = f.read(4)
-                    if len(a) < 4:  # 文件结束
-                        break
-                    if a == b"1/0/":  # url开始
-                        # assert f.tell() % 16 == 4
-                        buffer = bytearray()
-                        b = f.read(1)
-                        while b not in (b"\0", b""):  # 读取到\0或文件结束
-                            buffer += b
-                            b = f.read(1)
-                        text = get_url_from_string(buffer.decode("utf8"))
-                        if text:
-                            url = text
-
-                        f.seek((f.tell() // 16 + 1) * 16)  # 对齐16字节
+            # with gge_tmp.open("rb") as f:
+            #     while True:
+            #         a = f.read(4)
+            #         if len(a) < 4:  # 文件结束
+            #             break
+            #         if a == b"1/0/":  # url开始
+            #             # assert f.tell() % 16 == 4
+            #             buffer = bytearray()
+            #             b = f.read(1)
+            #             while b not in (b"\0", b""):  # 读取到\0或文件结束
+            #                 buffer += b
+            #                 b = f.read(1)
+            #             text = get_url_from_string(buffer.decode("utf8"))
+            #             if text:
+            #                 url = text
+            #             f.seek((f.tell() // 16 + 1) * 16)  # 对齐16字节
+            results = gge_tmp.read_bytes().split(b"1/0/")
+            for result in results:
+                result = result.replace(b"\0", b" ").decode(errors="ignore")
+                text = get_url_from_string(result)
+                if text:
+                    url = text
 
             if gge_tmp.is_file():
                 gge_tmp.unlink()
