@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import time
 import requests
 from urllib import parse
@@ -273,64 +274,78 @@ if __name__ == "__main__":
                 logger.info("剪贴板中无链接")
 
         except Exception:
-            logger.error("抓包模块出错: " + traceback.format_exc())
+            logger.error("剪贴板模块出错: " + traceback.format_exc())
 
-    # FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
-    # if platform.system() != "Windows":
-    #     logger.warning("非 Windows 系统无法使用日志获取链接")
-    #     FLAG_USE_LOG_URL = False
-    # if FLAG_USE_LOG_URL:
-    #     try:
-    #         USERPROFILE = os.environ["USERPROFILE"]
-    #         output_log_path = ""
-    #         output_log_path_cn = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
-    #         output_log_path_global = os.path.join(USERPROFILE, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
+    FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
+    if platform.system() != "Windows":
+        logger.warning("非 Windows 系统无法使用日志获取链接")
+        FLAG_USE_LOG_URL = False
+    if FLAG_USE_LOG_URL:
+        try:
+            from win32api import GetTempFileName, GetTempPath, CopyFile
+            from clipboard_utils import get_url_from_string
 
-    #         if os.path.isfile(output_log_path_cn):
-    #             logger.info("检测到国服日志文件")
-    #             logger.debug("output_log_path_cn: " + output_log_path_cn)
-    #             output_log_path = output_log_path_cn
+            log_cn = Path().home() / "AppData/LocalLow/miHoYo/原神/output_log.txt"
+            log_os = Path().home() / "AppData/LocalLow/miHoYo/Genshin Impact/output_log.txt"
+            modifiy_time_cn = log_cn.stat().st_mtime if log_cn.exists() else 0
+            modifiy_time_os = log_os.stat().st_mtime if log_os.exists() else 0
+            log = None
+            if modifiy_time_cn > modifiy_time_os >= 0:
+                log = log_cn
+                logger.info(f"使用日志 {log}")
+            if modifiy_time_os > modifiy_time_cn >= 0:
+                log = log_os
+                logger.info(f"使用国际服日志 {log}")
+            assert log, "日志不存在"
 
-    #         if os.path.isfile(output_log_path_global):
-    #             logger.info("检测到海外服日志文件")
-    #             logger.debug("output_log_path_global: " + output_log_path_global)
-    #             output_log_path = output_log_path_global
+            log_text = log.read_text(encoding="utf8")
+            res = re.search("([A-Z]:/.+(GenshinImpact_Data|YuanShen_Data))", log_text)
+            game_path = res.group() if res else None
+            assert game_path, "未找到游戏路径"
 
-    #         if os.path.isfile(output_log_path_cn) and os.path.isfile(output_log_path_global):
-    #             flag = True
-    #             while flag:
-    #                 logger.info("检测到两个日志文件, 输入1选择国服, 输入2选择海外服: ")
-    #                 c = input()
-    #                 if c == "1":
-    #                     output_log_path = output_log_path_cn
-    #                     flag = False
-    #                 elif c == "2":
-    #                     output_log_path = output_log_path_global
-    #                     flag = False
+            data_2 = Path(game_path) / "webCaches/Cache/Cache_Data/data_2"
+            assert data_2.is_file(), "缓存文件不存在"
+            logger.info(f"缓存文件 {data_2}")
 
-    #         if not os.path.isfile(output_log_path_cn) and not os.path.isfile(output_log_path_global):
-    #             logger.warning("没有检测到日志文件")
-    #         else:
-    #             # with open(output_log_path, "r", encoding="utf-8") as f:
-    #             with open(output_log_path, "r", encoding="mbcs", errors="ignore") as f:
-    #                 log = f.readlines()
+            gge_tmp, _ = GetTempFileName(GetTempPath(), "gge", 0)
+            gge_tmp = Path(gge_tmp)
+            CopyFile(str(data_2), str(gge_tmp))
 
-    #             for line in log:
-    #                 if line.startswith("OnGetWebViewPageFinish:") and line.endswith("#/log\n"):
-    #                     url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
+            logger.info(f"开始读取缓存 {data_2}")
+            with gge_tmp.open("rb") as f:
+                while True:
+                    a = f.read(4)
+                    if len(a) < 4:  # 文件结束
+                        break
+                    if a == b"1/0/":  # url开始
+                        # assert f.tell() % 16 == 4
+                        buffer = bytearray()
+                        b = f.read(1)
+                        while b not in (b"\0", b""):  # 读取到\0或文件结束
+                            buffer += b
+                            b = f.read(1)
+                        text = get_url_from_string(buffer.decode("utf8"))
+                        if text:
+                            url = text
 
-    #             if url == "":
-    #                 logger.error("日志文件中没有链接")
-    #             else:
-    #                 url = toApi(url)
-    #                 logger.info("检查日志文件中的链接")
-    #                 if checkApi(url):
-    #                     s = Config(configPath)
-    #                     s.setKey("url", url)
-    #                     main()
-    #     except Exception as e:
-    #         logger.error("日志读取模块出错: " + traceback.format_exc())
-    #         pressAnyKeyToExit()
+                        f.seek((f.tell() // 16 + 1) * 16)  # 对齐16字节
+
+            if gge_tmp.is_file():
+                gge_tmp.unlink()
+                logger.debug(f"删除临时文件{gge_tmp}")
+
+            if url:
+                url = toApi(url)
+                logger.info("检查缓存文件中的链接")
+                if checkApi(url):
+                    s = Config(configPath)
+                    s.setKey("url", url)
+                    main()
+            else:
+                logger.error("缓存文件中没有链接")
+        except Exception as e:
+            logger.error("日志读取模块出错: " + traceback.format_exc())
+            pressAnyKeyToExit()
 
     FLAG_USE_CAPTURE = s.getKey("FLAG_USE_CAPTURE")
     if platform.system() != "Windows":
