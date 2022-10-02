@@ -311,7 +311,7 @@ if __name__ == "__main__":
             gge_tmp = Path(gge_tmp)
             CopyFile(str(data_2), str(gge_tmp))
 
-            logger.info(f"开始读取缓存 {data_2}")
+            logger.info(f"开始读取缓存")
             # with gge_tmp.open("rb") as f:
             #     while True:
             #         a = f.read(4)
