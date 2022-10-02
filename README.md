@@ -9,7 +9,6 @@
  - [使用方法](https://github.com/sunfkny/genshin-gacha-export/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
  - [常见问题](https://github.com/sunfkny/genshin-gacha-export/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
  - [配置文件](https://github.com/sunfkny/genshin-gacha-export/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
- - [更新日志](https://github.com/sunfkny/genshin-gacha-export/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
 ## 功能
  - 读取客户端缓存文件中的 url
