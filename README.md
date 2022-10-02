@@ -12,7 +12,7 @@
  - [更新日志](https://github.com/sunfkny/genshin-gacha-export/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
 ## 功能
- - ~~（3.0 版本日志没有 url 无法获取）读取客户端日志文件中的 url~~
+ - 读取客户端缓存文件中的 url
  - 使用插件 [CaptureApp](https://github.com/sunfkny/CaptureApp) 抓包本机 api 请求
  - 将获取到的6个月历史记录与本地记录合并（1.3版本更新后api只能获取6个月历史记录）
  - 导出抽卡记录为 json 和 excel (已适配 UIGF 格式)
