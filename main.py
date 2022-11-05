@@ -298,7 +298,12 @@ if __name__ == "__main__":
                 logger.info(f"使用国际服日志 {log}")
             assert log, "日志不存在"
 
-            log_text = log.read_text(encoding="utf8")
+            try:
+                log_text = log.read_text(encoding="utf8")
+            except UnicodeDecodeError as e:
+                logger.debug(f"日志文件编码不是utf8, 尝试默认编码 {e}")
+                log_text = log.read_text()
+
             res = re.search("([A-Z]:/.+(GenshinImpact_Data|YuanShen_Data))", log_text)
             game_path = res.group() if res else None
             assert game_path, "未找到游戏路径"
