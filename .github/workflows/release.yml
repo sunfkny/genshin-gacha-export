@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Cache Python packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         if: startsWith(runner.os, 'Windows')
         id: cache-pip
         with:
@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Cache Python packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         if: startsWith(runner.os, 'Windows')
         id: cache-pip
         with:
