@@ -276,6 +276,22 @@ if __name__ == "__main__":
         except Exception:
             logger.error("剪贴板模块出错: " + traceback.format_exc())
 
+    FLAG_USE_CLOUDYS_LOG_URL = s.getKey("FLAG_USE_CLOUDYS_LOG_URL")
+    if FLAG_USE_CLOUDYS_LOG_URL:
+        from clipboard_utils import get_url_from_string
+
+        log_cloudys = Path().home() / "AppData/Local/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log"
+        if log_cloudys.exists():
+            logger.info(f"使用云·原神日志 {log_cloudys}")
+            url = get_url_from_string(log_cloudys.read_text("utf8"))
+            if url:
+                url = toApi(url)
+                logger.info("检查云·原神日志中的链接")
+                if checkApi(url):
+                    main()
+        else:
+            logger.info(f"云·原神日志不存在")
+
     FLAG_USE_LOG_URL = s.getKey("FLAG_USE_LOG_URL")
     if platform.system() != "Windows":
         logger.warning("非 Windows 系统无法使用日志获取链接")
@@ -317,41 +333,33 @@ if __name__ == "__main__":
             CopyFile(str(data_2), str(gge_tmp))
 
             logger.info(f"开始读取缓存")
-            # with gge_tmp.open("rb") as f:
-            #     while True:
-            #         a = f.read(4)
-            #         if len(a) < 4:  # 文件结束
-            #             break
-            #         if a == b"1/0/":  # url开始
-            #             # assert f.tell() % 16 == 4
-            #             buffer = bytearray()
-            #             b = f.read(1)
-            #             while b not in (b"\0", b""):  # 读取到\0或文件结束
-            #                 buffer += b
-            #                 b = f.read(1)
-            #             text = get_url_from_string(buffer.decode("utf8"))
-            #             if text:
-            #                 url = text
-            #             f.seek((f.tell() // 16 + 1) * 16)  # 对齐16字节
+
             results = gge_tmp.read_bytes().split(b"1/0/")
-            for result in results:
-                result = result.decode(errors="ignore")
-                text = get_url_from_string(result)
-                if text:
-                    url = text
+            results = [result.split(b"\x00")[0].decode(errors="ignore") for result in results]
+            results = [get_url_from_string(result) for result in results]
+            results = [result for result in results if result]
 
             if gge_tmp.is_file():
                 gge_tmp.unlink()
                 logger.debug(f"删除临时文件{gge_tmp}")
 
-            if url:
+            if results:
+                url = results[0]
                 url = toApi(url)
-                logger.info("检查缓存文件中的链接")
+                logger.info("检查缓存文件中的第一个链接")
                 if checkApi(url):
                     s = Config(configPath)
                     s.setKey("url", url)
                     main()
-            else:
+            if len(results) > 1:
+                url = results[-1]
+                url = toApi(url)
+                logger.info("检查缓存文件中的最后一个链接")
+                if checkApi(url):
+                    s = Config(configPath)
+                    s.setKey("url", url)
+                    main()
+            if not results:
                 logger.error("缓存文件中没有链接")
         except Exception as e:
             logger.error("日志读取模块出错: " + traceback.format_exc())

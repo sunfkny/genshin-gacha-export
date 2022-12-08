@@ -44,9 +44,9 @@ def get_clipboad_text_or_html() -> Optional[str]:
 def get_url_from_string(s: Optional[str]) -> Optional[str]:
     if not s:
         return None
-    res = re.search("https://.+?authkey.+?game_biz=hk4e_(?:cn|global)", s)
+    res = re.findall("https://.+?authkey.+?game_biz=hk4e_(?:cn|global)", s)
     if res:
-        return res.group()
+        return res[-1]
     else:
         return None
 
@@ -63,3 +63,9 @@ if __name__ == "__main__":
     text = get_clipboad_text_or_html()
     url = get_url_from_string(text)
     print(url)
+    from pathlib import Path
+    log_cloudys = Path().home() / "AppData/Local/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log"
+    print(log_cloudys)
+    if log_cloudys.exists():
+        url = get_url_from_string(log_cloudys.read_text("utf8"))
+        print(url)

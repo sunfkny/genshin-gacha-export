@@ -11,6 +11,7 @@ class Config:
         "FLAG_SHOW_REPORT": True,
         "FLAG_WRITE_XLSX": True,
         "FLAG_USE_CONFIG_URL": True,
+        "FLAG_USE_CLOUDYS_LOG_URL": True,
         "FLAG_USE_LOG_URL": True,
         "FLAG_USE_CLIPBOARD": True,
         "FLAG_USE_CAPTURE": True,
