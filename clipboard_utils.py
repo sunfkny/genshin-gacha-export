@@ -44,7 +44,7 @@ def get_clipboad_text_or_html() -> Optional[str]:
 def get_url_from_string(s: Optional[str]) -> Optional[str]:
     if not s:
         return None
-    res = re.findall("https://.+?authkey.+?game_biz=hk4e_(?:cn|global)", s)
+    res = re.findall("https://.+?webview_gacha.+?game_biz=hk4e_(?:cn|global)", s)
     if res:
         return res[-1]
     else:
