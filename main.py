@@ -169,10 +169,21 @@ def toApi(url):
     return url
 
 
-def getApi(gachaType, size, page, end_id=""):
+def safe_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
+
+def url_query_dict(url):
     parsed = parse.urlparse(url)
-    querys = parse.parse_qsl(str(parsed.query))
-    param_dict = dict(querys)
+    querys = parse.parse_qsl(parsed.query)
+    return dict(querys)
+
+
+def getApi(gachaType, size, page, end_id=""):
+    param_dict = url_query_dict(url)
     param_dict["size"] = size
     param_dict["gacha_type"] = gachaType
     param_dict["page"] = page
@@ -339,26 +350,23 @@ if __name__ == "__main__":
             results = [get_url_from_string(result) for result in results]
             results = [result for result in results if result]
 
+            if results:
+                timestamp_list = [safe_int(url_query_dict(result).get("timestamp", 0)) for result in results]
+                max_timestamp_index = timestamp_list.index(max(timestamp_list))
+                url = results[max_timestamp_index]
+
             if gge_tmp.is_file():
                 gge_tmp.unlink()
                 logger.debug(f"删除临时文件{gge_tmp}")
 
-            if results:
-                url = results[0]
+            if url:
                 url = toApi(url)
-                logger.info("检查缓存文件中的第一个链接")
+                logger.info("检查缓存文件中的最新链接")
                 if checkApi(url):
                     s = Config(configPath)
                     s.setKey("url", url)
                     main()
-            if len(results) > 1:
-                url = results[-1]
-                url = toApi(url)
-                logger.info("检查缓存文件中的最后一个链接")
-                if checkApi(url):
-                    s = Config(configPath)
-                    s.setKey("url", url)
-                    main()
+
             if not results:
                 logger.error("缓存文件中没有链接")
         except Exception as e:
