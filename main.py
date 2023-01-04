@@ -329,7 +329,7 @@ if __name__ == "__main__":
                 log_text = log.read_text(encoding="utf8")
             except UnicodeDecodeError as e:
                 logger.debug(f"日志文件编码不是utf8, 尝试默认编码 {e}")
-                log_text = log.read_text()
+                log_text = log.read_text(errors="ignore") # 忽略编码错误
 
             res = re.search("([A-Z]:/.+(GenshinImpact_Data|YuanShen_Data))", log_text)
             game_path = res.group() if res else None
