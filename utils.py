@@ -14,7 +14,7 @@ config = {
 logger.configure(**config)
 
 
-def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
+def press_any_key_to_exit(msg="执行结束，按任意键退出"):
     from sys import exit
 
     logger.info(msg)
@@ -33,9 +33,9 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
 
 
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-configPath = os.path.join(gen_path, "config.json")
+config_path = os.path.join(gen_path, "config.json")
 gachaReportPath = os.path.join(gen_path, "gachaReport.html")
 
 logger.debug("gen_path: {}", gen_path)
-logger.debug("configPath: {}", configPath)
+logger.debug("configPath: {}", config_path)
 logger.debug("gachaReportPath: {}", gachaReportPath)

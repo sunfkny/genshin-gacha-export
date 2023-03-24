@@ -6,7 +6,7 @@ import sys
 from config import version
 import platform
 from hashlib import md5
-from utils import logger, pressAnyKeyToExit, gen_path
+from utils import logger, press_any_key_to_exit, gen_path
 
 
 class Package(Enum):
@@ -129,7 +129,7 @@ def update():
                     if i in ["Y", "y"]:
                         return
                     else:
-                        pressAnyKeyToExit()
+                        press_any_key_to_exit()
                 else:
                     logger.error("下载失败")
         else:

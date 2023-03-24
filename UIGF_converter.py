@@ -1,13 +1,18 @@
-import time
+import json
 import os
 import sys
-import gachaMetadata
-import json
+import time
+
+import gacha_metadata
+from gacha_metadata import (
+    gacha_query_type_ids,
+    gacha_query_type_names,
+    gacha_query_type_dict,
+    gacha_type_dict,
+)
+
 from utils import logger
 
-gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
-gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
-gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
 gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 from config import version
 
@@ -35,7 +40,7 @@ def convert(uid, gachaLog):
     UIGF_data["info"]["export_timestamp"] = int(time.time())
     all_gachaDictList = []
 
-    for gacha_type in gachaQueryTypeIds:
+    for gacha_type in gacha_query_type_ids:
         gacha_log = gachaLog.get(gacha_type, [])
         gacha_log = sorted(gacha_log, key=lambda gacha: gacha["time"], reverse=True)
         gacha_log.reverse()
@@ -52,4 +57,3 @@ def convert(uid, gachaLog):
     UIGF_data["list"] = all_gachaDictList
     logger.debug("转换完成 {} 条", len(all_gachaDictList))
     return UIGF_data
-

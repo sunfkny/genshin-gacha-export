@@ -34,11 +34,11 @@ class Config:
         self.setting.update(json.loads(f.read()))
         f.close()
 
-    def setKey(self, key, value=None):
+    def set_key(self, key, value=None):
         self.setting[key] = value
         self.save()
 
-    def getKey(self, key):
+    def get_key(self, key):
         try:
             return self.setting[key]
         except KeyError:

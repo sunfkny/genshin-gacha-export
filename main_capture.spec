@@ -4,14 +4,15 @@ block_cipher = None
 
 py_files = [
     'main.py',
-    'render_html.py',
-    'writeXLSX.py',
-    'config.py',
-    'UIGF_converter.py',
-    'gachaMetadata.py',
     'capture.py',
+    'clipboard_utils.py',
+    'config.py',
+    'gacha_metadata.py',
+    'render_html.py',
+    'uigf_converter.py',
     'updater.py',
     'utils.py',
+    'write_xlsx.py',
 ]
 exe_name = 'genshin-gacha-export'
 icon_path = 'ys.ico'

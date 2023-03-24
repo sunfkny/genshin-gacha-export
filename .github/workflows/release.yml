@@ -27,7 +27,7 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
-        run: pyinstaller .\mainCapture.spec
+        run: pyinstaller .\main_capture.spec
       - name: Download plugin
         run: Invoke-WebRequest -Uri "https://github.com/sunfkny/CaptureApp/releases/latest/download/CaptureApp.exe" -OutFile "dist/CaptureApp.exe"
       - name: Zip files
@@ -89,7 +89,7 @@ jobs:
         run: echo "version=$(cat version.txt)" >> $env:GITHUB_ENV
         
       - name: Package to exe
-        run: pyinstaller .\mainCapture.spec
+        run: pyinstaller .\main_capture.spec
       - name: Download plugin
         run: Invoke-WebRequest -Uri "https://github.com/sunfkny/CaptureApp/releases/latest/download/CaptureApp.exe" -OutFile "dist/CaptureApp.exe"
       - name: Zip files

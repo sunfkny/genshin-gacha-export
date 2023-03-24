@@ -1,13 +1,13 @@
 import json
 import time
 import webbrowser
-import gachaMetadata
+import gacha_metadata
 from utils import logger, gachaReportPath
 
 
-gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
-gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
-gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
+gachaQueryTypeIds = gacha_metadata.gacha_query_type_ids
+gachaQueryTypeNames = gacha_metadata.gacha_query_type_names
+gachaQueryTypeDict = gacha_metadata.gacha_query_type_dict
 
 
 def get_banner(gacha_type, detail):

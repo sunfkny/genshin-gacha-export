@@ -1,19 +1,21 @@
 import json
 import os
-import gachaMetadata
-import UIGF_converter
+import gacha_metadata
+import uigf_converter
 from utils import logger, gen_path
+from gacha_metadata import (
+    gacha_query_type_ids,
+    gacha_query_type_names,
+    gacha_query_type_dict,
+    gacha_type_dict,
+)
 
 
 gachaInfo = []
 gachaLog = []
-gachaQueryTypeIds = gachaMetadata.gachaQueryTypeIds
-gachaQueryTypeNames = gachaMetadata.gachaQueryTypeNames
-gachaQueryTypeDict = gachaMetadata.gachaQueryTypeDict
-gacha_type_dict = gachaMetadata.gacha_type_dict
 
 
-def writeXLSX(uid, gachaLog):
+def write_logs(uid, gacha_log):
     import xlsxwriter
     import time
 
@@ -21,13 +23,15 @@ def writeXLSX(uid, gachaLog):
     workbook_path = os.path.join(gen_path, f"gachaExport-{uid}-{t}.xlsx")
     logger.debug("创建工作簿: " + workbook_path)
     workbook = xlsxwriter.Workbook(workbook_path)
-    for key in gachaLog:
-        gachaDictList = gachaLog[key][::-1]
-        gachaTypeName = gachaQueryTypeDict[key]
+    for key in gacha_log:
+        gachaDictList = gacha_log[key][::-1]
+        gachaTypeName = gacha_query_type_dict[key]
         logger.debug("开始写入 {} {}", gachaTypeName, len(gachaDictList))
         worksheet = workbook.add_worksheet(gachaTypeName)
         content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "bg_color": "#ebebeb", "border": 1})
-        title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
+        title_css = workbook.add_format(
+            {"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True}
+        )
         excel_header = ["时间", "名称", "类别", "星级", "祈愿类型", "总次数", "保底内"]
         worksheet.set_column("A:A", 22)
         worksheet.set_column("B:B", 14)
@@ -67,8 +71,8 @@ def writeXLSX(uid, gachaLog):
     raw_data_header = ["count", "gacha_type", "id", "item_id", "item_type", "lang", "name", "rank_type", "time", "uid", "uigf_gacha_type"]
     worksheet.write_row(0, 0, raw_data_header)
 
-    UIGF_data = UIGF_converter.convert(uid, gachaLog)
-    all_gachaDictList = UIGF_data["list"]
+    uigf_data = uigf_converter.convert(uid, gacha_log)
+    all_gachaDictList = uigf_data["list"]
     all_counter = 0
 
     for gacha in all_gachaDictList:
@@ -97,6 +101,5 @@ def write(uid, gachaLog):
         logger.debug("gachaLog key 存在")
         gachaLog = gachaLog["gachaLog"]
     logger.info("开始写入XLSX")
-    writeXLSX(uid, gachaLog)
+    write_logs(uid, gachaLog)
     logger.debug("写入完成")
-
