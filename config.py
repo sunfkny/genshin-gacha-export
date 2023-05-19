@@ -1,4 +1,7 @@
 import json
+import os
+import pathlib
+from typing import Union
 from utils import logger
 
 version = "v3.3.0.12101546"
@@ -21,7 +24,7 @@ class Config:
     }
     path = ""
 
-    def __init__(self, path="config.json"):
+    def __init__(self, path: Union[str, bytes, pathlib.Path]):
         self.path = path
         try:
             self.read()

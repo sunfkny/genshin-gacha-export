@@ -1,7 +1,6 @@
 from tqdm import tqdm
 from enum import Enum
 import requests
-import os
 import sys
 from config import version
 import platform
@@ -34,7 +33,9 @@ def check_update(package):
     if isinstance(package, Package):
         package = package.value
     try:
-        url = "https://sunfkny.coding.net/api/team/sunfkny/anonymity/artifacts/repositories/12991235/packages/{}/versions?page=1&pageSize=1&type=1".format(package)
+        url = "https://sunfkny.coding.net/api/team/sunfkny/anonymity/artifacts/repositories/12991235/packages/{}/versions?page=1&pageSize=1&type=1".format(
+            package
+        )
         r = requests.get(url)
         j = r.json()
         artifact = j["data"]["list"][0]
@@ -57,7 +58,6 @@ def check_update(package):
 
 
 def calc_md5(filename):
-
     hash_md5 = md5()
     with open(filename, "rb") as f:
         for chunk in iter(lambda: f.read(4096), b""):
@@ -65,16 +65,16 @@ def calc_md5(filename):
     return hash_md5.hexdigest()
 
 
-def download_file_hash_check(url, file_name, md5):
+def download_file_hash_check(url, file_name: str, md5: str):
     logger.debug("下载 {} {}", file_name, md5)
-    file_path = os.path.join(gen_path, file_name)
-    if os.path.isfile(file_path):
+    file_path = gen_path / file_name
+    if file_path.is_file():
         old_md5 = calc_md5(file_path)
         if old_md5.upper() == md5.upper():
             logger.info("最新版本已下载")
             return True
         try:
-            os.remove(file_path)
+            file_path.unlink()
         except:
             logger.error("旧版文件删除失败")
             return False
@@ -118,7 +118,9 @@ def update():
             print()
             if i in ["Y", "y", "\r"]:
                 if download_file_hash_check(artifact["url"], artifact["name"], artifact["hash"]):
-                    logger.info("下载完成, 文件位于 {}".format(os.path.abspath(artifact["name"])))
+                    file_name = str(artifact["name"])
+                    file_path = gen_path / file_name
+                    logger.info("下载完成, 文件位于 {}".format(file_path))
                     logger.info("请解压替换文件")
                     logger.info("是否继续运行? (y/N): ")
                     try:

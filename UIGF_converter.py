@@ -1,9 +1,8 @@
-import json
+import pathlib
 import os
 import sys
 import time
 
-import gacha_metadata
 from gacha_metadata import (
     gacha_query_type_ids,
     gacha_query_type_names,
@@ -13,7 +12,7 @@ from gacha_metadata import (
 
 from utils import logger
 
-gen_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+gen_path = pathlib.Path(sys.argv[0]).parent
 from config import version
 
 

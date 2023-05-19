@@ -20,8 +20,8 @@ def write_logs(uid, gacha_log):
     import time
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    workbook_path = os.path.join(gen_path, f"gachaExport-{uid}-{t}.xlsx")
-    logger.debug("创建工作簿: " + workbook_path)
+    workbook_path = gen_path / f"gachaExport-{uid}-{t}.xlsx"
+    logger.debug(f"创建工作簿: f{workbook_path}")
     workbook = xlsxwriter.Workbook(workbook_path)
     for key in gacha_log:
         gachaDictList = gacha_log[key][::-1]

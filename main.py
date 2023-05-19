@@ -39,57 +39,54 @@ def main():
                 uid_flag = 0
 
     uid = gacha_data["uid"]
-    local_data_file_path = os.path.join(gen_path, f"gachaData-{uid}.json")
+    local_data_file_path = gen_path / f"gachaData-{uid}.json"
 
-    if os.path.isfile(local_data_file_path):
+    if local_data_file_path.is_file():
         with open(local_data_file_path, "r", encoding="utf-8") as f:
-            local_data_file_path = json.load(f)
-        merge_data = merge_data_func(local_data_file_path, gacha_data)
+            local_data = json.load(f)
+        merge_data = merge_data_func(local_data, gacha_data)
     else:
         merge_data = gacha_data
 
     merge_data["gachaType"] = gacha_query_type_dict
     logger.info("开始写入JSON")
-    # # 抽卡报告读取 gachaData.json
-    # with open(os.path.join(gen_path, "gachaData.json"), "w", encoding="utf-8") as f:
-    #     json.dump(mergeData, f, ensure_ascii=False, sort_keys=False, indent=4)
     # 待合并数据 gachaData-{uid}.json
-    with open(os.path.join(gen_path, f"gachaData-{uid}.json"), "w", encoding="utf-8") as f:
+    with open(gen_path / f"gachaData-{uid}.json", "w", encoding="utf-8") as f:
         json.dump(merge_data, f, ensure_ascii=False, sort_keys=False, indent=4)
     # 备份历史数据防止爆炸 gachaData-{uid}-{t}.json
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    with open(os.path.join(gen_path, f"gachaData-{uid}-{t}.json"), "w", encoding="utf-8") as f:
+    with open(gen_path / f"gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
         json.dump(merge_data, f, ensure_ascii=False, sort_keys=False, indent=4)
     logger.debug("写入完成")
 
     if s.get_key("FLAG_AUTO_ARCHIVE"):
         logger.info("开始自动归档")
-        archive_path = os.path.join(gen_path, "archive")
-        if not os.path.exists(archive_path):
-            os.mkdir(archive_path)
+        archive_path = gen_path / "archive"
+        if not archive_path.exists():
+            archive_path.mkdir()
         logger.debug("归档目录 {} 已创建".format(archive_path))
-        files = os.listdir(gen_path)
-        archive_uigf = [f for f in files if re.match(r"UIGF_gachaData-\d+-\d+.json", f)]
-        archive_json = [f for f in files if re.match(r"gachaData-\d+-\d+.json", f)]
-        archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+-\d+.xlsx", f)]
+        files = gen_path.iterdir()
+        archive_uigf = [f for f in files if re.match(r"UIGF_gachaData-\d+-\d+.json", f.name)]
+        archive_json = [f for f in files if re.match(r"gachaData-\d+-\d+.json", f.name)]
+        archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+-\d+.xlsx", f.name)]
         archive_files = archive_uigf + archive_json + archive_xlsx
         logger.debug("待归档文件 {}".format(archive_files))
         for file in archive_files:
             try:
-                shutil.move(os.path.join(gen_path, file), archive_path)
+                file.rename(archive_path / file.name)
                 logger.info("已归档 {}".format(file))
             except Exception:
                 logger.error("归档失败 {}".format(file))
                 logger.debug(traceback.format_exc())
                 try:
-                    os.remove(os.path.join(archive_path, file))
+                    file.unlink()
                 except:
                     pass
         logger.debug("归档完成")
 
     if s.get_key("FLAG_UIGF_JSON"):
         logger.info("开始写入UIGF JSON")
-        with open(os.path.join(gen_path, f"UIGF_gachaData-{uid}-{t}.json"), "w", encoding="utf-8") as f:
+        with open(gen_path / f"UIGF_gachaData-{uid}-{t}.json", "w", encoding="utf-8") as f:
             UIGF_data = uigf_converter.convert(uid, merge_data)
             json.dump(UIGF_data, f, ensure_ascii=False, sort_keys=False, indent=4)
         logger.debug("写入完成")
@@ -158,7 +155,7 @@ def get_gacha_logs(gacha_type_id):
     return gacha_list
 
 
-def toApi(url):
+def to_api(url):
     url = str(url)
     logger.debug(url)
     spliturl = url.split("?")
@@ -222,8 +219,8 @@ def check_api(url):
 if __name__ == "__main__":
     global url
     url = ""
-    s = Config(os.path.join(gen_path, "config.json"))
-    logger.debug("config: " + str(s.setting))
+    s = Config(config_path)
+    logger.debug(f"config: {s.setting}")
 
     logger.info("项目主页: https://github.com/sunfkny/genshin-gacha-export")
     logger.info("作者: sunfkny")
@@ -242,7 +239,7 @@ if __name__ == "__main__":
     if FLAG_USE_CONFIG_URL:
         logger.info("检查配置文件中的链接")
         url = s.get_key("url")
-        url = toApi(url)
+        url = to_api(url)
         if check_api(url):
             logger.info("配置文件中的链接可用")
             logger.warning("如需多账号请设置 FLAG_USE_CONFIG_URL 为 false 关闭链接缓存")
@@ -259,7 +256,7 @@ if __name__ == "__main__":
             logger.info("使用剪贴板模式")
             url = get_url_from_clipboard()
             if url:
-                url = toApi(url)
+                url = to_api(url)
                 logger.info("检查链接")
                 if check_api(url):
                     main()
@@ -278,7 +275,7 @@ if __name__ == "__main__":
             logger.info(f"使用云·原神日志 {log_cloudys}")
             url = get_url_from_string(log_cloudys.read_text("utf8"))
             if url:
-                url = toApi(url)
+                url = to_api(url)
                 logger.info("检查云·原神日志中的链接")
                 if check_api(url):
                     main()
@@ -343,7 +340,7 @@ if __name__ == "__main__":
                 logger.debug(f"删除临时文件{gge_tmp}")
 
             if url:
-                url = toApi(url)
+                url = to_api(url)
                 logger.info("检查缓存文件中的最新链接")
                 if check_api(url):
                     s = Config(config_path)

@@ -2,7 +2,7 @@ import json
 import time
 import webbrowser
 import gacha_metadata
-from utils import logger, gachaReportPath
+from utils import logger, gacha_report_path
 
 
 gachaQueryTypeIds = gacha_metadata.gacha_query_type_ids
@@ -226,12 +226,12 @@ def render_html(uid, gachaLog):
     export_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     html = html.format(html_head, export_time, uid, html_body)
 
-    logger.debug("写入 " + gachaReportPath)
-    with open(gachaReportPath, "w", encoding="utf-8") as f:
+    logger.debug("写入 " + gacha_report_path)
+    with open(gacha_report_path, "w", encoding="utf-8") as f:
         f.write(str(html))
     logger.debug("写入成功")
 
-    logger.debug("打开 " + gachaReportPath)
+    logger.debug("打开 " + gacha_report_path)
     webbrowser.register("termux", None, webbrowser.GenericBrowser("termux-open"))  # 注册 termux 打开网页
     webbrowser.open_new_tab("gachaReport.html")
     logger.debug("打开成功")
