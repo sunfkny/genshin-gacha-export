@@ -2,7 +2,7 @@ altgraph==0.17.2
 certifi==2023.5.7
 charset-normalizer==2.0.12
 colorama==0.4.5
-future==0.18.2
+future==0.18.3
 idna==3.3
 loguru==0.6.0
 pefile==2022.5.30
