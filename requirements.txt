@@ -1,4 +1,4 @@
-﻿requests==2.27.1
+requests==2.31.0
 urllib3==1.26.8
 XlsxWriter==3.0.3
 pyinstaller==5.0
