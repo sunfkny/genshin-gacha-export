@@ -10,7 +10,7 @@ pyinstaller==5.0
 pyinstaller-hooks-contrib==2022.10
 pywin32==304
 pywin32-ctypes==0.2.0
-requests==2.27.1
+requests==2.31.0
 tqdm==4.62.0
 urllib3==1.26.8
 win32-setctime==1.1.0
