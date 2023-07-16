@@ -1,4 +1,3 @@
-import os
 import sys
 import platform
 import traceback
@@ -6,13 +5,12 @@ import pathlib
 from loguru import logger
 
 open("log.txt", "w").close()
-config = {
-    "handlers": [
+logger.configure(
+    handlers=[
         {"sink": sys.stdout, "level": "INFO"},
         {"sink": "log.txt", "level": "DEBUG"},
-    ],
-}
-logger.configure(**config)
+    ]
+)
 
 
 def press_any_key_to_exit(msg="执行结束，按任意键退出"):
