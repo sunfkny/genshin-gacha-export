@@ -1,8 +1,6 @@
 import json
-import os
 import platform
 import re
-import shutil
 import time
 import traceback
 from pathlib import Path
@@ -14,10 +12,9 @@ import requests
 import uigf_converter
 from config import Config, version
 from gacha_metadata import (
+    WEB_CACHE_PATH,
     gacha_query_type_ids,
-    gacha_query_type_names,
     gacha_query_type_dict,
-    gacha_type_dict,
 )
 from utils import config_path, gen_path, logger, press_any_key_to_exit
 
@@ -315,7 +312,7 @@ if __name__ == "__main__":
             game_path = res.group() if res else None
             assert game_path, "未找到游戏路径"
 
-            data_2 = Path(game_path) / "webCaches/Cache/Cache_Data/data_2"
+            data_2 = Path(game_path) / WEB_CACHE_PATH
             assert data_2.is_file(), "缓存文件不存在"
             logger.info(f"缓存文件 {data_2}")
 
