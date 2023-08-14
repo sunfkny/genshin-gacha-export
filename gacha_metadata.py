@@ -9,4 +9,5 @@ gacha_type_dict = {
     "400": "角色活动祈愿-2",
 }
 
-WEB_CACHE_PATH = "webCaches/2.13.0.1/Cache/Cache_Data/data_2"
+WEB_CACHE_PATH = "webCaches/Cache/Cache_Data/data_2"
+WEB_CACHE_PATH_GLOB = "webCaches/*/Cache/Cache_Data/data_2"

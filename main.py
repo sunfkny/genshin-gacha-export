@@ -13,6 +13,7 @@ import uigf_converter
 from config import Config, version
 from gacha_metadata import (
     WEB_CACHE_PATH,
+    WEB_CACHE_PATH_GLOB,
     gacha_query_type_ids,
     gacha_query_type_dict,
 )
@@ -309,10 +310,16 @@ if __name__ == "__main__":
                 log_text = log.read_text(errors="ignore")  # 忽略编码错误
 
             res = re.search("([A-Z]:/.+(GenshinImpact_Data|YuanShen_Data))", log_text)
-            game_path = res.group() if res else None
-            assert game_path, "未找到游戏路径"
+            game_data = Path(res.group()) if res else None
+            assert game_data, "未找到游戏路径"
 
-            data_2 = Path(game_path) / WEB_CACHE_PATH
+            data_2 = game_data / WEB_CACHE_PATH
+            modifiy_time_data_2 = data_2.stat().st_mtime if data_2.is_file() else 0
+            for file in game_data.glob(WEB_CACHE_PATH_GLOB):
+                if file.is_file() and file.stat().st_mtime > modifiy_time_data_2:
+                    modifiy_time_data_2 = file.stat().st_mtime
+                    data_2 = file
+
             assert data_2.is_file(), "缓存文件不存在"
             logger.info(f"缓存文件 {data_2}")
 

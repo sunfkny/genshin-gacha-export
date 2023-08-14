@@ -4,4 +4,4 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
-3.8版本更改了 data_2 的位置 #68
+通过通配符查找data_2缓存文件
