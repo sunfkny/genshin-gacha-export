@@ -1,5 +1,5 @@
 requests==2.31.0
-urllib3==1.26.8
+urllib3==1.26.17
 XlsxWriter==3.0.3
 pyinstaller==5.11.0
 tqdm==4.62.0
