@@ -11,6 +11,6 @@ pywin32==304
 pywin32-ctypes==0.2.0
 requests==2.31.0
 tqdm==4.62.0
-urllib3==1.26.8
+urllib3==1.26.18
 win32-setctime==1.1.0
 XlsxWriter==3.0.3
