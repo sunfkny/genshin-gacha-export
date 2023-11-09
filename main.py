@@ -63,7 +63,7 @@ def main():
         if not archive_path.exists():
             archive_path.mkdir()
         logger.debug("归档目录 {} 已创建".format(archive_path))
-        files = gen_path.iterdir()
+        files = list(gen_path.iterdir())
         archive_uigf = [f for f in files if re.match(r"UIGF_gachaData-\d+-\d+.json", f.name)]
         archive_json = [f for f in files if re.match(r"gachaData-\d+-\d+.json", f.name)]
         archive_xlsx = [f for f in files if re.match(r"gachaExport-\d+-\d+.xlsx", f.name)]
