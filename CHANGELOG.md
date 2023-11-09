@@ -4,4 +4,5 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
-通过通配符查找data_2缓存文件
+更新新版本国服 apiBase
+修改了 CaptureApp 的默认url包含规则
