@@ -4,7 +4,7 @@ import pathlib
 from typing import Union
 from utils import logger
 
-version = "v4.2.0.11092107"
+version = "v4.2.0.11102342"
 
 
 class Config:

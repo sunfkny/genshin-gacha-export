@@ -157,9 +157,9 @@ def to_api(url):
     url = str(url)
     logger.debug(url)
     spliturl = url.split("?")
-    if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
-        # https://webstatic-sea.hoyoverse.com/genshin/event/e20190909gacha-v2/index.html?lang=zh-cn#/log
-        spliturl[0] = "https://hk4e-api-os.hoyoverse.com/event/gacha_info/api/getGachaLog"
+    if "hoyoverse" in spliturl[0] or "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
+        # https://gs.hoyoverse.com/genshin/event/e20190909gacha-v2/index.html?lang=zh-cn#/log
+        spliturl[0] = "https://hk4e-api-os.hoyoverse.com/gacha_info/api/getGachaLog"
     else:
         # https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v2/index.html?lang=zh-cn#/log
         spliturl[0] = "https://public-operation-hk4e.mihoyo.com/gacha_info/api/getGachaLog"
