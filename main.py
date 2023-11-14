@@ -290,20 +290,21 @@ if __name__ == "__main__":
         try:
             from win32api import CopyFile, GetTempFileName, GetTempPath
 
-            from clipboard_utils import get_url_from_string
-
             log_cn = Path().home() / "AppData/LocalLow/miHoYo/原神/output_log.txt"
             log_os = Path().home() / "AppData/LocalLow/miHoYo/Genshin Impact/output_log.txt"
             modifiy_time_cn = log_cn.stat().st_mtime if log_cn.exists() else 0
             modifiy_time_os = log_os.stat().st_mtime if log_os.exists() else 0
             log = None
+            prefix = None
             if modifiy_time_cn > modifiy_time_os >= 0:
                 log = log_cn
                 logger.info(f"使用日志 {log}")
+                prefix = b"https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v2/index.html"
             if modifiy_time_os > modifiy_time_cn >= 0:
                 log = log_os
                 logger.info(f"使用国际服日志 {log}")
-            assert log, "日志不存在"
+                prefix = b"https://gs.hoyoverse.com/genshin/event/e20190909gacha-v2/index.html"
+            assert log and prefix, "日志不存在"
 
             try:
                 log_text = log.read_text(encoding="utf8")
@@ -331,15 +332,10 @@ if __name__ == "__main__":
 
             logger.info(f"开始读取缓存")
 
-            results = gge_tmp.read_bytes().split(b"1/0/")
-            results = [result.split(b"\x00")[0].decode(errors="ignore") for result in results]
-            results = [get_url_from_string(result) for result in results]
-            results = [result for result in results if result]
-
-            if results:
-                timestamp_list = [safe_int(url_query_dict(result).get("timestamp", 0)) for result in results]
-                max_timestamp_index = timestamp_list.index(max(timestamp_list))
-                url = results[max_timestamp_index]
+            cache_file_bytes = gge_tmp.read_bytes()
+            url_start = cache_file_bytes.rfind(prefix)
+            url_end = cache_file_bytes.find(b"\0", url_start)
+            url = cache_file_bytes[url_start:url_end].decode(errors="ignore")
 
             if gge_tmp.is_file():
                 gge_tmp.unlink()
@@ -352,8 +348,7 @@ if __name__ == "__main__":
                     s = Config(config_path)
                     s.set_key("url", url)
                     main()
-
-            if not results:
+            else:
                 logger.error("缓存文件中没有链接")
         except Exception as e:
             logger.error("日志读取模块出错: " + traceback.format_exc())
