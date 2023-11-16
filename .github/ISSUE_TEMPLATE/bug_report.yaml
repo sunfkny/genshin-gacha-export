@@ -1,0 +1,28 @@
+---
+name: Bug 反馈
+description: 功能运行不正常 / 失效
+body:
+- type: input
+  attributes:
+    label: 版本
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: 错误信息
+    description: 请列出重现错误的步骤和对应的错误信息
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: 诊断日志
+    description: 上传日志文件和关联的文件
+    placeholder: |
+      程序运行日志文件 log.txt
+      原神日志 output_log.txt 缓存文件 data_2
+      云·原神日志 MiHoYoSDK.log
+
+  validations:
+    required: true
