@@ -270,7 +270,7 @@ if __name__ == "__main__":
     if FLAG_USE_CLOUDYS_LOG_URL:
         from clipboard_utils import get_url_from_string
 
-        log_cloudys = Path().home() / "AppData/Local/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log"
+        log_cloudys = Path().home() / "AppData/Local/miHoYo/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log"
         if log_cloudys.exists():
             logger.info(f"使用云·原神日志 {log_cloudys}")
             url = get_url_from_string(log_cloudys.read_text("utf8"))
