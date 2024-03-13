@@ -78,7 +78,7 @@ def main():
                 logger.debug(traceback.format_exc())
                 try:
                     file.unlink()
-                except:
+                except Exception:
                     pass
         logger.debug("归档完成")
 
@@ -104,8 +104,13 @@ def main():
 
 def merge_data_func(local_data, gacha_data):
     for banner in gacha_query_type_dict:
+        if local_data["gachaLog"].get(banner) is None:
+            local_data["gachaLog"][banner] = []
+        if gacha_data["gachaLog"].get(banner) is None:
+            gacha_data["gachaLog"][banner] = []
         banner_local = local_data["gachaLog"][banner]
         banner_get = gacha_data["gachaLog"][banner]
+
         if banner_get == banner_local:
             pass
         else:
@@ -158,10 +163,10 @@ def to_api(url):
     logger.debug(url)
     spliturl = url.split("?")
     if "hoyoverse" in spliturl[0] or "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
-        # https://gs.hoyoverse.com/genshin/event/e20190909gacha-v2/index.html?lang=zh-cn#/log
+        # https://gs.hoyoverse.com/genshin/event/e20190909gacha-v3/index.html?lang=zh-cn#/log
         spliturl[0] = "https://hk4e-api-os.hoyoverse.com/gacha_info/api/getGachaLog"
     else:
-        # https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v2/index.html?lang=zh-cn#/log
+        # https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v3/index.html?lang=zh-cn#/log
         spliturl[0] = "https://public-operation-hk4e.mihoyo.com/gacha_info/api/getGachaLog"
     url = "?".join(spliturl)
     return url
@@ -280,7 +285,7 @@ if __name__ == "__main__":
                 if check_api(url):
                     main()
         else:
-            logger.info(f"云·原神日志不存在")
+            logger.info("云·原神日志不存在")
 
     FLAG_USE_LOG_URL = s.get_key("FLAG_USE_LOG_URL")
     if platform.system() != "Windows":
@@ -299,11 +304,11 @@ if __name__ == "__main__":
             if modifiy_time_cn > modifiy_time_os >= 0:
                 log = log_cn
                 logger.info(f"使用日志 {log}")
-                prefix = b"https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v2/index.html"
+                prefix = b"https://webstatic.mihoyo.com/hk4e/event/e20190909gacha-v3/index.html"
             if modifiy_time_os > modifiy_time_cn >= 0:
                 log = log_os
                 logger.info(f"使用国际服日志 {log}")
-                prefix = b"https://gs.hoyoverse.com/genshin/event/e20190909gacha-v2/index.html"
+                prefix = b"https://gs.hoyoverse.com/genshin/event/e20190909gacha-v3/index.html"
             assert log and prefix, "日志不存在"
 
             try:
@@ -330,7 +335,7 @@ if __name__ == "__main__":
             gge_tmp = Path(gge_tmp)
             CopyFile(str(data_2), str(gge_tmp))
 
-            logger.info(f"开始读取缓存")
+            logger.info("开始读取缓存")
 
             cache_file_bytes = gge_tmp.read_bytes()
             url_start = cache_file_bytes.rfind(prefix)

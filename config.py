@@ -1,5 +1,4 @@
 import json
-import os
 import pathlib
 from typing import Union
 from utils import logger
@@ -28,7 +27,7 @@ class Config:
         self.path = path
         try:
             self.read()
-        except:
+        except Exception:
             logger.warning("配置文件不存在或出错, 重新生成")
         self.save()
 
