@@ -4,7 +4,4 @@
  - Github 下载加速：https://ghproxy.com
 
 ### 更新内容
-更新新版本国服和国际服的 apiBase
-修改了 CaptureApp 的默认url包含规则
-优化缓存文件读取逻辑
-更了新云·原神日志文件路径
+更新适配4.5集录祈愿
